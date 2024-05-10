@@ -22,7 +22,7 @@ export default {
 <template>
   <div class="app">
     <app-header />
-    <app-main />
+    <router-view></router-view>
     <!-- <app-footer /> -->
   </div>
 </template>
