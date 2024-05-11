@@ -30,12 +30,12 @@ export default {
           >
         </li>
         <li class="nav-item">
-          <router-link
+          <!--           <router-link
             :to="{ name: 'restaurants.index' }"
             class="nav-link text-white"
             aria-current="page"
             >Lista ristoranti</router-link
-          >
+          > -->
         </li>
       </ul>
       <ul class="chart-icon">

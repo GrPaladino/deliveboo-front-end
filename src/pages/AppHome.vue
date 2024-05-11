@@ -1,10 +1,15 @@
 <script>
+import { store } from "../store";
+import RestaurantsList from "../components/RestaurantsList.vue";
 export default {
   data() {
     return {
       titleComponent: "Home Page",
+      store,
     };
   },
+
+  components: { RestaurantsList },
 
   created() {},
 };
@@ -22,15 +27,15 @@ export default {
 
           <!-- BUTTON -->
           <div class="btn-restaurant mb-5">
-            <router-link
+            <!-- <router-link
               :to="{ name: 'restaurants.index' }"
               href="#"
               class="btn btn--action"
               ><span class="guest">Vai ai ristoranti</span></router-link
-            >
+            > -->
           </div>
 
-          <h5 class="title">oppure</h5>
+          <!-- <h5 class="title">oppure</h5> -->
           <h3 class="display-5 title">Sei un ristoratore?</h3>
           <!-- BUTTON -->
           <div class="btn-restaurant mb-3">
@@ -41,6 +46,7 @@ export default {
         </div>
       </div>
     </div>
+    <restaurants-list></restaurants-list>
   </div>
 </template>
 

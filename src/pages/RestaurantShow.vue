@@ -97,15 +97,14 @@ export default {
 <template>
   <div class="row justify-content-between containerApp ps-3">
     <div class="col-sm-12 col-md-3 bg-white pe-0 leftColumn">
-      <router-link
+      <!-- <router-link
         :to="{ name: 'restaurants.index' }"
         href="#"
         class="col-lg-3 col-md-6 col-sm-12"
         id="addButton"
       >
-        <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
         <button class="ballButton">👈🏻</button>
-      </router-link>
+      </router-link> -->
       <!-- </div> -->
       <!-- RESTAURANT DETAILS -->
       <img :src="restaurant.image" :alt="restaurant.name" class="w-100" />
