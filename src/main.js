@@ -12,6 +12,9 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 // * import font awesome icon component */
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+// * import braintree component */
+import * as braintree from "braintree-web";
+
 // * import specific icons */
 import {
   faCircleArrowLeft,

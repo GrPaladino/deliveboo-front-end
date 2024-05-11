@@ -97,37 +97,6 @@ export default {
 
 <template>
   <div class="row justify-content-between containerApp ps-3">
-    <div class="col-sm-12 col-md-3 bg-white pe-0 leftColumn">
-      <!-- <router-link
-        :to="{ name: 'restaurants.index' }"
-        href="#"
-        class="col-lg-3 col-md-6 col-sm-12"
-        id="addButton"
-      >
-        <button class="ballButton">👈🏻</button>
-      </router-link> -->
-      <!-- </div> -->
-      <!-- RESTAURANT DETAILS -->
-      <img :src="restaurant.image" :alt="restaurant.name" class="w-100" />
-      <div class="my-3">
-        <h1>
-          {{ restaurant.name }}
-        </h1>
-        <h5>☎️{{ restaurant.phone }}</h5>
-        <h5 class="detailCap">🏠{{ restaurant.address }}</h5>
-      </div>
-      <!-- BADGE -->
-      <div id="badgesContainer">
-        <div class="badge" v-for="badge in types">
-          <div class="typeBadge">
-            <div class="badgeImg">
-              <img :src="badge.image" alt="" width="100%" />
-            </div>
-            <span>{{ badge.label }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
     <div class="col-12 col-md-9 rightColumn px-2">
       <div
         v-for="dish in restaurant.dishes"
@@ -223,15 +192,6 @@ export default {
         </div>
       </div>
     </div>
-    <router-link
-      :to="{
-        name: 'restaurants.checkout',
-        params: { slug: restaurant.slug },
-      }"
-      class="router-link"
-    >
-      <div class="goToCart" @click="addToCart()">🛒</div></router-link
-    >
   </div>
 </template>
 
