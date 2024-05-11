@@ -19,6 +19,8 @@ export default {
 
   methods: {
     fetchRestaurants() {
+      console.log("CART CHECKOUT");
+
       const restaurantSlug = this.$route.params.slug;
       axios
         .get(api.baseApiURI + `restaurants/${restaurantSlug}`)

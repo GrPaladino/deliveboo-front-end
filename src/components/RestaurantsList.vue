@@ -19,6 +19,8 @@ export default {
   components: { AppCard },
   methods: {
     fetchRestaurants() {
+      console.log("RESTAURANT LIST 1");
+
       axios.get(api.baseApiURI + "restaurants").then((response) => {
         this.restaurants = response.data.restaurants;
         this.types = response.data.types;
@@ -26,6 +28,8 @@ export default {
     },
 
     filteredRestaurants(argument) {
+      console.log("RESTAURANT LIST 2");
+
       const argumentString = Array.isArray(argument)
         ? argument.join("&")
         : argument;
@@ -101,12 +105,14 @@ export default {
                 <img
                   @click="search(badge.label)"
                   :src="badge.image"
-                  :alt="badge.name" />
+                  :alt="badge.name"
+                />
               </div>
               <div
                 @click="search(badge.label)"
                 class="label h-100 w-100 d-none d-md-block"
-                :for="badge.id">
+                :for="badge.id"
+              >
                 {{ badge.label }}
               </div>
             </div>
@@ -119,10 +125,12 @@ export default {
         <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
 
         <div
-          class="row pe-2 d-flex justify-content-center justify-content-md-start">
+          class="row pe-2 d-flex justify-content-center justify-content-md-start"
+        >
           <div
             v-for="(restaurant, index) in this.restaurants"
-            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
+            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer"
+          >
             <app-card :restaurant="restaurant" :index="index" class="h-100" />
           </div>
 

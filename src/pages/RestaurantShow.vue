@@ -19,6 +19,7 @@ export default {
 
   methods: {
     fetchRestaurants() {
+      console.log("RESTAURANT SHOW");
       const restaurantSlug = this.$route.params.slug;
       axios
         .get(api.baseApiURI + `restaurants/${restaurantSlug}`)
@@ -62,8 +63,8 @@ export default {
         for (let i = 0; i < numberInputs.length; i++) {
           if (numberInputs[i].value > 0) {
             if (!store.myOrder[i]) store.myOrder[i] = {};
-            store.myOrder[i]["dish_id"] = numberInputs[i].id;
-            store.myOrder[i]["quantity"] = numberInputs[i].value;
+            store.myOrder["dishes"][i]["dish_id"] = numberInputs[i].id;
+            store.myOrder["dishes"][i]["quantity"] = numberInputs[i].value;
             console.log(store.myOrder);
           }
         }
@@ -84,29 +85,39 @@ export default {
       let input = document.getElementById(event);
       if (!input.value) input.value = 0;
     },
-  },
+    cartQuantity() {
+      if (store.myOrder && this.restaurant.id == store.myOrder.restaurant_id) {
+        for (let i = 0; i < store.myOrder.dishes.length; i++) {
+          let dish = document.getElementById(store.myOrder.dishes[i].dish_id);
+          dish.value = store.myOrder.dishes[i].quantity;
+        }
+      }
+    },
 
-  created() {
-    this.fetchRestaurants();
-    // this.fetchTypes();
-  },
+    created() {
+      this.fetchRestaurants();
+      // this.fetchTypes();
+    },
 
-  mounted() {},
+    // mounted() {
+    //   this.cartQuantity();
+    // },
+  },
 };
 </script>
 
 <template>
   <div class="row justify-content-between containerApp ps-3">
     <div class="col-sm-12 col-md-3 bg-white pe-0 leftColumn">
-      <!-- <router-link
+      <router-link
         :to="{ name: 'restaurants.index' }"
         href="#"
         class="col-lg-3 col-md-6 col-sm-12"
         id="addButton"
       >
         <button class="ballButton">👈🏻</button>
-      </router-link> -->
-      <!-- </div> -->
+      </router-link>
+
       <!-- RESTAURANT DETAILS -->
       <img :src="restaurant.image" :alt="restaurant.name" class="w-100" />
       <div class="my-3">
