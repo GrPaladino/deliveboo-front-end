@@ -8,7 +8,6 @@ import CartView from "./pages/CartView.vue";
 
 import CartCheckout from "./pages/CartCheckout.vue";
 
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -32,12 +31,12 @@ const router = createRouter({
       path: "/carrello",
       name: "cart.show",
       component: CartView,
+    },
 
     {
       path: "/:slug/checkout",
       name: "restaurants.checkout",
       component: CartCheckout,
-
     },
   ],
 });
