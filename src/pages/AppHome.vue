@@ -1,6 +1,6 @@
 <script>
 import { store, api } from "../store";
-
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 import AppCard from "../components/AppCard.vue";
 
@@ -14,7 +14,9 @@ export default {
       types: [],
       searchOn: false,
       activeTypes: [],
+
     };
+
   },
   components: { AppCard },
   methods: {
@@ -65,13 +67,16 @@ export default {
         this.fetchRestaurants();
       }
     },
+
   },
 
   created() {
     this.fetchRestaurants();
   },
 
-  mounted() {},
+  mounted() {
+
+  },
 };
 </script>
 
@@ -81,18 +86,20 @@ export default {
       <h2 class="display-2 title text-center">
         Ordina subito con Boolivery! 🛵🍝
       </h2>
-
+      <div class="btn-restaurant mb-3 col-8 " onclick="document.getElementById('searchSection').scrollIntoView();">
+        <div class="btn btn--action"><span class="guest">Vai alla ricerca
+          </span></div>
+      </div>
       <h5 class="title">oppure</h5>
       <h3 class="display-5 title">Sei un ristoratore?</h3>
       <!-- BUTTON -->
       <div class="btn-restaurant mb-3 col-8">
-        <a class="btn btn--action" href="http://127.0.0.1:8000/login"
-          ><span class="user">Accedi al tuo account</span></a
-        >
+        <a class="btn btn--action" href="http://127.0.0.1:8000/login"><span class="user">Accedi al tuo
+            account</span></a>
       </div>
     </div>
   </div>
-  <div class="containerApp">
+  <div class="containerApp " id="searchSection">
     <!-- ROW -->
     <div class="row">
       <!-- Search column -->
@@ -100,12 +107,8 @@ export default {
         <h3 class="my-3 title">Filtri</h3>
 
         <ul class="d-flex flex-column align-items-center">
-          <li
-            v-for="badge in types"
-            class="badgeSelector"
-            :id="badge.label"
-            @click="search(badge.label, $event.target.id)"
-          >
+          <li v-for="badge in types" class="badgeSelector" :id="badge.label"
+            @click="search(badge.label, $event.target.id)">
             {{ badge.label }}
           </li>
         </ul>
@@ -117,14 +120,12 @@ export default {
       <!-- Results column -->
       <div class="col result-column px-3 py-4">
         <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
+        <!-- bottone scrollTop -->
 
-        <div
-          class="row pe-2 d-flex justify-content-center justify-content-md-start"
-        >
-          <div
-            v-for="(restaurant, index) in this.restaurants"
-            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer"
-          >
+
+        <div class="row pe-2 d-flex justify-content-center justify-content-md-start">
+          <div v-for="(restaurant, index) in this.restaurants"
+            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
             <app-card :restaurant="restaurant" :index="index" class="h-100" />
           </div>
 
@@ -132,6 +133,11 @@ export default {
             <p class="text-center text-secondary">
               Nessun risultato corrispondente. 😓
             </p>
+          </div>
+          <!-- bottone per lo scrollOnTop -->
+          <div class="btn-back-to-top mb-3 col-8 btn btn-demetrio" onclick="window.scrollTo({ top: 0});">
+            <div class="btn btn--action"><i class="fa-solid fa-circle-arrow-up fa-bounce"></i><span class="listR">Torna
+                in cima</span></div>
           </div>
         </div>
       </div>
@@ -146,9 +152,11 @@ export default {
 li {
   position: relative;
   min-width: 140px;
+
   &.on {
     color: green !important;
     border: 3px solid green !important;
+
     &::before {
       position: absolute;
       content: "✔";
@@ -163,6 +171,8 @@ li {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
+
+
   .jumboTextContainer {
     display: flex;
     justify-content: center;
@@ -171,70 +181,80 @@ li {
     padding: 60px 20px;
     border-radius: 3px;
 
-    // BUTTONS
-    .btn-restaurant {
-      .btn--action {
-        font-size: 1.5rem;
-        display: block;
-        padding: 1rem;
-        border-radius: 100px;
-        background-color: $midblue;
-        color: white;
-        transition: all 0.5s ease 0s;
-        box-shadow: 0 10px $darkblue;
-      }
+  }
 
-      .btn--action span {
-        display: inline-block;
-        position: relative;
-        transition: all 0.5s ease;
-      }
-
-      .btn--action span::before {
-        display: inline-block;
-        position: absolute;
-        top: 50%;
-        font-size: 2rem;
-        transform: translate(-100%, -50%);
-        left: 1.5rem;
-        opacity: 0;
-        transition: all 0.1s ease 0s;
-      }
-      .btn--action .guest::before {
-        content: "🍔";
-      }
-      .btn--action .user::before {
-        content: "🧑🏻‍🍳";
-      }
-      .btn--action:hover {
-        background-color: $darkblue;
-      }
-
-      .btn--action:hover span {
-        padding-left: 1.5rem;
-      }
-
-      .btn--action:hover span:before {
-        left: 0;
-        opacity: 1;
-      }
-
-      .btn--action:active {
-        transform: translateY(5px);
-      }
+  // BUTTONS
+  .btn-restaurant {
+    .btn--action {
+      font-size: 1.5rem;
+      display: block;
+      padding: 1rem;
+      border-radius: 100px;
+      background-color: $midblue;
+      color: white;
+      transition: all 0.5s ease 0s;
+      box-shadow: 0 10px $darkblue;
     }
-    .title {
-      color: $midblue;
-      margin-bottom: 30px;
-      // text-shadow: -2px -2px 15px #4477d5, 2px -2px 15px #4477d5,
-      //   -2px 2px 15px #4477d5, 2px 2px 15px #4477d5;
+
+    .btn--action span {
+      display: inline-block;
+      position: relative;
+      transition: all 0.5s ease;
     }
+
+    .btn--action span::before {
+      display: inline-block;
+      position: absolute;
+      top: 50%;
+      font-size: 2rem;
+      transform: translate(-100%, -50%);
+      left: 1.5rem;
+      opacity: 0;
+      transition: all 0.1s ease 0s;
+    }
+
+    .btn--action .guest::before {
+      content: "🍔";
+    }
+
+    // .btn--action .guest::before {
+    //   content: "🍝";
+    // }
+
+    .btn--action .user::before {
+      content: "🧑🏻‍🍳";
+    }
+
+    .btn--action:hover {
+      background-color: $darkblue;
+    }
+
+    .btn--action:hover span {
+      padding-left: 1.5rem;
+    }
+
+    .btn--action:hover span:before {
+      left: 0;
+      opacity: 1;
+    }
+
+    .btn--action:active {
+      transform: translateY(5px);
+    }
+  }
+
+  .title {
+    color: $midblue;
+    margin-bottom: 30px;
+    // text-shadow: -2px -2px 15px #4477d5, 2px -2px 15px #4477d5,
+    //   -2px 2px 15px #4477d5, 2px 2px 15px #4477d5;
   }
 }
 
 .title {
   color: $darkblue;
 }
+
 .containerApp {
   min-height: calc(100vh - $headerHeight - $footerHeight);
   overflow: auto;
@@ -250,9 +270,10 @@ li {
 .searchColumn {
   background-color: white;
   text-align: center;
-  height: calc(100vh - $headerHeight - $footerHeight);
+
   border-right: 2px solid rgba($midblue, 0.2);
   position: relative;
+  overflow: scroll;
 
   .title {
     width: 30%;
@@ -265,6 +286,7 @@ li {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
     .badge {
       display: block;
       width: 100%;
@@ -274,6 +296,7 @@ li {
         display: flex;
         justify-content: center;
         align-items: center;
+
         .imgBadge {
           width: 100%;
           cursor: pointer;
@@ -311,9 +334,10 @@ li {
 
 // RESTAURANT CARDS
 .result-column {
-  height: calc(100vh - $headerHeight - $footerHeight);
+
   overflow: auto;
   background-color: white;
+
   .cardContainer {
     display: flex;
     flex-direction: column;
@@ -382,5 +406,69 @@ li {
 
 .main-content.collapsed {
   margin-left: 50px;
+}
+
+// bottone che porta giù alla pagina
+#searchSection {
+  min-height: 100vh;
+}
+
+
+
+
+
+
+.btn-demetrio {
+  .btn--action {
+    font-size: 1.5rem;
+    display: block;
+    padding: 1rem;
+    border-radius: 100px;
+    background-color: $midblue;
+    color: white;
+    transition: all 0.5s ease 0s;
+    box-shadow: 0 10px $darkblue;
+  }
+
+  .btn--action span {
+    display: inline-block;
+    position: relative;
+    transition: all 0.5s ease;
+  }
+
+  .btn--action span::before {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    font-size: 2rem;
+    transform: translate(-100%, -50%);
+    left: 1.5rem;
+    opacity: 0;
+    transition: all 0.1s ease 0s;
+  }
+
+
+
+  .btn--action .listR::before {
+    content: "🍝";
+  }
+
+  .btn--action:hover {
+    background-color: $darkblue;
+  }
+
+  .btn--action:hover span {
+    padding-left: 1.5rem;
+  }
+
+  .btn--action:hover span:before {
+    left: 0;
+    opacity: 1;
+  }
+
+  .btn--action:active {
+    transform: translateY(5px);
+  }
+
 }
 </style>
