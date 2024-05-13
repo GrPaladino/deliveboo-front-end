@@ -17,7 +17,8 @@ export default {
       name: 'restaurants.show',
       params: { slug: restaurant.slug },
     }"
-    class="router-link">
+    class="router-link"
+  >
     <div class="myCard">
       <!-- Restaurant image -->
       <div class="coverImage">
@@ -34,7 +35,12 @@ export default {
         <span
           v-for="badge in restaurant.types"
           class="badge mx-2"
-          :style="'background-color: ' + badge.color">
+          :style="
+            `background-image:url(` +
+            badge.image +
+            `); background-size: cover; background-repeat: no-repeat; border-radius: 0`
+          "
+        >
           {{ badge.label }}
           <!-- <div class="typeBadge">
             <div class="badgeImg">
