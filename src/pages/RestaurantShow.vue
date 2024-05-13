@@ -124,36 +124,6 @@ export default {
       console.log("localStorage svuotato!");
     },
 
-    // ADD ITEMS TO CART
-    addToCart() {
-      const localOrder = JSON.parse(localStorage.getItem("myOrder")) || {};
-      console.log("arrivato");
-      console.log(localOrder);
-
-      if (
-        !localOrder["restaurant_id"] ||
-        localOrder["restaurant_id"] == this.restaurant.id
-      ) {
-        const numberInputs = document.querySelectorAll('input[type="number"]');
-        localOrder["restaurant_id"] = this.restaurant.id;
-        if (!localOrder["dishes"]) localOrder["dishes"] = [];
-        for (let i = 0; i < numberInputs.length; i++) {
-          if (numberInputs[i].value > 0) {
-            let thisDish = {
-              dish_id: numberInputs[i].id,
-              quantity: parseInt(numberInputs[i].value),
-            };
-            localOrder["dishes"].push(thisDish);
-            console.log("Piatto aggiunto");
-            console.log(localOrder);
-          }
-        }
-        localStorage.setItem("myOrder", JSON.stringify(localOrder));
-      } else {
-        alert("Stai già ordinando da un altro ristorante!");
-      }
-    },
-
     // REMOVE OFF CLASS FROM INPUTS
     getClass(event) {
       let input = document.getElementById(event);
@@ -194,6 +164,7 @@ export default {
             // SCORRO TUTTI I PIATTI E LI TROVO IN PAGINA AGGIORNANDO CLASSE E VALORE
             for (let i = 0; i < order.dishes.length; i++) {
               console.log("ciclo gli elementi");
+              console.log(order.dishes[i].id);
               let dish = document.getElementById(order.dishes[i].id);
               console.log(dish);
               dish.value = order.dishes[i].quantity;
@@ -214,6 +185,11 @@ export default {
         console.log("MyOrder era vuoto");
       }
     },
+    euroCheck(price) {
+      let formattedPrice = price.toFixed(2);
+      formattedPrice = formattedPrice.replace(".", ",");
+      return formattedPrice;
+    },
   },
 
   created() {
@@ -227,12 +203,14 @@ export default {
 <template>
   <div
     class="row justify-content-between containerApp ps-3"
-    v-if="this.restaurant">
+    v-if="this.restaurant"
+  >
     <div class="col-sm-12 col-md-3 bg-white pe-0 leftColumn">
       <router-link
         :to="{ name: 'home' }"
         class="col-lg-3 col-md-6 col-sm-12"
-        id="addButton">
+        id="addButton"
+      >
         <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
         <button class="ballButton" @click="checkEmpty()">👈🏻</button>
       </router-link>
@@ -261,13 +239,15 @@ export default {
     <div class="col-12 col-md-9 rightColumn px-2">
       <div
         v-for="dish in restaurant.dishes"
-        class="dishCard pe-5 col-12 col-md-6">
+        class="dishCard pe-5 col-12 col-md-6"
+      >
         <!-- IMMAGINE -->
 
         <div
           class="dishImage col-2"
           data-bs-toggle="modal"
-          :data-bs-target="`#dish-` + dish.id">
+          :data-bs-target="`#dish-` + dish.id"
+        >
           <img :src="dish.image" alt="dish.name" />
         </div>
         <!-- TESTO -->
@@ -287,9 +267,11 @@ export default {
           data-bs-keyboard="false"
           tabindex="-1"
           :aria-labelledby="`dish-` + dish.id"
-          aria-hidden="true">
+          aria-hidden="true"
+        >
           <div
-            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
+            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
+          >
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
@@ -299,7 +281,8 @@ export default {
                   type="button"
                   class="btn-close w-25"
                   data-bs-dismiss="modal"
-                  aria-label="Close"></button>
+                  aria-label="Close"
+                ></button>
               </div>
               <div class="modal-body">
                 <img :src="dish.image" alt="dish.name" class="modalImage" />
@@ -307,11 +290,13 @@ export default {
                 <h6>Prezzo: €{{ dish.price }}</h6>
               </div>
               <div
-                class="modal-footer d-flex flex-column justify-content-center align-items-center">
+                class="modal-footer d-flex flex-column justify-content-center align-items-center"
+              >
                 <button
                   type="button"
                   class="btn btn-secondary mb-2"
-                  data-bs-dismiss="modal">
+                  data-bs-dismiss="modal"
+                >
                   Chiudi
                 </button>
               </div>
@@ -323,7 +308,8 @@ export default {
           <button
             id="minus"
             class="quantityButton rounded-start"
-            @click="quantity($event.target.id, dish.id)">
+            @click="quantity($event.target.id, dish.id)"
+          >
             -
           </button>
           <input
@@ -333,11 +319,13 @@ export default {
             value="0"
             class="off"
             @keyup="getClass($event.target.id)"
-            @blur="inputValidation($event.target.id)" />
+            @blur="inputValidation($event.target.id)"
+          />
           <button
             id="plus"
             class="quantityButton rounded-end"
-            @click="quantity($event.target.id, dish.id)">
+            @click="quantity($event.target.id, dish.id)"
+          >
             +
           </button>
         </div>
@@ -352,10 +340,80 @@ export default {
       class="router-link"
     > -->
     <div class="bin" @click="emptyCart()">🗑️</div>
-    <div class="goToCart" @click="addToCart()">🛒</div>
+    <div
+      class="goToCart"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasScrolling"
+      aria-controls="offcanvasScrolling"
+    >
+      🛒
+    </div>
 
     <!-- </router-link
     > -->
+  </div>
+
+  <!-- CART OFFCANVAS -->
+
+  <div
+    class="offcanvas offcanvas-start"
+    data-bs-scroll="true"
+    data-bs-backdrop="false"
+    tabindex="-1"
+    id="offcanvasScrolling"
+    aria-labelledby="offcanvasScrollingLabel"
+  >
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
+        Il tuo carrello
+      </h2>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="offcanvas-body">
+      <div v-for="dish in myOrder.dishes" class="dishCard pe-5">
+        <!-- IMMAGINE -->
+
+        <div
+          class="dishImage col-2"
+          data-bs-toggle="modal"
+          :data-bs-target="`#dish-` + dish.id"
+        >
+          <img :src="dish.image" alt="dish.name" />
+        </div>
+        <!-- TESTO -->
+        <div class="dishInfo col-6 px-2">
+          <h5>{{ dish.name }}</h5>
+          <p>{{ dish.description }}</p>
+        </div>
+        <!-- PREZZO -->
+        <div class="dishPrice col-2">
+          <h5>x {{ dish.quantity }}</h5>
+        </div>
+      </div>
+    </div>
+    <div
+      class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
+      v-if="this.myOrder.dishes"
+    >
+      <h4 class="text-center mb-2">PREZZO TOTALE</h4>
+
+      <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
+
+      <router-link
+        :to="{ name: 'restaurants.checkout' }"
+        class="router-link text-center"
+      >
+        <button type="button" class="btn btn-primary btn-lg">
+          Procedi al pagamento
+        </button>
+      </router-link>
+    </div>
   </div>
 </template>
 

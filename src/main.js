@@ -12,6 +12,9 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 // * import font awesome icon component */
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+// * import braintree */
+import vueBraintree from "vue-braintree";
+
 // * import specific icons */
 import {
   faCircleArrowLeft,
@@ -35,7 +38,6 @@ import {
   faPaperPlane,
   faCopyright,
   faCartShopping,
-  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -73,8 +75,7 @@ library.add(
   faSkype,
   faInstagram,
   faCopyright,
-  faCartShopping,
-  faBars
+  faCartShopping
 );
 
 import App from "./App.vue";
