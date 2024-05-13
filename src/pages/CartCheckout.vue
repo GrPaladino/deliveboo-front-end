@@ -8,14 +8,17 @@ export default {
     return {
       tokenApi: "",
       restaurant: [],
+
       store,
       myOrder: {},
+
     };
   },
 
   components: { Payment },
 
   methods: {
+
     fetchOrder() {
       let order = localStorage.getItem("myOrder");
       if (order) {
@@ -24,10 +27,13 @@ export default {
         console.log(this.myOrder.dishes.length);
       }
     },
+
+   
     euroCheck(price) {
       let formattedPrice = price.toFixed(2);
       formattedPrice = formattedPrice.replace(".", ",");
       return formattedPrice;
+
     },
     // ************************
     //  ADDING AND REMOVING DISHES
@@ -82,11 +88,14 @@ export default {
       }
 
       console.log(this.myOrder);
+
     },
   },
 
   created() {
+
     this.fetchOrder();
+
   },
 
   async mounted() {
@@ -98,6 +107,7 @@ export default {
 </script>
 
 <template>
+
   <div class="row justify-content-between containerApp ps-3">
     <div class="col-12 col-md-8 px-2">
       <h2>{{ this.myOrder.dishes.lenght }}</h2>
@@ -168,6 +178,8 @@ export default {
     </div>
     <div class="col-12 col-md-4 px-2 pe-5">
       <Payment :authorization="this.tokenApi" :myOrder="this.myOrder"></Payment>
+
+  
     </div>
   </div>
 </template>
@@ -200,6 +212,7 @@ export default {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
+
   &:hover {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
@@ -233,6 +246,7 @@ export default {
 
 #badgesContainer {
   margin-bottom: 30px;
+
   .badge {
     display: inline-block;
     margin-right: 10px;
@@ -258,6 +272,7 @@ export default {
         text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
           2px 2px 0 #000;
       }
+
       .badgeImg {
         position: absolute;
         width: 100%;
@@ -319,6 +334,7 @@ export default {
     transition-duration: 400ms;
     transform: scale(1.1, 1.1) translate3d(0, 0, 0);
     cursor: pointer;
+
     i {
       color: #2929b9;
     }
@@ -351,6 +367,7 @@ button {
   background-color: white;
   flex: 0 0 auto;
   color: $darkblue;
+
   .dishImage {
     height: 80px;
     width: 80px;
@@ -358,11 +375,13 @@ button {
     object-fit: contain;
     display: flex;
     justify-content: center;
+
     img {
       height: 100%;
       width: auto;
     }
   }
+
   .dishInfo,
   .dishPrice {
     display: flex;
@@ -397,6 +416,7 @@ button {
     height: 30px;
     text-align: center;
   }
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;

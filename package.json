@@ -16,6 +16,8 @@
     "@fortawesome/vue-fontawesome": "^3.0.6",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.2",
+    "braintree": "^3.23.0",
+    "chart": "^0.1.2",
     "route": "^0.2.5",
     "routes": "^2.1.0",
     "sass": "^1.71.0",
@@ -24,7 +26,7 @@
     "vue-router": "^4.3.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.0.3",
+    "@vitejs/plugin-vue": "^5.0.4",
     "vite": "^5.1.0"
   }
 }

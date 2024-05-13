@@ -1,5 +1,7 @@
 <script>
+
 import { api, store } from "../store";
+
 
 export default {
   data() {
@@ -9,6 +11,12 @@ export default {
     };
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
+
+      // store,
+    };
+  },
+  props: { authorization: { required: true, type: String } },
+
   watch: {
     authorization: {
       handler() {
@@ -30,6 +38,7 @@ export default {
           selector: "#dropin-container",
         },
         function (err, instance) {
+
           if (err) {
             console.error(err);
             return;
@@ -169,11 +178,14 @@ export default {
         <div id="dropin-container"></div>
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+
+    
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+
 @use "../style/partials/mixins" as *;
 
 @use "../style/partials/variables" as *;
