@@ -6,5 +6,4 @@ export const api = {
 
 export const store = reactive({
   restaurants: [],
-  myOrder: {},
 });
