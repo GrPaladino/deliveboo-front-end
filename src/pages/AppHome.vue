@@ -136,7 +136,7 @@ export default {
           </div>
           <!-- bottone per lo scrollOnTop -->
           <div class="btn-back-to-top mb-3 col-8 btn btn-demetrio" onclick="window.scrollTo({ top: 0});">
-            <div class="btn btn--action"><i class="fa-solid fa-circle-arrow-up fa-bounce"></i><span class="listR">Torna
+            <div class="btn btn--action"><span class="listR">↑ Torna
                 in cima</span></div>
           </div>
         </div>
@@ -216,10 +216,6 @@ li {
     .btn--action .guest::before {
       content: "🍔";
     }
-
-    // .btn--action .guest::before {
-    //   content: "🍝";
-    // }
 
     .btn--action .user::before {
       content: "🧑🏻‍🍳";
@@ -416,7 +412,7 @@ li {
 
 
 
-
+//bottone per lo scrollUp
 
 .btn-demetrio {
   .btn--action {

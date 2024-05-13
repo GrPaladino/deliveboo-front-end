@@ -67,11 +67,7 @@ export default {
       <div v-for="dish in myOrder.dishes" class="dishCard pe-5 col-12 col-md-6">
         <!-- IMMAGINE -->
 
-        <div
-          class="dishImage col-2"
-          data-bs-toggle="modal"
-          :data-bs-target="`#dish-` + dish.id"
-        >
+        <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
           <img :src="dish.image" alt="dish.name" />
         </div>
         <!-- TESTO -->
@@ -92,7 +88,9 @@ export default {
     <div>
       <h2 class="totalPrice">€ {{ euroCheck(this.myOrder.price) }}</h2>
     </div>
-    <div><Payment :authorization="this.tokenApi"></Payment></div>
+    <div>
+      <Payment :authorization="this.tokenApi"></Payment>
+    </div>
   </div>
 </template>
 
@@ -124,6 +122,7 @@ export default {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
+
   &:hover {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
@@ -157,6 +156,7 @@ export default {
 
 #badgesContainer {
   margin-bottom: 30px;
+
   .badge {
     display: inline-block;
     margin-right: 10px;
@@ -182,6 +182,7 @@ export default {
         text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
           2px 2px 0 #000;
       }
+
       .badgeImg {
         position: absolute;
         width: 100%;
@@ -243,6 +244,7 @@ export default {
     transition-duration: 400ms;
     transform: scale(1.1, 1.1) translate3d(0, 0, 0);
     cursor: pointer;
+
     i {
       color: #2929b9;
     }
@@ -275,6 +277,7 @@ button {
   background-color: white;
   flex: 0 0 auto;
   color: $darkblue;
+
   .dishImage {
     height: 80px;
     width: 80px;
@@ -282,11 +285,13 @@ button {
     object-fit: contain;
     display: flex;
     justify-content: center;
+
     img {
       height: 100%;
       width: auto;
     }
   }
+
   .dishInfo,
   .dishPrice {
     display: flex;
@@ -321,6 +326,7 @@ button {
     height: 30px;
     text-align: center;
   }
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
