@@ -86,9 +86,15 @@ export default {
       <h2 class="display-2 title text-center">
         Ordina subito con Boolivery! 🛵🍝
       </h2>
-      <div class="btn-restaurant mb-3 col-8 " onclick="document.getElementById('searchSection').scrollIntoView();">
-        <div class="btn btn--action"><span class="guest">Vai alla ricerca
-          </span></div>
+
+      <div
+        class="btn-restaurant mb-3 col-8"
+        onclick="document.getElementById('searchSection').scrollIntoView();"
+      >
+        <div class="btn btn--action">
+          <span class="guest">Vai alla ricerca</span>
+        </div>
+
       </div>
       <h5 class="title">oppure</h5>
       <h3 class="display-5 title">Sei un ristoratore?</h3>
@@ -99,16 +105,24 @@ export default {
       </div>
     </div>
   </div>
-  <div class="containerApp " id="searchSection">
+
+  <div class="containerApp" id="searchSection">
+
     <!-- ROW -->
-    <div class="row">
+    <div class="row h-100">
       <!-- Search column -->
       <div class="col-2 col-md-2 searchColumn" id="search">
         <h3 class="my-3 title">Filtri</h3>
 
         <ul class="d-flex flex-column align-items-center">
-          <li v-for="badge in types" class="badgeSelector" :id="badge.label"
-            @click="search(badge.label, $event.target.id)">
+
+          <li
+            v-for="badge in types"
+            class="badgeSelector"
+            :id="badge.label"
+            @click="search(badge.label, $event.target.id)"
+          >
+
             {{ badge.label }}
           </li>
         </ul>
@@ -149,10 +163,13 @@ export default {
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
 
+#searchSection {
+  height: 100vh;
+}
+
 li {
   position: relative;
   min-width: 140px;
-
   &.on {
     color: green !important;
     border: 3px solid green !important;
@@ -252,7 +269,7 @@ li {
 }
 
 .containerApp {
-  min-height: calc(100vh - $headerHeight - $footerHeight);
+  min-height: 100vh;
   overflow: auto;
   overflow-x: hidden;
 }

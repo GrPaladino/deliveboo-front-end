@@ -8,49 +8,94 @@ export default {
     return {
       tokenApi: "",
       restaurant: [],
-      types: [],
+
       store,
-      myOrder: [],
+      myOrder: {},
+
     };
   },
 
   components: { Payment },
 
   methods: {
-    fetchRestaurants() {
-      const restaurantSlug = this.$route.params.slug;
-      axios
-        .get(api.baseApiURI + `restaurants/${restaurantSlug}`)
-        .then((response) => {
-          this.restaurant = response.data.restaurants[0];
-          this.types = response.data.restaurants[0].types;
-        });
-    },
+
     fetchOrder() {
       let order = localStorage.getItem("myOrder");
       if (order) {
         this.myOrder = JSON.parse(order);
         console.log(this.myOrder);
-      } else {
-        if (confirm("Il tuo carrello è vuoto! Torna ai ristoranti. ")) {
-          history.back();
-        } else {
-          history.back();
-        }
+        console.log(this.myOrder.dishes.length);
       }
     },
+
+   
     euroCheck(price) {
       let formattedPrice = price.toFixed(2);
       formattedPrice = formattedPrice.replace(".", ",");
       return formattedPrice;
+
+    },
+    // ************************
+    //  ADDING AND REMOVING DISHES
+    //
+    // PLUS AND MINUS BUTTONS
+    quantity(operator, dish) {
+      let value = document.getElementById(dish);
+      if (operator == "minus" && value.value > 0) {
+        if (value.value == 1) {
+          let thisPlate = document.getElementById(dish);
+          thisPlate.classList.add("off");
+        }
+        value.value--;
+        let dishObject = this.myOrder.dishes.find((d) => d.id === dish);
+        if (dishObject) {
+          let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish);
+          if (dishInOrder) {
+            dishInOrder.quantity--;
+            if (dishInOrder.quantity === 0) {
+              // Rimuovere il piatto dall'ordine se la quantità è 0
+              this.myOrder.dishes = this.myOrder.dishes.filter(
+                (d) => d.id !== dish
+              );
+            }
+            this.myOrder.price -= dishObject.price;
+          }
+        }
+      }
+      if (operator == "plus") {
+        // SE L'ID DEL RISTORANTE COMBACIA CON QUELLO NELL'ORDINE
+
+        // SE ORDINE NON ESISTE
+        // SE IL VALUE SALE
+        if (value.value == 0) {
+          let thisPlate = document.getElementById(dish);
+          thisPlate.classList.remove("off");
+        }
+        value.value++;
+        // console.log(this.restaurant.dishes);
+        // LOGICA PLUS
+        let dishObject = this.myOrder.dishes.find((d) => d.id === dish);
+        if (dishObject) {
+          let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish);
+          if (dishInOrder) {
+            dishInOrder.quantity++;
+          } else {
+            this.myOrder.dishes.push({ ...dishObject, quantity: 1 });
+          }
+        }
+        this.myOrder.price =
+          parseFloat(this.myOrder.price) + parseFloat(dishObject.price);
+      }
+
+      console.log(this.myOrder);
+
     },
   },
 
   created() {
-    this.fetchRestaurants();
+
     this.fetchOrder();
 
-    // this.fetchTypes();
   },
 
   async mounted() {
@@ -62,34 +107,79 @@ export default {
 </script>
 
 <template>
-  <div class="row justify-content-between containerApp ps-2 pt-2">
-    <div class="col-12 col-md-9 rightColumn px-2">
-      <div v-for="dish in myOrder.dishes" class="dishCard pe-5 col-12 col-md-6">
-        <!-- IMMAGINE -->
 
-        <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
-          <img :src="dish.image" alt="dish.name" />
+  <div class="row justify-content-between containerApp ps-3">
+    <div class="col-12 col-md-8 px-2">
+      <h2>{{ this.myOrder.dishes.lenght }}</h2>
+      <div v-if="this.myOrder.dishes.length == 0">
+        <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
+        <router-link to="/">
+          <button class="btn btn-primary">Torna alla home</button></router-link
+        >
+      </div>
+      <div v-if="this.myOrder.dishes.length > 0">
+        <div
+          v-for="dish in myOrder.dishes"
+          class="dishCard pe-5 col-12 col-md-6"
+        >
+          <!-- IMMAGINE -->
+
+          <div
+            class="dishImage col-2"
+            data-bs-toggle="modal"
+            :data-bs-target="`#dish-` + dish.id"
+          >
+            <img :src="dish.image" alt="dish.name" />
+          </div>
+          <!-- TESTO -->
+          <div class="dishInfo col-6 px-2">
+            <h5>{{ dish.name }}</h5>
+            <p>{{ dish.description }}</p>
+          </div>
+          <!-- PREZZO -->
+          <div class="dishPrice col-2">
+            <h5>€ {{ dish.price }}</h5>
+          </div>
+
+          <!-- QUANTITA -->
+          <div class="amountContainer col-2">
+            <button
+              id="minus"
+              class="quantityButton rounded-start"
+              @click="quantity($event.target.id, dish.id)"
+            >
+              -
+            </button>
+            <input
+              type="number"
+              :id="dish.id"
+              min="0"
+              :value="dish.quantity"
+              @keyup="getClass($event.target.id)"
+              @blur="inputValidation($event.target.id)"
+            />
+            <button
+              id="plus"
+              class="quantityButton rounded-end"
+              @click="quantity($event.target.id, dish.id)"
+            >
+              +
+            </button>
+          </div>
+          <!-- QUANTITA
+          <div class="dishPrice col-2">
+            <h5>x {{ dish.quantity }}</h5>
+          </div> -->
         </div>
-        <!-- TESTO -->
-        <div class="dishInfo col-6 px-2">
-          <h5>{{ dish.name }}</h5>
-          <p>{{ dish.description }}</p>
-        </div>
-        <!-- PREZZO -->
-        <div class="dishPrice col-2">
-          <h5>€ {{ dish.price }}</h5>
-        </div>
-        <!-- QUANTITA -->
-        <div class="dishPrice col-2">
-          <h5>x {{ dish.quantity }}</h5>
+        <div>
+          <h2 class="totalPrice">€ {{ euroCheck(this.myOrder.price) }}</h2>
         </div>
       </div>
     </div>
-    <div>
-      <h2 class="totalPrice">€ {{ euroCheck(this.myOrder.price) }}</h2>
-    </div>
-    <div>
-      <Payment :authorization="this.tokenApi"></Payment>
+    <div class="col-12 col-md-4 px-2 pe-5">
+      <Payment :authorization="this.tokenApi" :myOrder="this.myOrder"></Payment>
+
+  
     </div>
   </div>
 </template>
@@ -143,16 +233,16 @@ export default {
   overflow-x: hidden;
 }
 
-.leftColumn {
-  height: 100%;
-  position: relative;
-  color: $darkblue;
-  background-color: white;
-  text-align: center;
-  // min-height: calc(100vh - $headerHeight - $footerHeight);
-  border-right: 2px solid rgba($midblue, 0.2);
-  border-bottom: 2px solid rgba($midblue, 0.2);
-}
+// .leftColumn {
+//   height: 100%;
+//   position: relative;
+//   color: $darkblue;
+//   background-color: white;
+//   text-align: center;
+//   // min-height: calc(100vh - $headerHeight - $footerHeight);
+//   border-right: 2px solid rgba($midblue, 0.2);
+//   border-bottom: 2px solid rgba($midblue, 0.2);
+// }
 
 #badgesContainer {
   margin-bottom: 30px;
@@ -192,7 +282,7 @@ export default {
   }
 }
 
-.rightColumn {
+.leftColumn {
   padding: 0;
   // height: calc(100vh - $headerHeight - $footerHeight);
   overflow: auto;

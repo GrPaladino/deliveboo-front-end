@@ -299,8 +299,15 @@ export default {
       class="router-link"
     > -->
     <div class="bin" @click="emptyCart()">🗑️</div>
-    <div class="goToCart" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
-      aria-controls="offcanvasScrolling">
+
+    <div
+      class="goToCart"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#offcanvasScrolling"
+      aria-controls="offcanvasScrolling"
+    >
+
       🛒
     </div>
 
@@ -343,6 +350,68 @@ export default {
       <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
 
       <router-link :to="{ name: 'restaurants.checkout' }" class="router-link text-center">
+        <button type="button" class="btn btn-primary btn-lg">
+          Procedi al pagamento
+        </button>
+      </router-link>
+    </div>
+  </div>
+
+  <!-- CART OFFCANVAS -->
+
+  <div
+    class="offcanvas offcanvas-start"
+    data-bs-scroll="true"
+    data-bs-backdrop="false"
+    tabindex="-1"
+    id="offcanvasScrolling"
+    aria-labelledby="offcanvasScrollingLabel"
+  >
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
+        Il tuo carrello
+      </h2>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="offcanvas-body">
+      <div v-for="dish in myOrder.dishes" class="dishCard pe-5">
+        <!-- IMMAGINE -->
+
+        <div
+          class="dishImage col-2"
+          data-bs-toggle="modal"
+          :data-bs-target="`#dish-` + dish.id"
+        >
+          <img :src="dish.image" alt="dish.name" />
+        </div>
+        <!-- TESTO -->
+        <div class="dishInfo col-6 px-2">
+          <h5>{{ dish.name }}</h5>
+          <p>{{ dish.description }}</p>
+        </div>
+        <!-- PREZZO -->
+        <div class="dishPrice col-2">
+          <h5>x {{ dish.quantity }}</h5>
+        </div>
+      </div>
+    </div>
+    <div
+      class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
+      v-if="this.myOrder.dishes"
+    >
+      <h4 class="text-center mb-2">PREZZO TOTALE</h4>
+
+      <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
+
+      <router-link
+        :to="{ name: 'restaurants.checkout' }"
+        class="router-link text-center"
+      >
         <button type="button" class="btn btn-primary btn-lg">
           Procedi al pagamento
         </button>

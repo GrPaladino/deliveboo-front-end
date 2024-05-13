@@ -21,13 +21,6 @@ const router = createRouter({
       name: "restaurants.show",
       component: RestaurantShow,
     },
-
-    {
-      path: "/carrello",
-      name: "cart.show",
-      component: CartView,
-    },
-
     {
       path: "/checkout",
       name: "restaurants.checkout",
