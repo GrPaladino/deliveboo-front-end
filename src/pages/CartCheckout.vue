@@ -62,7 +62,7 @@ export default {
 </script>
 
 <template>
-  <div class="row justify-content-between containerApp ps-3">
+  <div class="row justify-content-between containerApp ps-2 pt-2">
     <div class="col-12 col-md-9 rightColumn px-2">
       <div v-for="dish in myOrder.dishes" class="dishCard pe-5 col-12 col-md-6">
         <!-- IMMAGINE -->

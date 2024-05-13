@@ -22,7 +22,7 @@ export default {
 </script>
 
 <template>
-    <div class="container">
+    <div class="container ps-2 pt-2">
 
         <div class="card my-3">lista prodotti carrello</div>
         
