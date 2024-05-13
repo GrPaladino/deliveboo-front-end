@@ -44,7 +44,7 @@ export default {
         });
     },
 
-    search(name) {
+    search(name, event) {
       console.log(
         "ho cliccato: " + name + " " + "Tipi attivi ora: " + this.activeTypes
       );
@@ -57,22 +57,12 @@ export default {
         );
         console.log("c'era " + this.activeTypes);
       }
-      let buttons = document.querySelectorAll(".badge");
-
-      buttons.forEach((button) => {
-        button.classList.add("off");
-        if (this.activeTypes.includes(button.innerText)) {
-          button.classList.toggle("off");
-        }
-      });
-
+      let thisButton = document.getElementById(event);
+      thisButton.classList.toggle("on");
       this.filteredRestaurants(this.activeTypes);
-      if (this.activeTypes.length == 0) {
-        console.log("è vuotoooooooo");
+
+      if (this.activeTypes.length === 0) {
         this.fetchRestaurants();
-        buttons.forEach((button) => {
-          button.classList.remove("off");
-        });
       }
     },
   },
@@ -92,16 +82,6 @@ export default {
         Ordina subito con Boolivery! 🛵🍝
       </h2>
 
-      <!-- BUTTON -->
-      <div class="btn-restaurant mb-5">
-        <!-- <router-link
-              :to="{ name: 'restaurants.index' }"
-              href="#"
-              class="btn btn--action"
-              ><span class="guest">Vai ai ristoranti</span></router-link
-            > -->
-      </div>
-
       <h5 class="title">oppure</h5>
       <h3 class="display-5 title">Sei un ristoratore?</h3>
       <!-- BUTTON -->
@@ -116,27 +96,21 @@ export default {
     <!-- ROW -->
     <div class="row">
       <!-- Search column -->
-      <div class="col-2 searchColumn d-flex flex-column py-4 px-1" id="search">
-        <div class="sidebar w-100">
-          <div class="sidebar-brand">
-            <h3 class="mb-3 title d-none d-lg-block">Filtri</h3>
-          </div>
-          <ul class="sidebar-nav main-content p-1">
-            <li v-for="badge in types" @click="search(badge.label)">
-              <div class="badgeContainer">
-                <span class="imgBadge pe-2">
-                  <img :src="badge.image" :alt="badge.label" />
-                </span>
-                <span class="d-none d-md-block">
-                  {{ badge.label }}
-                </span>
-              </div>
-            </li>
-          </ul>
-          <!-- <div class="sidebar-toggle" @click="sideToggler()">
-            <span class="navbar-toggler-icon"
-              >X</span>
-          </div> -->
+      <div class="col-2 col-md-2 searchColumn" id="search">
+        <h3 class="my-3 title">Filtri</h3>
+
+        <ul class="d-flex flex-column align-items-center">
+          <li
+            v-for="badge in types"
+            class="badgeSelector"
+            :id="badge.label"
+            @click="search(badge.label, $event.target.id)"
+          >
+            {{ badge.label }}
+          </li>
+        </ul>
+        <div class="sidebar-toggle" @click="sideToggler()">
+          <span class="navbar-toggler-icon"></span>
         </div>
       </div>
 
@@ -145,10 +119,12 @@ export default {
         <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
 
         <div
-          class="row pe-2 d-flex justify-content-center justify-content-md-start">
+          class="row pe-2 d-flex justify-content-center justify-content-md-start"
+        >
           <div
             v-for="(restaurant, index) in this.restaurants"
-            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
+            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer"
+          >
             <app-card :restaurant="restaurant" :index="index" class="h-100" />
           </div>
 
@@ -160,7 +136,6 @@ export default {
         </div>
       </div>
     </div>
-    <restaurants-list></restaurants-list>
   </div>
 </template>
 
@@ -168,10 +143,18 @@ export default {
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
 
-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+li {
+  position: relative;
+  min-width: 140px;
+  &.on {
+    color: green !important;
+    border: 3px solid green !important;
+    &::before {
+      position: absolute;
+      content: "✔";
+      left: 15px;
+    }
+  }
 }
 
 #jumboTron {
@@ -260,39 +243,71 @@ img {
 
 // TYPE BADGES
 
-//   .title {
-//     width: 30%;
-//     margin: 0 auto;
-//   }
-
-//   .badges-wrapper {
-//     display: flex;
-//     padding: 0 10%;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     .badge {
-//       display: block;
-//       width: 100%;
-//       margin: 10px 0;
-
-.badgeContainer {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+#search {
+  min-width: 160px;
 }
 
-//         .label {
-//           color: $darkblue;
-//           text-align: left;
-//           font-size: large;
-//           font-weight: 100;
-//           cursor: pointer;
-//         }
-//       }
-//     }
-//   }
-// }
+.searchColumn {
+  background-color: white;
+  text-align: center;
+  height: calc(100vh - $headerHeight - $footerHeight);
+  border-right: 2px solid rgba($midblue, 0.2);
+  position: relative;
+
+  .title {
+    width: 30%;
+    margin: 0 auto;
+  }
+
+  .badges-wrapper {
+    display: flex;
+    padding: 0 10%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .badge {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+
+      .badgeContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .imgBadge {
+          width: 100%;
+          cursor: pointer;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+          }
+        }
+
+        .label {
+          color: $darkblue;
+          text-align: left;
+          font-size: large;
+          font-weight: 100;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+.badgeSelector {
+  cursor: pointer;
+  color: $darkblue;
+  font-size: 1.3rem;
+  text-align: center;
+  width: 80%;
+  margin: 7px 0;
+
+  border: 2px solid $darkblue;
+  border-radius: 500px;
+}
 
 // RESTAURANT CARDS
 .result-column {
@@ -308,90 +323,64 @@ img {
 
 // SIDEBAR
 
-.searchColumn {
-  background-color: white;
-  text-align: center;
-  height: calc(100vh - $headerHeight - $footerHeight);
-  border-right: 2px solid rgba($midblue, 0.2);
-  overflow: scroll;
-  position: relative;
-
-  .sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 250px;
-    transition: width 0.3s ease-in-out;
-
-    .sidebar.collapsed {
-      width: 50px;
-    }
-
-    .sidebar.collapsed.sidebar-brand,
-    .sidebar.collapsed.sidebar-nav li {
-      display: none;
-    }
-
-    .sidebar.collapsed.sidebar-brand.collapsed,
-    .sidebar.collapsed.sidebar-nav li.collapsed {
-      display: block;
-    }
-
-    .sidebar-brand {
-      // padding: 1rem;
-      text-align: center;
-    }
-
-    .sidebar-nav {
-      list-style: none;
-      padding: 0;
-    }
-
-    .sidebar-nav li {
-      display: block;
-      padding: 0.5rem;
-      text-align: start;
-      color: #333;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .sidebar-nav li a:hover {
-      background-color: #ddd;
-    }
-
-    .sidebar-toggle {
-      position: absolute;
-      top: 0;
-      right: 0;
-      padding: 1rem;
-      cursor: pointer;
-
-      .navbar-toggler-icon {
-        color: black;
-        i {
-          width: 100%;
-        }
-      }
-    }
-
-    .main-content {
-      // margin-left: 500px;
-      margin-left: 10px;
-      padding: 1rem;
-      transition: margin-left 0.3s ease-in-out;
-    }
-
-    .main-content.collapsed {
-      margin-left: 10px;
-    }
-  }
+.sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 250px;
+  transition: width 0.3s ease-in-out;
 }
 
-@media screen and (min-width: 768px) {
-  .imgBadge {
-    display: block;
-    width: 30%;
-  }
+.sidebar.collapsed {
+  width: 50px;
+}
+
+.sidebar.collapsed.sidebar-brand,
+.sidebar.collapsed.sidebar-nav li {
+  display: none;
+}
+
+.sidebar.collapsed.sidebar-brand.collapsed,
+.sidebar.collapsed.sidebar-nav li.collapsed {
+  display: block;
+}
+
+.sidebar-brand {
+  padding: 1rem;
+  text-align: center;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar-nav li a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.sidebar-nav li a:hover {
+  background-color: #ddd;
+}
+
+.sidebar-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1rem;
+  cursor: pointer;
+}
+
+.main-content {
+  margin-left: 250px;
+  padding: 1rem;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.main-content.collapsed {
+  margin-left: 50px;
 }
 </style>

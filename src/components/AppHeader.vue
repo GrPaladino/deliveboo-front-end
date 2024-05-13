@@ -16,9 +16,14 @@ export default {
     <div class="container-md d-flex">
       <ul class="navbar-ul">
         <li class="nav-item me-4">
-          <a class="navbar-brand" href="#"
-            ><img src="../assets/img/boolivery_manager.svg" alt=""
-          /></a>
+          <router-link
+            :to="{ name: 'home' }"
+            class="nav-link text-white"
+            aria-current="page"
+          >
+            <a class="navbar-brand"
+              ><img src="../assets/img/boolivery_manager.svg" alt="" /></a
+          ></router-link>
           <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
         </li>
         <li class="nav-item me-4">

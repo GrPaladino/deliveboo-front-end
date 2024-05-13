@@ -1,138 +1,70 @@
 <script>
 import axios from "axios";
-
+import Payment from "../components/Payment.vue";
 import { store, api } from "../store";
-// import AppCard from "../components/AppCard.vue";
 
 export default {
   data() {
     return {
+      tokenApi: "",
       restaurant: [],
-
       types: [],
       store,
-      /* restaurant: null, */
+      myOrder: [],
     };
   },
 
-  // components: { AppCard },
+  components: { Payment },
 
   methods: {
     fetchRestaurants() {
-      console.log("CART CHECKOUT");
-
       const restaurantSlug = this.$route.params.slug;
       axios
         .get(api.baseApiURI + `restaurants/${restaurantSlug}`)
         .then((response) => {
           this.restaurant = response.data.restaurants[0];
-
-          console.log(response.data.restaurants[0]);
-          /* this.types = response.data.types; */
           this.types = response.data.restaurants[0].types;
         });
     },
-
-    quantity(operator, dish) {
-      let value = document.getElementById(dish);
-      console.log(value.value);
-      if (operator == "minus" && value.value > 0) {
-        if (value.value == 1) {
-          let thisPlate = document.getElementById(dish);
-          thisPlate.classList.add("off");
-          console.log(thisPlate);
-        }
-        value.value--;
-      }
-      if (operator == "plus") {
-        if (value.value == 0) {
-          let thisPlate = document.getElementById(dish);
-          thisPlate.classList.remove("off");
-          console.log(thisPlate);
-        }
-        value.value++;
-      }
-    },
-
-    addToCart() {
-      const localOrder = JSON.parse(localStorage.getItem("myOrder")) || {};
-      if (
-        !localOrder["restaurant_id"] ||
-        localOrder["restaurant_id"] == this.restaurant.id
-      ) {
-        const numberInputs = document.querySelectorAll('input[type="number"]');
-        localOrder["restaurant_id"] = this.restaurant.id;
-        for (let i = 0; i < numberInputs.length; i++) {
-          if (numberInputs[i].value > 0) {
-            if (!localOrder[numberInputs[i].id])
-              localOrder[numberInputs[i].id] = {};
-            localOrder[numberInputs[i].id]["dish_id"] = numberInputs[i].id;
-            localOrder[numberInputs[i].id]["quantity"] = parseInt(
-              numberInputs[i].value,
-              10
-            );
-            console.log(localOrder);
-          }
-        }
-        localStorage.setItem("myOrder", JSON.stringify(localOrder));
+    fetchOrder() {
+      let order = localStorage.getItem("myOrder");
+      if (order) {
+        this.myOrder = JSON.parse(order);
+        console.log(this.myOrder);
       } else {
-        alert("Stai già ordinando da un altro ristorante!");
+        if (confirm("Il tuo carrello è vuoto! Torna ai ristoranti. ")) {
+          history.back();
+        } else {
+          history.back();
+        }
       }
     },
-
-    // addToCart() {
-    //   const localOrder = localStorage.getItem(store.myOrder);
-    //   if (
-    //     !store.myOrder["restaurant_id"] ||
-    //     store.myOrder["restaurant_id"] == this.restaurant.id
-    //   ) {
-    //     const numberInputs = document.querySelectorAll('input[type="number"]');
-    //     store.myOrder["restaurant_id"] = this.restaurant.id;
-    //     for (let i = 0; i < numberInputs.length; i++) {
-    //       if (numberInputs[i].value > 0) {
-    //         if (!store.myOrder[i]) store.myOrder[i] = {};
-    //         store.myOrder[i]["dish_id"] = numberInputs[i].id;
-    //         store.myOrder[i]["quantity"] = numberInputs[i].value;
-    //         console.log(store.myOrder);
-    //       }
-    //     }
-    //     localStorage.setItem(store.myOrder);
-    //   } else {
-    //     alert("Stavi già ordinando da un altro ristorante!");
-    //   }
-    // },
-
-    getClass(event) {
-      let input = document.getElementById(event);
-      if (input.value > 0) {
-        input.classList.remove("off");
-      } else {
-        input.classList.add("off");
-      }
-    },
-    emptyField(event) {
-      console.log("funziono");
-      let input = document.getElementById(event);
-      if (!input.value) input.value = 0;
+    euroCheck(price) {
+      let formattedPrice = price.toFixed(2);
+      formattedPrice = formattedPrice.replace(".", ",");
+      return formattedPrice;
     },
   },
 
   created() {
     this.fetchRestaurants();
+    this.fetchOrder();
+
     // this.fetchTypes();
   },
 
-  mounted() {},
+  async mounted() {
+    let response = await axios.get(api.baseApiURI + "order/generate");
+    this.tokenApi = response.data.token;
+    console.log(this.tokenApi);
+  },
 };
 </script>
 
 <template>
   <div class="row justify-content-between containerApp ps-3">
     <div class="col-12 col-md-9 rightColumn px-2">
-      <div
-        v-for="dish in restaurant.dishes"
-        class="dishCard pe-5 col-12 col-md-6"
-      >
+      <div v-for="dish in myOrder.dishes" class="dishCard pe-5 col-12 col-md-6">
         <!-- IMMAGINE -->
 
         <div
@@ -151,78 +83,16 @@ export default {
         <div class="dishPrice col-2">
           <h5>€ {{ dish.price }}</h5>
         </div>
-        <!-- MODAL CONTENT -->
-        <div
-          class="modal fade"
-          :id="`dish-` + dish.id"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-          tabindex="-1"
-          :aria-labelledby="`dish-` + dish.id"
-          aria-hidden="true"
-        >
-          <div
-            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
-          >
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  Dettagli: {{ dish.name }}
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close w-25"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
-              </div>
-              <div class="modal-body">
-                <img :src="dish.image" alt="dish.name" class="modalImage" />
-                <p>Descrizione: {{ dish.description }}</p>
-                <h6>Prezzo: €{{ dish.price }}</h6>
-              </div>
-              <div
-                class="modal-footer d-flex flex-column justify-content-center align-items-center"
-              >
-                <button
-                  type="button"
-                  class="btn btn-secondary mb-2"
-                  data-bs-dismiss="modal"
-                >
-                  Chiudi
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
         <!-- QUANTITA -->
-        <div class="amountContainer col-2">
-          <button
-            id="minus"
-            class="quantityButton rounded-start"
-            @click="quantity($event.target.id, dish.id)"
-          >
-            -
-          </button>
-          <input
-            type="number"
-            :id="dish.id"
-            min="0"
-            value="0"
-            class="off"
-            @keyup="getClass($event.target.id)"
-            @blur="emptyField($event.target.id)"
-          />
-          <button
-            id="plus"
-            class="quantityButton rounded-end"
-            @click="quantity($event.target.id, dish.id)"
-          >
-            +
-          </button>
+        <div class="dishPrice col-2">
+          <h5>x {{ dish.quantity }}</h5>
         </div>
       </div>
     </div>
+    <div>
+      <h2 class="totalPrice">€ {{ euroCheck(this.myOrder.price) }}</h2>
+    </div>
+    <div><Payment :authorization="this.tokenApi"></Payment></div>
   </div>
 </template>
 
@@ -230,6 +100,10 @@ export default {
 @use "../style/partials/mixins" as *;
 
 @use "../style/partials/variables" as *;
+
+.totalPrice {
+  color: $darkblue;
+}
 
 // GO TO CART
 .goToCart {
