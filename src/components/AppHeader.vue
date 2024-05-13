@@ -34,10 +34,16 @@ export default {
             >Home</router-link
           >
         </li>
+       
       </ul>
       <ul class="chart-icon">
-        <li>
-          <a href="#"><i class="fa-solid fa-cart-shopping chart-icon"></i></a>
+        <li class="nav-item me-4">
+          <router-link
+            :to="{ name: 'restaurants.checkout' }"
+            class="nav-link text-white"
+            aria-current="page"
+            >Carrello</router-link
+          >
         </li>
       </ul>
 
@@ -106,8 +112,9 @@ nav{
   }
 
   .chart-icon li {
-    width: 50px;
-    height: 50px;
+    @include d-flex-center;
+
+   
     color: white;
   }
 }

@@ -29,7 +29,7 @@ const router = createRouter({
     },
 
     {
-      path: "/:slug/checkout",
+      path: "/checkout",
       name: "restaurants.checkout",
       component: CartCheckout,
     },
