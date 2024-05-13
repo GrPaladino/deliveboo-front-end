@@ -85,10 +85,6 @@ export default {
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
 
-nav{
-  // position: sticky;
-}
-
 .headerNav {
   height: $headerHeight;
   box-shadow: 0 0 5px black;
