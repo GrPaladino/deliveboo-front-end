@@ -158,7 +158,7 @@ li {
 }
 
 #jumboTron {
-  // min-height: calc(100vh - $headerHeight - $footerHeight);
+  height: 100vh;
   background-image: url(../assets/img/jumbo-2.svg);
   background-repeat: no-repeat;
   background-size: cover;

@@ -201,10 +201,13 @@ export default {
 </script>
 
 <template>
+
   <div
     class="row justify-content-between containerApp ps-3"
-    v-if="this.restaurant"
-  >
+
+    v-if="this.restaurant">
+
+
     <div class="col-sm-12 col-md-3 bg-white pe-0 leftColumn">
       <router-link
         :to="{ name: 'home' }"
@@ -215,15 +218,16 @@ export default {
         <button class="ballButton" @click="checkEmpty()">👈🏻</button>
       </router-link>
       <!-- </div> -->
+
       <!-- RESTAURANT DETAILS -->
       <img :src="restaurant.image" :alt="restaurant.name" class="w-100" />
+      
       <div class="my-3">
-        <h1>
-          {{ restaurant.name }}
-        </h1>
+        <h1>{{ restaurant.name }}</h1>
         <h5>☎️{{ restaurant.phone }}</h5>
         <h5 class="detailCap">🏠{{ restaurant.address }}</h5>
       </div>
+
       <!-- BADGE -->
       <div id="badgesContainer">
         <div class="badge" v-for="badge in types">
@@ -235,8 +239,11 @@ export default {
           </div>
         </div>
       </div>
+
     </div>
+
     <div class="col-12 col-md-9 rightColumn px-2">
+
       <div
         v-for="dish in restaurant.dishes"
         class="dishCard pe-5 col-12 col-md-6"
@@ -330,6 +337,7 @@ export default {
           </button>
         </div>
       </div>
+
     </div>
 
     <!-- <router-link
@@ -352,6 +360,7 @@ export default {
 
     <!-- </router-link
     > -->
+
   </div>
 
   <!-- CART OFFCANVAS -->
