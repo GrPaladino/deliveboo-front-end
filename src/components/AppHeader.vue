@@ -86,9 +86,7 @@ export default {
 @use "../style/partials/variables" as *;
 
 nav{
-  position: fixed;
-  top: 0;
-  width: 100%;
+  // position: sticky;
 }
 
 .headerNav {

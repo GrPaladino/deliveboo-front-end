@@ -203,7 +203,7 @@ export default {
 <template>
 
   <div
-    class="row justify-content-between containerApp ps-3"
+    class="row justify-content-between containerApp ps-2 pt-2"
 
     v-if="this.restaurant">
 
