@@ -116,19 +116,27 @@ export default {
     <!-- ROW -->
     <div class="row">
       <!-- Search column -->
-      <div
-        class="col-2 col-md-3 searchColumn d-flex flex-column py-4 px-1"
-        id="search">
-        <div class="sidebar">
+      <div class="col-2 searchColumn d-flex flex-column py-4 px-1" id="search">
+        <div class="sidebar w-100">
           <div class="sidebar-brand">
             <h3 class="mb-3 title d-none d-lg-block">Filtri</h3>
           </div>
-          <ul class="sidebar-nav">
-            <li v-for="badge in types">{{ badge.label }}</li>
+          <ul class="sidebar-nav main-content p-1">
+            <li v-for="badge in types" @click="search(badge.label)">
+              <div class="badgeContainer">
+                <span class="imgBadge pe-2">
+                  <img :src="badge.image" :alt="badge.label" />
+                </span>
+                <span class="d-none d-md-block">
+                  {{ badge.label }}
+                </span>
+              </div>
+            </li>
           </ul>
-          <div class="sidebar-toggle" @click="sideToggler()">
-            <span class="navbar-toggler-icon"></span>
-          </div>
+          <!-- <div class="sidebar-toggle" @click="sideToggler()">
+            <span class="navbar-toggler-icon"
+              >X</span>
+          </div> -->
         </div>
       </div>
 
@@ -159,6 +167,13 @@ export default {
 <style lang="scss" scoped>
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
+
+img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 #jumboTron {
   // min-height: calc(100vh - $headerHeight - $footerHeight);
   background-image: url(../assets/img/jumbo-2.svg);
@@ -245,56 +260,39 @@ export default {
 
 // TYPE BADGES
 
-.searchColumn {
-  background-color: white;
-  text-align: center;
-  height: calc(100vh - $headerHeight - $footerHeight);
-  border-right: 2px solid rgba($midblue, 0.2);
-  overflow: scroll;
-  position: relative;
+//   .title {
+//     width: 30%;
+//     margin: 0 auto;
+//   }
 
-  .title {
-    width: 30%;
-    margin: 0 auto;
-  }
+//   .badges-wrapper {
+//     display: flex;
+//     padding: 0 10%;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     .badge {
+//       display: block;
+//       width: 100%;
+//       margin: 10px 0;
 
-  .badges-wrapper {
-    display: flex;
-    padding: 0 10%;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    .badge {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-
-      .badgeContainer {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        .imgBadge {
-          width: 100%;
-          cursor: pointer;
-
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-          }
-        }
-
-        .label {
-          color: $darkblue;
-          text-align: left;
-          font-size: large;
-          font-weight: 100;
-          cursor: pointer;
-        }
-      }
-    }
-  }
+.badgeContainer {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 }
+
+//         .label {
+//           color: $darkblue;
+//           text-align: left;
+//           font-size: large;
+//           font-weight: 100;
+//           cursor: pointer;
+//         }
+//       }
+//     }
+//   }
+// }
 
 // RESTAURANT CARDS
 .result-column {
@@ -310,64 +308,90 @@ export default {
 
 // SIDEBAR
 
-.sidebar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 250px;
-  transition: width 0.3s ease-in-out;
-}
-
-.sidebar.collapsed {
-  width: 50px;
-}
-
-.sidebar.collapsed.sidebar-brand,
-.sidebar.collapsed.sidebar-nav li {
-  display: none;
-}
-
-.sidebar.collapsed.sidebar-brand.collapsed,
-.sidebar.collapsed.sidebar-nav li.collapsed {
-  display: block;
-}
-
-.sidebar-brand {
-  padding: 1rem;
+.searchColumn {
+  background-color: white;
   text-align: center;
+  height: calc(100vh - $headerHeight - $footerHeight);
+  border-right: 2px solid rgba($midblue, 0.2);
+  overflow: scroll;
+  position: relative;
+
+  .sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 250px;
+    transition: width 0.3s ease-in-out;
+
+    .sidebar.collapsed {
+      width: 50px;
+    }
+
+    .sidebar.collapsed.sidebar-brand,
+    .sidebar.collapsed.sidebar-nav li {
+      display: none;
+    }
+
+    .sidebar.collapsed.sidebar-brand.collapsed,
+    .sidebar.collapsed.sidebar-nav li.collapsed {
+      display: block;
+    }
+
+    .sidebar-brand {
+      // padding: 1rem;
+      text-align: center;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar-nav li {
+      display: block;
+      padding: 0.5rem;
+      text-align: start;
+      color: #333;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .sidebar-nav li a:hover {
+      background-color: #ddd;
+    }
+
+    .sidebar-toggle {
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 1rem;
+      cursor: pointer;
+
+      .navbar-toggler-icon {
+        color: black;
+        i {
+          width: 100%;
+        }
+      }
+    }
+
+    .main-content {
+      // margin-left: 500px;
+      margin-left: 10px;
+      padding: 1rem;
+      transition: margin-left 0.3s ease-in-out;
+    }
+
+    .main-content.collapsed {
+      margin-left: 10px;
+    }
+  }
 }
 
-.sidebar-nav {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar-nav li a {
-  display: block;
-  padding: 0.5rem 1rem;
-  color: #333;
-  text-decoration: none;
-}
-
-.sidebar-nav li a:hover {
-  background-color: #ddd;
-}
-
-.sidebar-toggle {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1rem;
-  cursor: pointer;
-}
-
-.main-content {
-  margin-left: 250px;
-  padding: 1rem;
-  transition: margin-left 0.3s ease-in-out;
-}
-
-.main-content.collapsed {
-  margin-left: 50px;
+@media screen and (min-width: 768px) {
+  .imgBadge {
+    display: block;
+    width: 30%;
+  }
 }
 </style>
