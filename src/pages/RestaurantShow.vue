@@ -223,6 +223,16 @@ export default {
       return Object.keys(obj).length === 0 && obj.constructor === Object;
     },
 
+    //DEFINED CHECK
+    exists(item) {
+      console.log("controllo", item);
+      if (item.length) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+
     // RECOVER DATA QUANTITIES FROM ORDER
     cartQuantity() {
       if (this.restaurant) {
@@ -234,7 +244,7 @@ export default {
 
         const order = JSON.parse(orderString);
 
-        if (orderString !== null && order.length) {
+        if (orderString !== null && this.exists(order.dishes)) {
           console.log("Ordine trovato");
           console.log(order);
           // MYORDER UGUALE A LOCALSTORAGE

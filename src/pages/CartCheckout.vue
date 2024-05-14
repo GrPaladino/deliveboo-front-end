@@ -59,51 +59,75 @@ export default {
     //
     // PLUS AND MINUS BUTTONS
     quantity(operator, dish) {
-      let value = document.getElementById(dish);
+      let value = document.getElementById(dish.id);
+      console.log("questo è dish", dish);
       if (operator == "minus" && value.value > 0) {
         if (value.value == 1) {
-          let thisPlate = document.getElementById(dish);
-          thisPlate.classList.add("off");
+          value.classList.add("off");
         }
         value.value--;
-        let dishObject = this.myOrder.dishes.find((d) => d.id === dish);
-        if (dishObject) {
-          let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish);
-          if (dishInOrder) {
-            dishInOrder.quantity--;
-            if (dishInOrder.quantity === 0) {
-              // Rimuovere il piatto dall'ordine se la quantità è 0
-              this.myOrder.dishes = this.myOrder.dishes.filter(
-                (d) => d.id !== dish
-              );
-            }
-            this.myOrder.price -= dishObject.price;
+
+        let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
+        if (dishInOrder) {
+          dishInOrder.quantity--;
+          if (dishInOrder.quantity === 0) {
+            // Rimuovere il piatto dall'ordine se la quantità è 0
+            this.myOrder.dishes = this.myOrder.dishes.filter(
+              (d) => d.id !== dish.id
+            );
           }
+          this.myOrder.price -= dish.price;
         }
       }
       if (operator == "plus") {
+        // SE MYORDER NON ESISTE
+        if (!this.myOrder.dishes) {
+          this.myOrder = {
+            restaurant_id: this.restaurant.id,
+            dishes: [],
+            price: 0,
+          };
+        }
         // SE L'ID DEL RISTORANTE COMBACIA CON QUELLO NELL'ORDINE
-
         // SE ORDINE NON ESISTE
         // SE IL VALUE SALE
         if (value.value == 0) {
-          let thisPlate = document.getElementById(dish);
-          thisPlate.classList.remove("off");
+          value.classList.remove("off");
         }
-        value.value++;
-        // console.log(this.restaurant.dishes);
-        // LOGICA PLUS
-        let dishObject = this.myOrder.dishes.find((d) => d.id === dish);
-        if (dishObject) {
-          let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish);
+
+        let potentialPrice =
+          this.myOrder.price +
+          parseFloat(this.myOrder.price) +
+          parseFloat(dish.price);
+        if (potentialPrice < 9999.99) {
+          value.value++;
+          // console.log(this.restaurant.dishes);
+          // LOGICA PLUS
+
+          let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
           if (dishInOrder) {
             dishInOrder.quantity++;
           } else {
-            this.myOrder.dishes.push({ ...dishObject, quantity: 1 });
+            this.myOrder.dishes.push({ ...dish, quantity: 1 });
           }
+
+          this.myOrder.price =
+            parseFloat(this.myOrder.price) + parseFloat(dish.price);
+        } else {
+          alert(
+            "Aggiungendo questo piatto, si supererebbe il limite di prezzo del carrello di 9999.99€."
+          );
         }
-        this.myOrder.price =
-          parseFloat(this.myOrder.price) + parseFloat(dishObject.price);
+      } else {
+        if (
+          confirm(
+            "Il carrello contiene piatti di un altro ristorante! Svuotare il carrello?"
+          )
+        ) {
+          this.myOrder = [];
+        } else {
+          history.back();
+        }
       }
 
       console.log(this.myOrder);
@@ -112,18 +136,67 @@ export default {
     // VALIDATION FOR INPUTS
     inputValidation(event, dish) {
       let input = document.getElementById(event);
+      if (
+        parseInt(input.value) === 0 &&
+        (!this.myOrder.dishes || this.myOrder.dishes.length === 0)
+      ) {
+        return;
+      }
+      // Inizializza l'ordine se non esiste
+      if (!this.myOrder.dishes) {
+        this.myOrder = {
+          restaurant_id: this.restaurant.id,
+          dishes: [],
+          price: 0,
+        };
+      }
       if (!input.value) input.value = 0;
+
       if (input.reportValidity()) {
         let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
-        dishInOrder.quantity = input.value;
-        this.myOrder.price = dishInOrder.quantity * dish.price;
-      }
-      if (input.value == 0) {
-        let previousQuantity = dishInOrder.quantity;
-        this.myOrder.price -= previousQuantity * dish.price;
-        this.myOrder.dishes = this.myOrder.dishes.filter(
-          (d) => d.id !== dish.id
-        );
+
+        // Calcola la nuova quantità e il nuovo prezzo potenziale
+        let newQuantity = parseInt(input.value);
+        let potentialNewPrice =
+          this.myOrder.price -
+          (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
+          newQuantity * dish.price;
+
+        // Controlla se il prezzo supera il limite prima di aggiornare l'ordine
+        if (potentialNewPrice > 9999.99) {
+          // Calcola la quantità massima possibile senza superare il limite
+          newQuantity = Math.floor(
+            (9999.99 -
+              (this.myOrder.price -
+                (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
+              dish.price
+          );
+          potentialNewPrice =
+            this.myOrder.price -
+            (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
+            newQuantity * dish.price;
+          alert(
+            "Il limite di prezzo del carrello di 9999.99€ è stato superato. La quantità è stata aggiustata al valore massimo possibile."
+          );
+        }
+
+        // Aggiorna l'ordine solo se la nuova quantità è maggiore di zero
+        if (newQuantity > 0) {
+          if (dishInOrder) {
+            this.myOrder.price = potentialNewPrice;
+            dishInOrder.quantity = newQuantity;
+          } else {
+            this.myOrder.dishes.push({ ...dish, quantity: newQuantity });
+            this.myOrder.price = potentialNewPrice;
+          }
+          input.value = newQuantity;
+        } else if (dishInOrder) {
+          // Rimuovi il piatto dall'ordine se la quantità è 0
+          this.myOrder.dishes = this.myOrder.dishes.filter(
+            (d) => d.id !== dish.id
+          );
+          this.myOrder.price -= dishInOrder.quantity * dish.price;
+        }
       }
     },
   },

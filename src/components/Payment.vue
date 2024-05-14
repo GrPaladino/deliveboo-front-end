@@ -60,10 +60,37 @@ export default {
       const seconds = String(now.getSeconds()).padStart(2, "0");
       return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     },
+
+    formCatch() {
+      document
+        .getElementById("payment-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault(); // Previene il comportamento di default del form
+
+          var formData = new FormData(this);
+
+          fetch(this.action, {
+            method: "POST",
+            body: formData,
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                console.log("successo");
+              } else {
+                console.log("fail");
+              }
+            })
+            .catch((error) => {
+              console.log("error");
+            });
+        });
+    },
   },
   created() {},
   mounted() {
     document.getElementById("date_time").value = this.getCurrentDateTime();
+    this.formCatch();
   },
 };
 </script>
@@ -173,6 +200,7 @@ export default {
         <button id="submit-button" type="submit" class="btn btn-primary">
           Submit
         </button>
+
       </form>
     </div>
   </div>
