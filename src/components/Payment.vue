@@ -117,7 +117,8 @@ export default {
             name="customer_name"
             pattern="[A-Za-z\s]+"
             required
-            title="Name should only contain letters."
+            max="200"
+            title="Inserire solo lettere."
           />
         </div>
 
@@ -130,6 +131,7 @@ export default {
             id="email"
             name="email"
             required
+            max="200"
           />
         </div>
 
@@ -137,13 +139,12 @@ export default {
         <div class="mb-3">
           <label for="phone" class="form-label">Numero di telefono: *</label>
           <input
-            type="tel"
+            type="text"
             class="form-control"
             id="phone"
             name="phone"
-            pattern="\d{10}"
             required
-            title="Phone number should be 10 digits."
+            max="20"
           />
         </div>
 
@@ -155,8 +156,7 @@ export default {
             class="form-control"
             id="address"
             name="address"
-            minlength="10"
-            maxlength="250"
+            max="250"
             required
           />
         </div>
@@ -168,7 +168,9 @@ export default {
           name="date_time"
           required
           readonly
+        
         />
+
 
         <!-- Price field with minimum and maximum value restrictions -->
         <div class="mb-3">
@@ -183,6 +185,7 @@ export default {
             readonly
           />
         </div>
+
         <input
           type="hidden"
           name="orderData"
