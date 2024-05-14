@@ -260,6 +260,7 @@ export default {
       this.cartCheck = true;
     },
 
+
     checkEmpty() {
       if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
         this.myOrder = [];
@@ -277,34 +278,31 @@ export default {
     this.fetchRestaurants();
   },
 
-  mounted() {},
+  mounted() { },
 };
 </script>
 
 <template>
-  <div
-    class="row justify-content-between containerApp ps-3"
-    v-if="this.restaurant"
-  >
+
+  <div class="row justify-content-between containerApp ps-2 pt-2" v-if="this.restaurant">
+
+
     <div class="col-sm-12 col-md-3 bg-white pe-0 leftColumn">
-      <router-link
-        :to="{ name: 'home' }"
-        class="col-lg-3 col-md-6 col-sm-12"
-        id="addButton"
-      >
+      <router-link :to="{ name: 'home' }" class="col-lg-3 col-md-6 col-sm-12" id="addButton">
         <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
         <button class="ballButton" @click="checkEmpty()">👈🏻</button>
       </router-link>
       <!-- </div> -->
+
       <!-- RESTAURANT DETAILS -->
       <img :src="restaurant.image" :alt="restaurant.name" class="w-100" />
+
       <div class="my-3">
-        <h1>
-          {{ restaurant.name }}
-        </h1>
+        <h1>{{ restaurant.name }}</h1>
         <h5>☎️{{ restaurant.phone }}</h5>
         <h5 class="detailCap">🏠{{ restaurant.address }}</h5>
       </div>
+
       <!-- BADGE -->
       <div id="badgesContainer">
         <div class="badge" v-for="badge in types">
@@ -316,19 +314,15 @@ export default {
           </div>
         </div>
       </div>
+
     </div>
-    <div class="col-12 col-md-9 rightColumn px-2">
-      <div
-        v-for="dish in restaurant.dishes"
-        class="dishCard pe-5 col-12 col-md-6"
-      >
+
+    <div class="col-12 col-md-9  col-sm-2 rightColumn px-2">
+
+      <div v-for="dish in restaurant.dishes" class="dishCard pe-5 col-2 col-lg-5 col-md-8  col-sm-12">
         <!-- IMMAGINE -->
 
-        <div
-          class="dishImage col-2"
-          data-bs-toggle="modal"
-          :data-bs-target="`#dish-` + dish.id"
-        >
+        <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
           <img :src="dish.image" alt="dish.name" />
         </div>
         <!-- TESTO -->
@@ -341,51 +335,32 @@ export default {
           <h5>€ {{ dish.price }}</h5>
         </div>
         <!-- MODAL CONTENT -->
-        <div
-          class="modal fade"
-          :id="`dish-` + dish.id"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-          tabindex="-1"
-          :aria-labelledby="`dish-` + dish.id"
-          aria-hidden="true"
-        >
-          <div
-            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
-          >
+        <div class="modal fade" :id="`dish-` + dish.id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          :aria-labelledby="`dish-` + dish.id" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
                   Dettagli: {{ dish.name }}
                 </h5>
-                <button
-                  type="button"
-                  class="btn-close w-25"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
+                <button type="button" class="btn-close w-25" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <img :src="dish.image" alt="dish.name" class="modalImage" />
                 <p>Descrizione: {{ dish.description }}</p>
                 <h6>Prezzo: €{{ dish.price }}</h6>
               </div>
-              <div
-                class="modal-footer d-flex flex-column justify-content-center align-items-center"
-              >
-                <button
-                  type="button"
-                  class="btn btn-secondary mb-2"
-                  data-bs-dismiss="modal"
-                >
+              <div class="modal-footer d-flex flex-column justify-content-center align-items-center">
+                <button type="button" class="btn btn-secondary mb-2" data-bs-dismiss="modal">
                   Chiudi
                 </button>
               </div>
             </div>
           </div>
         </div>
-        <!-- QUANTITA -->
+        <!-- QUANTITA  col-2-->
         <div class="amountContainer col-2">
+
           <button
             id="minus"
             class="quantityButton rounded-start"
@@ -408,10 +383,13 @@ export default {
             class="quantityButton rounded-end"
             @click="quantity($event.target.id, dish)"
           >
+
+
             +
           </button>
         </div>
       </div>
+
     </div>
 
     <!-- <router-link
@@ -422,6 +400,7 @@ export default {
       class="router-link"
     > -->
     <div class="bin" @click="emptyCart()">🗑️</div>
+
     <div
       class="goToCart"
       type="button"
@@ -429,11 +408,54 @@ export default {
       data-bs-target="#offcanvasScrolling"
       aria-controls="offcanvasScrolling"
     >
+
       🛒
     </div>
 
     <!-- </router-link
     > -->
+
+  </div>
+
+  <!-- CART OFFCANVAS -->
+
+  <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+    id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
+        Il tuo carrello
+      </h2>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div v-for="dish in myOrder.dishes" class="dishCard pe-5">
+        <!-- IMMAGINE -->
+
+        <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
+          <img :src="dish.image" alt="dish.name" />
+        </div>
+        <!-- TESTO -->
+        <div class="dishInfo col-6 px-2">
+          <h5>{{ dish.name }}</h5>
+          <p>{{ dish.description }}</p>
+        </div>
+        <!-- PREZZO -->
+        <div class="dishPrice col-2">
+          <h5>x {{ dish.quantity }}</h5>
+        </div>
+      </div>
+    </div>
+    <div class="offcanvas-footer d-flex flex-column justify-content-center mb-5" v-if="this.myOrder.dishes">
+      <h4 class="text-center mb-2">PREZZO TOTALE</h4>
+
+      <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
+
+      <router-link :to="{ name: 'restaurants.checkout' }" class="router-link text-center">
+        <button type="button" class="btn btn-primary btn-lg">
+          Procedi al pagamento
+        </button>
+      </router-link>
+    </div>
   </div>
 
   <!-- CART OFFCANVAS -->
@@ -523,6 +545,7 @@ export default {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
+
   &:hover {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
@@ -548,6 +571,7 @@ export default {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
+
   &:hover {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
@@ -581,6 +605,7 @@ export default {
 
 #badgesContainer {
   margin-bottom: 30px;
+
   .badge {
     display: inline-block;
     margin-right: 10px;
@@ -606,6 +631,7 @@ export default {
         text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
           2px 2px 0 #000;
       }
+
       .badgeImg {
         position: absolute;
         width: 100%;
@@ -667,6 +693,7 @@ export default {
     transition-duration: 400ms;
     transform: scale(1.1, 1.1) translate3d(0, 0, 0);
     cursor: pointer;
+
     i {
       color: #2929b9;
     }
@@ -699,6 +726,7 @@ button {
   background-color: white;
   flex: 0 0 auto;
   color: $darkblue;
+
   .dishImage {
     height: 80px;
     width: 80px;
@@ -706,11 +734,13 @@ button {
     object-fit: contain;
     display: flex;
     justify-content: center;
+
     img {
       height: 100%;
       width: auto;
     }
   }
+
   .dishInfo,
   .dishPrice {
     display: flex;
@@ -745,6 +775,7 @@ button {
     height: 30px;
     text-align: center;
   }
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
