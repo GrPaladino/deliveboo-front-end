@@ -94,8 +94,6 @@ export default {
   },
 };
 </script>
-<!-- :action="api.baseApiURI + 'order/make/payment'" -->
-<!-- action="https://learning.tizianonicolai.com/request-catcher/index.php" -->
 <template>
   <div class="mb-3">
     <div>
@@ -196,6 +194,7 @@ export default {
         <input type="hidden" name="token" :value="authorization" />
 
         <div id="dropin-container"></div>
+
         <div class="text-dark mb-2">
           <i>I dati accompagnati da * sono obbligatori</i>
         </div>

@@ -19,7 +19,7 @@ export default {
     restaurant: {
       handler() {
         if (this.restaurant && this.filled === false) {
-          console.log("watcher");
+          // console.log("watcher");
           this.filled = true;
           setTimeout(this.cartQuantity, 300);
         }
@@ -30,12 +30,12 @@ export default {
       handler() {
         if (this.myOrder && this.cartCheck === true) {
           localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
-          console.log("Pushed to storage");
+          // console.log("Pushed to storage");
         }
         if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
           this.myOrder = [];
           localStorage.removeItem("myOrder");
-          console.log("Removed from storage");
+          // console.log("Removed from storage");
         }
       },
       deep: true,
@@ -53,10 +53,56 @@ export default {
           this.types = response.data.restaurants[0].types;
         });
     },
+    // EMPTY CART OF ALL ITEMS
+    emptyCart() {
+      localStorage.removeItem("myOrder");
+      this.myOrder = [];
+      // console.log("localStorage svuotato!");
+      let inputs = document.querySelectorAll("input");
+      inputs.forEach((input) => {
+        input.value = 0;
+        input.classList.add("off");
+      });
+    },
+    // REMOVE OFF CLASS FROM INPUTS
+    getClass(event) {
+      let input = document.getElementById(event);
+      if (input.value > 0) {
+        input.classList.remove("off");
+      } else {
+        input.classList.add("off");
+      }
+    },
+    // CHECK IF INPUT IS EMPTY
+    isEmpty(obj) {
+      return Object.keys(obj).length === 0 && obj.constructor === Object;
+    },
+    //DEFINED CHECK
+    exists(item) {
+      // console.log("controllo", item);
+      if (item != undefined && item.length) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    // CHECK IF CART IS EMPTY
+    checkEmpty() {
+      if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
+        this.myOrder = [];
+        // console.log("MyOrder era vuoto");
+      }
+    },
+    // CONVERT TO EURO FORMAT
+    euroCheck(price) {
+      let formattedPrice = Number(price).toFixed(2);
+      formattedPrice = formattedPrice.replace(".", ",");
+      return formattedPrice;
+    },
     // PLUS AND MINUS BUTTONS
     quantity(operator, dish) {
       let value = document.getElementById(dish.id);
-      console.log("questo è dish", dish);
+      console.log("QUANTITY -> questo è dish", dish);
       if (operator == "minus" && value.value > 0) {
         if (value.value == 1) {
           value.classList.add("off");
@@ -67,7 +113,6 @@ export default {
         if (dishInOrder) {
           dishInOrder.quantity--;
           if (dishInOrder.quantity === 0) {
-            // Rimuovere il piatto dall'ordine se la quantità è 0
             this.myOrder.dishes = this.myOrder.dishes.filter(
               (d) => d.id !== dish.id
             );
@@ -84,6 +129,7 @@ export default {
             price: 0,
           };
         }
+
         // SE L'ID DEL RISTORANTE COMBACIA CON QUELLO NELL'ORDINE
         if (this.myOrder.restaurant_id == this.restaurant.id) {
           // SE ORDINE NON ESISTE
@@ -93,10 +139,9 @@ export default {
           }
 
           let potentialPrice =
-            this.myOrder.price +
-            parseFloat(this.myOrder.price) +
-            parseFloat(dish.price);
-          if (potentialPrice < 9999.99) {
+            parseFloat(this.myOrder.price) + parseFloat(dish.price);
+
+          if (potentialPrice <= 9999.99) {
             value.value++;
             // console.log(this.restaurant.dishes);
             // LOGICA PLUS
@@ -128,29 +173,9 @@ export default {
         }
       }
 
-      console.log(this.myOrder);
-    },
-    // EMPTY CART OF ALL ITEMS
-    emptyCart() {
-      localStorage.removeItem("myOrder");
-      this.myOrder = [];
-      console.log("localStorage svuotato!");
-      let inputs = document.querySelectorAll("input");
-      inputs.forEach((input) => {
-        input.value = 0;
-        input.classList.add("off");
-      });
+      // console.log(this.myOrder);
     },
 
-    // REMOVE OFF CLASS FROM INPUTS
-    getClass(event) {
-      let input = document.getElementById(event);
-      if (input.value > 0) {
-        input.classList.remove("off");
-      } else {
-        input.classList.add("off");
-      }
-    },
     // VALIDATION FOR INPUTS
     inputValidation(event, dish) {
       let input = document.getElementById(event);
@@ -196,6 +221,7 @@ export default {
           alert(
             "Il limite di prezzo del carrello di 9999.99€ è stato superato. La quantità è stata aggiustata al valore massimo possibile."
           );
+          potentialNewPrice;
         }
 
         // Aggiorna l'ordine solo se la nuova quantità è maggiore di zero
@@ -216,27 +242,13 @@ export default {
           this.myOrder.price -= dishInOrder.quantity * dish.price;
         }
       }
-    },
-
-    // CHECK IF INPUT IS EMPTY
-    isEmpty(obj) {
-      return Object.keys(obj).length === 0 && obj.constructor === Object;
-    },
-
-    //DEFINED CHECK
-    exists(item) {
-      console.log("controllo", item);
-      if (item.length) {
-        return true;
-      } else {
-        return false;
-      }
+      console.log("INPUT VALIDATION -> myOrder", this.myOrder);
     },
 
     // RECOVER DATA QUANTITIES FROM ORDER
     cartQuantity() {
       if (this.restaurant) {
-        console.log("partita la funzione");
+        // console.log("partita la funzione");
         // PROVO A RECUPERARE L'ORDINE
         const orderString = localStorage.getItem("myOrder");
 
@@ -245,41 +257,29 @@ export default {
         const order = JSON.parse(orderString);
 
         if (orderString !== null && this.exists(order.dishes)) {
-          console.log("Ordine trovato");
-          console.log(order);
+          // console.log("Ordine trovato");
+          // console.log(order);
           // MYORDER UGUALE A LOCALSTORAGE
           this.myOrder = order;
           // CONTROLLO SE L'ORDINE CORRISPONDE AL RISTORANTE
           if (this.restaurant.id == order.restaurant_id) {
-            console.log(this.restaurant.id);
+            // console.log(this.restaurant.id);
 
             // SCORRO TUTTI I PIATTI E LI TROVO IN PAGINA AGGIORNANDO CLASSE E VALORE
             for (let i = 0; i < order.dishes.length; i++) {
-              console.log("ciclo gli elementi");
-              console.log(order.dishes[i].id);
+              // console.log("ciclo gli elementi");
+              // console.log(order.dishes[i].id);
               let dish = document.getElementById(order.dishes[i].id);
-              console.log(dish);
+              // console.log(dish);
               dish.value = order.dishes[i].quantity;
               dish.classList.remove("off");
             }
           }
         } else {
-          console.log("Ordine non trovato");
+          // console.log("Ordine non trovato");
         }
       }
       this.cartCheck = true;
-    },
-
-    checkEmpty() {
-      if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
-        this.myOrder = [];
-        console.log("MyOrder era vuoto");
-      }
-    },
-    euroCheck(price) {
-      let formattedPrice = price.toFixed(2);
-      formattedPrice = formattedPrice.replace(".", ",");
-      return formattedPrice;
     },
   },
 
@@ -500,14 +500,62 @@ export default {
         </div>
         <!-- PREZZO -->
         <div class="dishPrice col-2">
+
+          <h5>€ {{ euroCheck(dish.price) }}</h5>
+        </div>
+        <!-- MODAL CONTENT -->
+        <div
+          class="modal fade"
+          :id="`dish-` + dish.id"
+          data-bs-backdrop="static"
+          data-bs-keyboard="false"
+          tabindex="-1"
+          :aria-labelledby="`dish-` + dish.id"
+          aria-hidden="true"
+        >
+          <div
+            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
+          >
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                  Dettagli: {{ dish.name }}
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close w-25"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <img :src="dish.image" alt="dish.name" class="modalImage" />
+                <p>Descrizione: {{ dish.description }}</p>
+                <h6>Prezzo: €{{ euroCheck(dish.price) }}</h6>
+              </div>
+              <div
+                class="modal-footer d-flex flex-column justify-content-center align-items-center"
+              >
+                <button
+                  type="button"
+                  class="btn btn-secondary mb-2"
+                  data-bs-dismiss="modal"
+                >
+                  Chiudi
+                </button>
+              </div>
+            </div>
+
           <h5 class="overflow-visible">€{{ dish.price }}</h5>
           <!-- QUANTITA -->
           <div class="dishQuantity col-2">
             <h5>x {{ dish.quantity }}</h5>
+
           </div>
         </div>
       </div>
     </div>
+
     <div
       class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
       v-if="this.myOrder.dishes"
@@ -549,33 +597,43 @@ export default {
       ></button>
     </div>
     <div class="offcanvas-body">
-      <div v-for="dish in myOrder.dishes" class="dishCard pe-5">
-        <!-- IMMAGINE -->
+      <div
+        v-if="myOrder.dishes"
+        v-for="dish in myOrder.dishes"
+        class="d-flex flex-column pe-5"
+      >
+        <div class="dishCard">
+          <!-- IMMAGINE -->
 
-        <div
-          class="dishImage col-2"
-          data-bs-toggle="modal"
-          :data-bs-target="`#dish-` + dish.id"
-        >
-          <img :src="dish.image" alt="dish.name" />
-        </div>
-        <!-- TESTO -->
-        <div class="dishInfo col-6 px-2">
-          <h5>{{ dish.name }}</h5>
-          <p>{{ dish.description }}</p>
-        </div>
-        <!-- PREZZO -->
-        <div class="dishPrice col-2">
-          <h5 class="overflow-visible">€{{ dish.price }}</h5>
-          <!-- QUANTITA -->
-          <div class="dishQuantity col-2">
-            <h5>x {{ dish.quantity }}</h5>
+
+          <div
+            class="dishImage col-2"
+            data-bs-toggle="modal"
+            :data-bs-target="`#dish-` + dish.id"
+          >
+            <img :src="dish.image" alt="dish.name" />
           </div>
+          <!-- TESTO -->
+          <div class="dishInfo col-7 px-2">
+            <h5>{{ dish.name }}</h5>
+            <p>{{ dish.description }}</p>
+          </div>
+          <!-- PREZZO -->
+          <div class="dishPrice col-3">
+            <h5>
+              €
+              {{ euroCheck(parseFloat(dish.price * dish.quantity)) }}
+            </h5>
+          </div>
+
         </div>
-        <!-- QUANTITA -->
-        <div class="dishQuantity col-2">
-          <h5>x {{ dish.price }}</h5>
-        </div>
+        <span class="text-secondary text-end"
+          >{{ euroCheck(dish.price) }} x {{ dish.quantity }}</span
+        >
+      </div>
+
+      <div v-else class="d-flex flex-column pe-5">
+        <span class="text-secondary">Il tuo carrello è vuoto.</span>
       </div>
     </div>
     <div
@@ -594,6 +652,9 @@ export default {
           Procedi al pagamento
         </button>
       </router-link>
+      <div class="btn btn-danger btn-lg" @click="emptyCart()">
+        Svuota il carrello
+      </div>
     </div>
   </div>
 </template>
