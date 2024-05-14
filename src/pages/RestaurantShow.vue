@@ -500,7 +500,6 @@ export default {
         </div>
         <!-- PREZZO -->
         <div class="dishPrice col-2">
-
           <h5>€ {{ euroCheck(dish.price) }}</h5>
         </div>
         <!-- MODAL CONTENT -->
@@ -546,32 +545,32 @@ export default {
               </div>
             </div>
 
-          <h5 class="overflow-visible">€{{ dish.price }}</h5>
-          <!-- QUANTITA -->
-          <div class="dishQuantity col-2">
-            <h5>x {{ dish.quantity }}</h5>
-
+            <h5 class="overflow-visible">€{{ dish.price }}</h5>
+            <!-- QUANTITA -->
+            <div class="dishQuantity col-2">
+              <h5>x {{ dish.quantity }}</h5>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div
-      class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
-      v-if="this.myOrder.dishes"
-    >
-      <h4 class="text-center mb-2">PREZZO TOTALE</h4>
-
-      <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
-
-      <router-link
-        :to="{ name: 'restaurants.checkout' }"
-        class="router-link text-center"
+      <div
+        class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
+        v-if="this.myOrder.dishes"
       >
-        <button type="button" class="btn btn-primary btn-lg">
-          Procedi al pagamento
-        </button>
-      </router-link>
+        <h4 class="text-center mb-2">PREZZO TOTALE</h4>
+
+        <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
+
+        <router-link
+          :to="{ name: 'restaurants.checkout' }"
+          class="router-link text-center"
+        >
+          <button type="button" class="btn btn-primary btn-lg">
+            Procedi al pagamento
+          </button>
+        </router-link>
+      </div>
     </div>
   </div>
 
@@ -605,7 +604,6 @@ export default {
         <div class="dishCard">
           <!-- IMMAGINE -->
 
-
           <div
             class="dishImage col-2"
             data-bs-toggle="modal"
@@ -625,7 +623,6 @@ export default {
               {{ euroCheck(parseFloat(dish.price * dish.quantity)) }}
             </h5>
           </div>
-
         </div>
         <span class="text-secondary text-end"
           >{{ euroCheck(dish.price) }} x {{ dish.quantity }}</span
