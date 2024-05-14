@@ -9,6 +9,7 @@ export default {
     };
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
+
   watch: {
     authorization: {
       handler() {
@@ -94,7 +95,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div class="mb-3">
     <div>
       <form
         id="payment-form"
@@ -114,7 +115,8 @@ export default {
             name="customer_name"
             pattern="[A-Za-z\s]+"
             required
-            title="Name should only contain letters."
+            max="200"
+            title="Inserire solo lettere."
           />
         </div>
 
@@ -127,6 +129,7 @@ export default {
             id="email"
             name="email"
             required
+            max="200"
           />
         </div>
 
@@ -134,13 +137,12 @@ export default {
         <div class="mb-3">
           <label for="phone" class="form-label">Numero di telefono: *</label>
           <input
-            type="tel"
+            type="text"
             class="form-control"
             id="phone"
             name="phone"
-            pattern="\d{10}"
             required
-            title="Phone number should be 10 digits."
+            max="20"
           />
         </div>
 
@@ -152,8 +154,7 @@ export default {
             class="form-control"
             id="address"
             name="address"
-            minlength="10"
-            maxlength="250"
+            max="250"
             required
           />
         </div>
@@ -165,7 +166,9 @@ export default {
           name="date_time"
           required
           readonly
+        
         />
+
 
         <!-- Price field with minimum and maximum value restrictions -->
         <div class="mb-3">
@@ -180,6 +183,7 @@ export default {
             readonly
           />
         </div>
+
         <input
           type="hidden"
           name="orderData"
@@ -190,7 +194,15 @@ export default {
         <input type="hidden" name="token" :value="authorization" />
 
         <div id="dropin-container"></div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+
+        <div class="text-dark mb-2">
+          <i>I dati accompagnati da * sono obbligatori</i>
+        </div>
+
+        <button id="submit-button" type="submit" class="btn btn-primary">
+          Submit
+        </button>
+
       </form>
     </div>
   </div>
@@ -236,5 +248,9 @@ label {
 .button--green:hover {
   background-color: #8bdda8;
   color: white;
+}
+
+i {
+  font-size: 0.8rem;
 }
 </style>

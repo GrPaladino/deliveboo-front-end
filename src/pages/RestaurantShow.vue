@@ -292,46 +292,198 @@ export default {
 </script>
 
 <template>
-  <div
-    class="row justify-content-between containerApp ps-3"
-    v-if="this.restaurant"
-  >
-    <div class="col-sm-12 col-md-3 bg-white pe-0 leftColumn">
-      <router-link
-        :to="{ name: 'home' }"
-        class="col-lg-3 col-md-6 col-sm-12"
-        id="addButton"
-      >
-        <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
-        <button class="ballButton" @click="checkEmpty()">👈🏻</button>
-      </router-link>
-      <!-- </div> -->
-      <!-- RESTAURANT DETAILS -->
-      <img :src="restaurant.image" :alt="restaurant.name" class="w-100" />
-      <div class="my-3">
-        <h1>
-          {{ restaurant.name }}
-        </h1>
-        <h5>☎️{{ restaurant.phone }}</h5>
-        <h5 class="detailCap">🏠{{ restaurant.address }}</h5>
-      </div>
-      <!-- BADGE -->
-      <div id="badgesContainer">
-        <div class="badge" v-for="badge in types">
-          <div class="typeBadge">
-            <div class="badgeImg">
-              <img :src="badge.image" alt="" width="100%" />
+  <div class="container py-3">
+    <div
+      class="row justify-content-between containerApp p-3"
+      v-if="this.restaurant"
+    >
+      <!-- ! RESTAURANT COLUMN -->
+      <div class="col-sm-12 col-md-3 px-0 bg-white leftColumn">
+        <router-link
+          :to="{ name: 'home' }"
+          class="col-lg-3 col-md-6 col-sm-12"
+          id="addButton"
+        >
+          <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
+          <button class="ballButton" @click="checkEmpty()">👈🏻</button>
+        </router-link>
+        <!-- </div> -->
+
+        <!-- RESTAURANT DETAILS -->
+        <img
+          :src="restaurant.image"
+          :alt="restaurant.name"
+          class="w-100 border border-5 border-info rounded"
+        />
+
+        <div class="my-3">
+          <h1>{{ restaurant.name }}</h1>
+          <h5>☎️{{ restaurant.phone }}</h5>
+          <h5 class="detailCap">🏠{{ restaurant.address }}</h5>
+        </div>
+
+        <!-- BADGE -->
+        <div id="badgesContainer">
+          <div class="badge" v-for="badge in types">
+            <div class="typeBadge">
+              <div class="badgeImg">
+                <img :src="badge.image" alt="" width="100%" />
+              </div>
+              <span>{{ badge.label }}</span>
             </div>
-            <span>{{ badge.label }}</span>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-12 col-md-9 rightColumn px-2">
+
+      <!-- ! DISHES COLUMN -->
+      <div class="col-md-9 col-sm-12 rightColumn row border-start">
+        <div
+          v-for="dish in restaurant.dishes"
+          class="dishCard col-xl-6 col-lg-12 mb-1"
+        >
+          <!-- IMMAGINE -->
+
+          <div
+            class="dishImage col-2"
+            data-bs-toggle="modal"
+            :data-bs-target="`#dish-` + dish.id"
+          >
+            <img :src="dish.image" alt="dish.name" class="dish-preview" />
+          </div>
+          <!-- TESTO -->
+          <div class="dishInfo col-6 px-2">
+            <h5>{{ dish.name }}</h5>
+            <p>{{ dish.description }}</p>
+          </div>
+          <!-- PREZZO -->
+          <div class="dishPrice col-3 justify-self-end">
+            <div>
+              <h5>€ {{ dish.price }}</h5>
+            </div>
+
+            <!-- QUANTITA  col-2-->
+            <!-- <div class="amountContainer col-2"> -->
+            <div class="amountContainer">
+              <button
+                id="minus"
+                class="quantityButton rounded-start"
+                @click="quantity($event.target.id, dish)"
+              >
+                -
+              </button>
+              <input
+                type="number"
+                :id="dish.id"
+                min="0"
+                step="1"
+                value="0"
+                class="off"
+                @keyup="getClass($event.target.id)"
+                @blur="inputValidation($event.target.id, dish)"
+              />
+              <button
+                id="plus"
+                class="quantityButton rounded-end"
+                @click="quantity($event.target.id, dish)"
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <!-- MODAL CONTENT -->
+          <div
+            class="modal fade"
+            :id="`dish-` + dish.id"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            :aria-labelledby="`dish-` + dish.id"
+            aria-hidden="true"
+          >
+            <div
+              class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
+            >
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="staticBackdropLabel">
+                    Dettagli: {{ dish.name }}
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close w-25"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <img :src="dish.image" alt="dish.name" class="modalImage" />
+                  <p>Descrizione: {{ dish.description }}</p>
+                  <h6>Prezzo: €{{ dish.price }}</h6>
+                </div>
+                <div
+                  class="modal-footer d-flex flex-column justify-content-center align-items-center"
+                >
+                  <button
+                    type="button"
+                    class="btn btn-secondary mb-2"
+                    data-bs-dismiss="modal"
+                  >
+                    Chiudi
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <router-link
+           :to="{
+             name: 'restaurants.checkout',
+             params: { slug: restaurant.slug },
+           }"
+           class="router-link"
+         > -->
+      <!-- <div class="bin" @click="emptyCart()">🗑️</div> -->
+
       <div
-        v-for="dish in restaurant.dishes"
-        class="dishCard pe-5 col-12 col-md-6"
+        class="goToCart"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#offcanvasScrolling"
+        aria-controls="offcanvasScrolling"
       >
+        🛒
+      </div>
+
+      <!-- </router-link
+    > -->
+    </div>
+  </div>
+
+  <!-- CART OFFCANVAS -->
+
+  <div
+    class="offcanvas offcanvas-start"
+    data-bs-scroll="true"
+    data-bs-backdrop="false"
+    tabindex="-1"
+    id="offcanvasScrolling"
+    aria-labelledby="offcanvasScrollingLabel"
+  >
+    <div class="offcanvas-header">
+      <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
+        Il tuo carrello
+      </h2>
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button>
+    </div>
+    <div class="offcanvas-body">
+      <div v-for="dish in myOrder.dishes" class="dishCard pe-5">
         <!-- IMMAGINE -->
 
         <div
@@ -348,6 +500,7 @@ export default {
         </div>
         <!-- PREZZO -->
         <div class="dishPrice col-2">
+
           <h5>€ {{ euroCheck(dish.price) }}</h5>
         </div>
         <!-- MODAL CONTENT -->
@@ -392,58 +545,34 @@ export default {
                 </button>
               </div>
             </div>
+
+          <h5 class="overflow-visible">€{{ dish.price }}</h5>
+          <!-- QUANTITA -->
+          <div class="dishQuantity col-2">
+            <h5>x {{ dish.quantity }}</h5>
+
           </div>
-        </div>
-        <!-- QUANTITA -->
-        <div class="amountContainer col-2">
-          <button
-            id="minus"
-            class="quantityButton rounded-start"
-            @click="quantity($event.target.id, dish)"
-          >
-            -
-          </button>
-          <input
-            type="number"
-            :id="dish.id"
-            min="0"
-            step="1"
-            value="0"
-            class="off"
-            @keyup="getClass($event.target.id)"
-            @blur="inputValidation($event.target.id, dish)"
-          />
-          <button
-            id="plus"
-            class="quantityButton rounded-end"
-            @click="quantity($event.target.id, dish)"
-          >
-            +
-          </button>
         </div>
       </div>
     </div>
 
-    <!-- <router-link
-      :to="{
-        name: 'restaurants.checkout',
-        params: { slug: restaurant.slug },
-      }"
-      class="router-link"
-    > -->
-
     <div
-      class="goToCart"
-      type="button"
-      data-bs-toggle="offcanvas"
-      data-bs-target="#offcanvasScrolling"
-      aria-controls="offcanvasScrolling"
+      class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
+      v-if="this.myOrder.dishes"
     >
-      🛒
-    </div>
+      <h4 class="text-center mb-2">PREZZO TOTALE</h4>
 
-    <!-- </router-link
-    > -->
+      <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
+
+      <router-link
+        :to="{ name: 'restaurants.checkout' }"
+        class="router-link text-center"
+      >
+        <button type="button" class="btn btn-primary btn-lg">
+          Procedi al pagamento
+        </button>
+      </router-link>
+    </div>
   </div>
 
   <!-- CART OFFCANVAS -->
@@ -476,6 +605,7 @@ export default {
         <div class="dishCard">
           <!-- IMMAGINE -->
 
+
           <div
             class="dishImage col-2"
             data-bs-toggle="modal"
@@ -495,6 +625,7 @@ export default {
               {{ euroCheck(parseFloat(dish.price * dish.quantity)) }}
             </h5>
           </div>
+
         </div>
         <span class="text-secondary text-end"
           >{{ euroCheck(dish.price) }} x {{ dish.quantity }}</span
@@ -552,6 +683,7 @@ export default {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
+
   &:hover {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
@@ -560,7 +692,7 @@ export default {
 
 // GO TO CART
 .goToCart {
-  position: absolute;
+  position: fixed;
   background-color: $midblue;
   border-radius: 50%;
   aspect-ratio: 1/1;
@@ -577,6 +709,7 @@ export default {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
+
   &:hover {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
@@ -591,10 +724,11 @@ export default {
 }
 
 .containerApp {
-  height: calc(100vh - $headerHeight - $footerHeight);
+  /* height: calc(100vh - $headerHeight - $footerHeight); */
   background-color: white;
   overflow: auto;
   overflow-x: hidden;
+  /* position: relative; */
 }
 
 .leftColumn {
@@ -604,12 +738,13 @@ export default {
   background-color: white;
   text-align: center;
   // min-height: calc(100vh - $headerHeight - $footerHeight);
-  border-right: 2px solid rgba($midblue, 0.2);
-  border-bottom: 2px solid rgba($midblue, 0.2);
+  /*   border-right: 2px solid rgba($midblue, 0.2);
+  border-bottom: 2px solid rgba($midblue, 0.2); */
 }
 
 #badgesContainer {
   margin-bottom: 30px;
+
   .badge {
     display: inline-block;
     margin-right: 10px;
@@ -635,6 +770,7 @@ export default {
         text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
           2px 2px 0 #000;
       }
+
       .badgeImg {
         position: absolute;
         width: 100%;
@@ -646,7 +782,6 @@ export default {
 
 .rightColumn {
   padding: 0;
-  // height: calc(100vh - $headerHeight - $footerHeight);
   overflow: auto;
   // background-color: $midblue;
   display: flex;
@@ -696,6 +831,7 @@ export default {
     transition-duration: 400ms;
     transform: scale(1.1, 1.1) translate3d(0, 0, 0);
     cursor: pointer;
+
     i {
       color: #2929b9;
     }
@@ -728,6 +864,7 @@ button {
   background-color: white;
   flex: 0 0 auto;
   color: $darkblue;
+
   .dishImage {
     height: 80px;
     width: 80px;
@@ -735,11 +872,18 @@ button {
     object-fit: contain;
     display: flex;
     justify-content: center;
+
     img {
       height: 100%;
       width: auto;
     }
   }
+
+  .dishImage:hover {
+    border: 3px solid greenyellow;
+    cursor: pointer;
+  }
+
   .dishInfo,
   .dishPrice {
     display: flex;
@@ -763,7 +907,7 @@ button {
 .amountContainer {
   align-items: center;
   display: flex;
-  border-bottom: 1px solid rgba($midblue, 0.2);
+  /*  border-bottom: 1px solid rgba($midblue, 0.2); */
 
   // INPUT NUMBER ARROW HIDDEN
   input[type="number"] {
@@ -774,6 +918,7 @@ button {
     height: 30px;
     text-align: center;
   }
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;

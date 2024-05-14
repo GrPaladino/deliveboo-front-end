@@ -12,13 +12,10 @@ export default {
 </script>
 
 <template>
-  <router-link
-    :to="{
-      name: 'restaurants.show',
-      params: { slug: restaurant.slug },
-    }"
-    class="router-link"
-  >
+  <router-link :to="{
+    name: 'restaurants.show',
+    params: { slug: restaurant.slug },
+  }" class="router-link">
     <div class="myCard">
       <!-- Restaurant image -->
       <div class="coverImage">
@@ -32,15 +29,10 @@ export default {
 
       <!-- BADGE -->
       <div id="badgesContainer">
-        <span
-          v-for="badge in restaurant.types"
-          class="badge mx-2"
-          :style="
-            `background-image:url(` +
-            badge.image +
-            `); background-size: cover; background-repeat: no-repeat; border-radius: 0`
-          "
-        >
+        <span v-for="badge in restaurant.types" class="badge mx-2" :style="`background-image:url(` +
+    badge.image +
+    `); background-size: cover; background-repeat: no-repeat; border-radius: 0`
+    ">
           {{ badge.label }}
           <!-- <div class="typeBadge">
             <div class="badgeImg">
@@ -57,6 +49,7 @@ export default {
 <style lang="scss" scoped>
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
+
 .myCard {
   background-color: white;
   height: 100%;
@@ -76,6 +69,7 @@ export default {
     text-overflow: ellipsis;
     flex-grow: 1;
   }
+
   &:hover {
     box-shadow: 0 0 7px black;
     transform: scale(1.02);
@@ -98,6 +92,7 @@ export default {
 h3.detailCap {
   font-size: 25px;
 }
+
 .detailCap {
   text-transform: capitalize;
   white-space: nowrap;
