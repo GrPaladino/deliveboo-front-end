@@ -67,7 +67,7 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    flex-grow: 1;
+    // flex-grow: 1;
   }
 
   &:hover {
@@ -108,6 +108,8 @@ h3.detailCap {
 
 #badgesContainer {
   margin-bottom: 30px;
+  flex-grow: 1;
+
   // .badge {
   //   display: inline-block;
   //   margin-right: 10px;
@@ -125,14 +127,6 @@ h3.detailCap {
   //     width: 100%;
   //     object-fit: cover;
 
-  //     span {
-  //       z-index: 2;
-  //       text-shadow: 0px 0px 20px black;
-  //       font-size: 100%;
-  //       letter-spacing: 2px;
-  //       text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
-  //         2px 2px 0 #000;
-  //     }
   //     .badgeImg {
   //       position: absolute;
   //       width: 100%;
@@ -140,6 +134,17 @@ h3.detailCap {
   //     }
   //   }
   // }
+}
+
+span {
+  z-index: 2;
+  text-shadow: 0px 0px 20px black;
+  font-size: 100%;
+  letter-spacing: 2px;
+  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+    2px 2px 0 #000;
+  margin: 5px 0;
+
 }
 
 .rightColumn {
