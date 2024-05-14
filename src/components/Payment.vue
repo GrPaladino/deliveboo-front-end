@@ -190,7 +190,7 @@ export default {
         <input type="hidden" name="token" :value="authorization" />
 
         <div id="dropin-container"></div>
-        <button type="btn" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
       </form>
     </div>
   </div>
