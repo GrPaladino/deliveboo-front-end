@@ -34,10 +34,9 @@ export default {
             >Home</router-link
           >
         </li>
-       
       </ul>
       <ul class="chart-icon">
-        <li class="nav-item me-4">
+        <li class="nav-item me-4 d-none">
           <router-link
             :to="{ name: 'restaurants.checkout' }"
             class="nav-link text-white"
@@ -89,7 +88,6 @@ export default {
   height: $headerHeight;
   box-shadow: 0 0 5px black;
   background: $midblue;
-  
 
   .navbar-ul {
     // width: 100%;
@@ -108,7 +106,6 @@ export default {
   .chart-icon li {
     @include d-flex-center;
 
-   
     color: white;
   }
 }
