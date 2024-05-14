@@ -155,7 +155,7 @@ export default {
             (9999.99 -
               (this.myOrder.price -
                 (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
-              dish.price
+            dish.price
           );
           potentialNewPrice =
             this.myOrder.price -
@@ -204,79 +204,69 @@ export default {
 </script>
 
 <template>
+  <div class="container d-flex justify-content-center py-3">
+    <div class="row justify-content-center containerApp p-4 container ">
 
-  <div class="row justify-content-between containerApp ps-3">
-    <div class="col-12 col-md-8 px-2">
-      <h2>{{ this.myOrder.dishes.lenght }}</h2>
-      <div v-if="this.myOrder.dishes.length == 0">
-        <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
-        <router-link to="/">
-          <button class="btn btn-primary">Torna alla home</button></router-link
-        >
-      </div>
-      <div v-if="this.myOrder.dishes.length > 0">
-        <div
-          v-for="dish in myOrder.dishes"
-          class="dishCard pe-5 col-12 col-md-6"
-        >
-          <!-- IMMAGINE -->
+      <div class="col-12 col-md-8 px-2">
+        <div class="card  ">
+          <div class="card-header px-3 pt-3">
+            <h2>Il tuo ordine :</h2>
+          </div>
+          <div class="card-body">
+            <h2>{{ this.myOrder.dishes.lenght }}</h2>
+            <div v-if="this.myOrder.dishes.length == 0">
+              <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
+              <router-link to="/">
+                <button class="btn btn-primary">Torna alla home</button></router-link>
+            </div>
+            <div v-if="this.myOrder.dishes.length > 0">
+              <div v-for="dish in myOrder.dishes" class="dishCard pe-2 col-12 col-md-6 w-100 mb-1">
+                <!-- IMMAGINE -->
 
-          <div
-            class="dishImage col-2"
-            data-bs-toggle="modal"
-            :data-bs-target="`#dish-` + dish.id"
-          >
-            <img :src="dish.image" alt="dish.name" />
-          </div>
-          <!-- TESTO -->
-          <div class="dishInfo col-6 px-2">
-            <h5>{{ dish.name }}</h5>
-            <p>{{ dish.description }}</p>
-          </div>
-          <!-- PREZZO -->
-          <div class="dishPrice col-2">
-            <h5>€ {{ euroCheck(dish.price) }}</h5>
-          </div>
+                <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
+                  <img :src="dish.image" alt="dish.name" />
+                </div>
+                <!-- TESTO -->
+                <div class="dishInfo col-6 px-2">
+                  <h5>{{ dish.name }}</h5>
+                  <p>{{ dish.description }}</p>
+                </div>
+                <!-- PREZZO -->
+                <div class="dishPrice col-2">
+                  <h5> € {{ euroCheck(dish.price) }}</h5>
+                </div>
 
-          <!-- QUANTITA -->
-          <div class="amountContainer col-2">
-            <button
-              id="minus"
-              class="quantityButton rounded-start"
-              @click="quantity($event.target.id, dish)"
-            >
-              -
-            </button>
-            <input
-              type="number"
-              :id="dish.id"
-              min="0"
-              :value="dish.quantity"
-              @keyup="getClass($event.target.id)"
-              @blur="inputValidation($event.target.id, dish)"
-            />
-            <button
-              id="plus"
-              class="quantityButton rounded-end"
-              @click="quantity($event.target.id, dish)"
-            >
-              +
-            </button>
-          </div>
-          <!-- QUANTITA
+                <!-- QUANTITA -->
+                <div class="amountContainer col-2">
+                  <button id="minus" class="quantityButton rounded-start" @click="quantity($event.target.id, dish)">
+                    -
+                  </button>
+                  <input type="number" :id="dish.id" min="0" :value="dish.quantity" @keyup="getClass($event.target.id)"
+                    @blur="inputValidation($event.target.id, dish)" />
+                  <button id="plus" class="quantityButton rounded-end" @click="quantity($event.target.id, dish)">
+                    +
+                  </button>
+                </div>
+              </div>
+              <!-- QUANTITA
           <div class="dishPrice col-2">
             <h5>x {{ dish.quantity }}</h5>
           </div> -->
-        </div>
-        <div>
-          <h2 class="totalPrice">€ {{ euroCheck(this.myOrder.price) }}</h2>
+            </div>
+          </div>
+          <div class="card-footer pb-3">
+            <div>
+              <h3 class="totalPrice mt-2">La tua spesa sarà di € {{ euroCheck(this.myOrder.price) }}</h3>
+            </div>
+          </div>
+
         </div>
       </div>
-    </div>
-    <div class="col-12 col-md-4 px-2 pe-5">
-      <Payment :authorization="this.tokenApi" :myOrder="this.myOrder"></Payment>
+      <div class="col-12 col-md-4 px-2 pe-5">
+        <Payment :authorization="this.tokenApi" :myOrder="this.myOrder"></Payment>
 
-  
+
+      </div>
     </div>
   </div>
 </template>
@@ -285,6 +275,7 @@ export default {
 @use "../style/partials/mixins" as *;
 
 @use "../style/partials/variables" as *;
+
 
 .totalPrice {
   color: $darkblue;

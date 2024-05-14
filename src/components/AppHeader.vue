@@ -16,42 +16,23 @@ export default {
     <div class="container-md d-flex">
       <ul class="navbar-ul">
         <li class="nav-item me-4">
-          <router-link
-            :to="{ name: 'home' }"
-            class="nav-link text-white"
-            aria-current="page"
-          >
-            <a class="navbar-brand"
-              ><img src="../assets/img/boolivery_manager.svg" alt="" /></a
-          ></router-link>
+          <router-link :to="{ name: 'home' }" class="nav-link text-white" aria-current="page">
+            <a class="navbar-brand"><img src="../assets/img/boolivery_manager.svg" alt="" /></a></router-link>
           <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
         </li>
         <li class="nav-item me-4">
-          <router-link
-            :to="{ name: 'home' }"
-            class="nav-link text-white"
-            aria-current="page"
-            >Home</router-link
-          >
+          <router-link :to="{ name: 'home' }" class="nav-link text-white" aria-current="page">Home</router-link>
         </li>
 
         <li class="nav-item me-4">
-          <router-link
-            :to="{ name: 'payment.landing' }"
-            class="nav-link text-white"
-            aria-current="page"
-            >Payment</router-link
-          >
+          <router-link :to="{ name: 'payment.landing' }" class="nav-link text-white"
+            aria-current="page">Payment</router-link>
         </li>
       </ul>
       <ul class="chart-icon">
-        <li class="nav-item me-4 d-none">
-          <router-link
-            :to="{ name: 'restaurants.checkout' }"
-            class="nav-link text-white"
-            aria-current="page"
-            >Carrello</router-link
-          >
+        <li class="nav-item me-4 ">
+          <router-link :to="{ name: 'restaurants.checkout' }" class="nav-link text-white"
+            aria-current="page">Carrello</router-link>
         </li>
       </ul>
 
