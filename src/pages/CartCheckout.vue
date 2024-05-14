@@ -34,8 +34,8 @@ export default {
       let order = localStorage.getItem("myOrder");
       if (order) {
         this.myOrder = JSON.parse(order);
-        console.log(this.myOrder);
-        console.log(this.myOrder.dishes.length);
+        // console.log(this.myOrder);
+        // console.log(this.myOrder.dishes.length);
       }
     },
 
@@ -137,7 +137,7 @@ export default {
   async mounted() {
     let response = await axios.get(api.baseApiURI + "order/generate");
     this.tokenApi = response.data.token;
-    console.log(this.tokenApi);
+    // console.log(this.tokenApi);
   },
 };
 </script>

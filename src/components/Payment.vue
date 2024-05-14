@@ -12,10 +12,7 @@ export default {
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
 
-      // store,
-    };
-  },
-  props: { authorization: { required: true, type: String } },
+    
 
   watch: {
     authorization: {
@@ -78,7 +75,7 @@ export default {
 <!-- :action="api.baseApiURI + 'order/make/payment'" -->
 <!-- action="https://learning.tizianonicolai.com/request-catcher/index.php" -->
 <template>
-  <div>
+  <div class="mb-3">
     <div>
       <form
         id="payment-form"
@@ -174,7 +171,8 @@ export default {
         <input type="hidden" name="token" :value="authorization" />
 
         <div id="dropin-container"></div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        
+        <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
       </form>
 
     
