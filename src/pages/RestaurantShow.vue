@@ -560,6 +560,10 @@ export default {
             <h5>x {{ dish.quantity }}</h5>
           </div>
         </div>
+        <!-- QUANTITA -->
+        <div class="dishQuantity col-2">
+          <h5>x {{ dish.price }}</h5>
+        </div>
       </div>
     </div>
     <div
