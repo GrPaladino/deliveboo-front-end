@@ -34,7 +34,15 @@ export default {
             >Home</router-link
           >
         </li>
-       
+
+        <li class="nav-item me-4 d-none">
+          <router-link
+            :to="{ name: 'payment.landing' }"
+            class="nav-link text-white"
+            aria-current="page"
+            >Payment</router-link
+          >
+        </li>
       </ul>
       <ul class="chart-icon">
         <li class="nav-item me-4">
@@ -89,7 +97,6 @@ export default {
   height: $headerHeight;
   box-shadow: 0 0 5px black;
   background: $midblue;
-  
 
   .navbar-ul {
     // width: 100%;
@@ -108,7 +115,6 @@ export default {
   .chart-icon li {
     @include d-flex-center;
 
-   
     color: white;
   }
 }

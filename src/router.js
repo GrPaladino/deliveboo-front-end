@@ -7,6 +7,8 @@ import CartView from "./pages/CartView.vue";
 
 import CartCheckout from "./pages/CartCheckout.vue";
 
+import PaymentLanding from "./pages/PaymentLanding.vue";
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -25,6 +27,11 @@ const router = createRouter({
       path: "/checkout",
       name: "restaurants.checkout",
       component: CartCheckout,
+    },
+    {
+      path: "/paymentLanding",
+      name: "payment.landing",
+      component: PaymentLanding,
     },
   ],
 });
