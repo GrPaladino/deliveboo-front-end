@@ -34,6 +34,15 @@ export default {
             >Home</router-link
           >
         </li>
+
+        <li class="nav-item me-4 d-none">
+          <router-link
+            :to="{ name: 'payment.landing' }"
+            class="nav-link text-white"
+            aria-current="page"
+            >Payment</router-link
+          >
+        </li>
       </ul>
       <ul class="chart-icon">
         <li class="nav-item me-4 d-none">
