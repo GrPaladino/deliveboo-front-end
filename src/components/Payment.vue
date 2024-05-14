@@ -46,9 +46,7 @@ export default {
           button.addEventListener("click", function () {
             instance.requestPaymentMethod(function (err, payload) {
               if (err) {
-                console.error(err);
               } else {
-                alert(payload.nonce);
               }
             });
           });

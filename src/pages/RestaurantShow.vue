@@ -21,7 +21,7 @@ export default {
         if (this.restaurant && this.filled === false) {
           console.log("watcher");
           this.filled = true;
-          setTimeout(this.cartQuantity, 500);
+          setTimeout(this.cartQuantity, 300);
         }
       },
       deep: true,
@@ -31,6 +31,11 @@ export default {
         if (this.myOrder && this.cartCheck === true) {
           localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
           console.log("Pushed to storage");
+        }
+        if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
+          this.myOrder = [];
+          localStorage.removeItem("myOrder");
+          console.log("Removed from storage");
         }
       },
       deep: true,
@@ -50,29 +55,28 @@ export default {
     },
     // PLUS AND MINUS BUTTONS
     quantity(operator, dish) {
-      let value = document.getElementById(dish);
+      let value = document.getElementById(dish.id);
+      console.log("questo è dish", dish);
       if (operator == "minus" && value.value > 0) {
         if (value.value == 1) {
-          let thisPlate = document.getElementById(dish);
-          thisPlate.classList.add("off");
+          value.classList.add("off");
         }
         value.value--;
-        let dishObject = this.restaurant.dishes.find((d) => d.id === dish);
-        if (dishObject) {
-          let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish);
-          if (dishInOrder) {
-            dishInOrder.quantity--;
-            if (dishInOrder.quantity === 0) {
-              // Rimuovere il piatto dall'ordine se la quantità è 0
-              this.myOrder.dishes = this.myOrder.dishes.filter(
-                (d) => d.id !== dish
-              );
-            }
-            this.myOrder.price -= dishObject.price;
+
+        let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
+        if (dishInOrder) {
+          dishInOrder.quantity--;
+          if (dishInOrder.quantity === 0) {
+            // Rimuovere il piatto dall'ordine se la quantità è 0
+            this.myOrder.dishes = this.myOrder.dishes.filter(
+              (d) => d.id !== dish.id
+            );
           }
+          this.myOrder.price -= dish.price;
         }
       }
       if (operator == "plus") {
+        // SE MYORDER NON ESISTE
         if (!this.myOrder.dishes) {
           this.myOrder = {
             restaurant_id: this.restaurant.id,
@@ -85,23 +89,32 @@ export default {
           // SE ORDINE NON ESISTE
           // SE IL VALUE SALE
           if (value.value == 0) {
-            let thisPlate = document.getElementById(dish);
-            thisPlate.classList.remove("off");
+            value.classList.remove("off");
           }
-          value.value++;
-          // console.log(this.restaurant.dishes);
-          // LOGICA PLUS
-          let dishObject = this.restaurant.dishes.find((d) => d.id === dish);
-          if (dishObject) {
-            let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish);
+
+          let potentialPrice =
+            this.myOrder.price +
+            parseFloat(this.myOrder.price) +
+            parseFloat(dish.price);
+          if (potentialPrice < 9999.99) {
+            value.value++;
+            // console.log(this.restaurant.dishes);
+            // LOGICA PLUS
+
+            let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
             if (dishInOrder) {
               dishInOrder.quantity++;
             } else {
-              this.myOrder.dishes.push({ ...dishObject, quantity: 1 });
+              this.myOrder.dishes.push({ ...dish, quantity: 1 });
             }
+
+            this.myOrder.price =
+              parseFloat(this.myOrder.price) + parseFloat(dish.price);
+          } else {
+            alert(
+              "Aggiungendo questo piatto, si supererebbe il limite di prezzo del carrello di 9999.99€."
+            );
           }
-          this.myOrder.price =
-            parseFloat(this.myOrder.price) + parseFloat(dishObject.price);
         } else {
           if (
             confirm(
@@ -120,8 +133,13 @@ export default {
     // EMPTY CART OF ALL ITEMS
     emptyCart() {
       localStorage.removeItem("myOrder");
-      this.myOrder = null;
+      this.myOrder = [];
       console.log("localStorage svuotato!");
+      let inputs = document.querySelectorAll("input");
+      inputs.forEach((input) => {
+        input.value = 0;
+        input.classList.add("off");
+      });
     },
 
     // REMOVE OFF CLASS FROM INPUTS
@@ -134,11 +152,72 @@ export default {
       }
     },
     // VALIDATION FOR INPUTS
-    inputValidation(event) {
+    inputValidation(event, dish) {
       let input = document.getElementById(event);
+      if (
+        parseInt(input.value) === 0 &&
+        (!this.myOrder.dishes || this.myOrder.dishes.length === 0)
+      ) {
+        return;
+      }
+      // Inizializza l'ordine se non esiste
+      if (!this.myOrder.dishes) {
+        this.myOrder = {
+          restaurant_id: this.restaurant.id,
+          dishes: [],
+          price: 0,
+        };
+      }
       if (!input.value) input.value = 0;
-      input.reportValidity();
+
+      if (input.reportValidity()) {
+        let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
+
+        // Calcola la nuova quantità e il nuovo prezzo potenziale
+        let newQuantity = parseInt(input.value);
+        let potentialNewPrice =
+          this.myOrder.price -
+          (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
+          newQuantity * dish.price;
+
+        // Controlla se il prezzo supera il limite prima di aggiornare l'ordine
+        if (potentialNewPrice > 9999.99) {
+          // Calcola la quantità massima possibile senza superare il limite
+          newQuantity = Math.floor(
+            (9999.99 -
+              (this.myOrder.price -
+                (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
+              dish.price
+          );
+          potentialNewPrice =
+            this.myOrder.price -
+            (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
+            newQuantity * dish.price;
+          alert(
+            "Il limite di prezzo del carrello di 9999.99€ è stato superato. La quantità è stata aggiustata al valore massimo possibile."
+          );
+        }
+
+        // Aggiorna l'ordine solo se la nuova quantità è maggiore di zero
+        if (newQuantity > 0) {
+          if (dishInOrder) {
+            this.myOrder.price = potentialNewPrice;
+            dishInOrder.quantity = newQuantity;
+          } else {
+            this.myOrder.dishes.push({ ...dish, quantity: newQuantity });
+            this.myOrder.price = potentialNewPrice;
+          }
+          input.value = newQuantity;
+        } else if (dishInOrder) {
+          // Rimuovi il piatto dall'ordine se la quantità è 0
+          this.myOrder.dishes = this.myOrder.dishes.filter(
+            (d) => d.id !== dish.id
+          );
+          this.myOrder.price -= dishInOrder.quantity * dish.price;
+        }
+      }
     },
+
     // CHECK IF INPUT IS EMPTY
     isEmpty(obj) {
       return Object.keys(obj).length === 0 && obj.constructor === Object;
@@ -150,10 +229,13 @@ export default {
         console.log("partita la funzione");
         // PROVO A RECUPERARE L'ORDINE
         const orderString = localStorage.getItem("myOrder");
+
         // CONTROLLO SE L'ORDINE ESISTE
-        if (orderString !== null) {
+
+        const order = JSON.parse(orderString);
+
+        if (orderString !== null && order.length) {
           console.log("Ordine trovato");
-          const order = JSON.parse(orderString);
           console.log(order);
           // MYORDER UGUALE A LOCALSTORAGE
           this.myOrder = order;
@@ -178,9 +260,9 @@ export default {
       this.cartCheck = true;
     },
 
-    addToCart() { },
+
     checkEmpty() {
-      if (this.myOrder.dishes.length == 0) {
+      if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
         this.myOrder = [];
         console.log("MyOrder era vuoto");
       }
@@ -278,12 +360,31 @@ export default {
         </div>
         <!-- QUANTITA  col-2-->
         <div class="amountContainer col-2">
-          <button id="minus" class="quantityButton rounded-start" @click="quantity($event.target.id, dish.id)">
+
+          <button
+            id="minus"
+            class="quantityButton rounded-start"
+            @click="quantity($event.target.id, dish)"
+          >
             -
           </button>
-          <input type="number" :id="dish.id" min="0" value="0" class="off" @keyup="getClass($event.target.id)"
-            @blur="inputValidation($event.target.id)" />
-          <button id="plus" class="quantityButton rounded-end" @click="quantity($event.target.id, dish.id)">
+          <input
+            type="number"
+            :id="dish.id"
+            min="0"
+            step="1"
+            value="0"
+            class="off"
+            @keyup="getClass($event.target.id)"
+            @blur="inputValidation($event.target.id, dish)"
+          />
+          <button
+            id="plus"
+            class="quantityButton rounded-end"
+            @click="quantity($event.target.id, dish)"
+          >
+
+
             +
           </button>
         </div>
