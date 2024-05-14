@@ -212,7 +212,7 @@ export default {
             (9999.99 -
               (this.myOrder.price -
                 (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
-              dish.price
+            dish.price
           );
           potentialNewPrice =
             this.myOrder.price -
@@ -287,34 +287,23 @@ export default {
     this.fetchRestaurants();
   },
 
-  mounted() {},
+  mounted() { },
 };
 </script>
 
 <template>
   <div class="container py-3">
-    <div
-      class="row justify-content-between containerApp p-3"
-      v-if="this.restaurant"
-    >
+    <div class="row justify-content-between containerApp p-3" v-if="this.restaurant">
       <!-- ! RESTAURANT COLUMN -->
       <div class="col-sm-12 col-md-3 px-0 bg-white leftColumn">
-        <router-link
-          :to="{ name: 'home' }"
-          class="col-lg-3 col-md-6 col-sm-12"
-          id="addButton"
-        >
+        <router-link :to="{ name: 'home' }" class="col-lg-3 col-md-6 col-sm-12" id="addButton">
           <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
           <button class="ballButton" @click="checkEmpty()">👈🏻</button>
         </router-link>
         <!-- </div> -->
 
         <!-- RESTAURANT DETAILS -->
-        <img
-          :src="restaurant.image"
-          :alt="restaurant.name"
-          class="w-100 border border-5 border-info rounded"
-        />
+        <img :src="restaurant.image" :alt="restaurant.name" class="w-100 border border-5 border-info rounded" />
 
         <div class="my-3">
           <h1>{{ restaurant.name }}</h1>
@@ -337,17 +326,10 @@ export default {
 
       <!-- ! DISHES COLUMN -->
       <div class="col-md-9 col-sm-12 rightColumn row border-start">
-        <div
-          v-for="dish in restaurant.dishes"
-          class="dishCard col-xl-6 col-lg-12 mb-1"
-        >
+        <div v-for="dish in restaurant.dishes" class="dishCard col-xl-6 col-lg-12 mb-1">
           <!-- IMMAGINE -->
 
-          <div
-            class="dishImage col-2"
-            data-bs-toggle="modal"
-            :data-bs-target="`#dish-` + dish.id"
-          >
+          <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
             <img :src="dish.image" alt="dish.name" class="dish-preview" />
           </div>
           <!-- TESTO -->
@@ -364,70 +346,34 @@ export default {
             <!-- QUANTITA  col-2-->
             <!-- <div class="amountContainer col-2"> -->
             <div class="amountContainer">
-              <button
-                id="minus"
-                class="quantityButton rounded-start"
-                @click="quantity($event.target.id, dish)"
-              >
+              <button id="minus" class="quantityButton rounded-start" @click="quantity($event.target.id, dish)">
                 -
               </button>
-              <input
-                type="number"
-                :id="dish.id"
-                min="0"
-                step="1"
-                value="0"
-                class="off"
-                @keyup="getClass($event.target.id)"
-                @blur="inputValidation($event.target.id, dish)"
-              />
-              <button
-                id="plus"
-                class="quantityButton rounded-end"
-                @click="quantity($event.target.id, dish)"
-              >
+              <input type="number" :id="dish.id" min="0" step="1" value="0" class="off"
+                @keyup="getClass($event.target.id)" @blur="inputValidation($event.target.id, dish)" />
+              <button id="plus" class="quantityButton rounded-end" @click="quantity($event.target.id, dish)">
                 +
               </button>
             </div>
           </div>
           <!-- MODAL CONTENT -->
-          <div
-            class="modal fade"
-            :id="`dish-` + dish.id"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabindex="-1"
-            :aria-labelledby="`dish-` + dish.id"
-            aria-hidden="true"
-          >
-            <div
-              class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
-            >
+          <div class="modal fade" :id="`dish-` + dish.id" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" :aria-labelledby="`dish-` + dish.id" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="staticBackdropLabel">
                     Dettagli: {{ dish.name }}
                   </h5>
-                  <button
-                    type="button"
-                    class="btn-close w-25"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
+                  <button type="button" class="btn-close w-25" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <img :src="dish.image" alt="dish.name" class="modalImage" />
                   <p>Descrizione: {{ dish.description }}</p>
                   <h6>Prezzo: €{{ dish.price }}</h6>
                 </div>
-                <div
-                  class="modal-footer d-flex flex-column justify-content-center align-items-center"
-                >
-                  <button
-                    type="button"
-                    class="btn btn-secondary mb-2"
-                    data-bs-dismiss="modal"
-                  >
+                <div class="modal-footer d-flex flex-column justify-content-center align-items-center">
+                  <button type="button" class="btn btn-secondary mb-2" data-bs-dismiss="modal">
                     Chiudi
                   </button>
                 </div>
@@ -446,14 +392,14 @@ export default {
          > -->
       <!-- <div class="bin" @click="emptyCart()">🗑️</div> -->
 
-      <div
-        class="goToCart"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasScrolling"
-        aria-controls="offcanvasScrolling"
-      >
+      <div class="goToCart" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
+        aria-controls="offcanvasScrolling">
         🛒
+        <!-- da sistemare il counter/badge sul carrello 
+        creare variabile per contare la quantità dei piatti inseriti nel carrello
+        -->
+
+        <span>{{ myOrder.dishes.length }}</span>
       </div>
 
       <!-- </router-link
@@ -463,34 +409,19 @@ export default {
 
   <!-- CART OFFCANVAS -->
 
-  <div
-    class="offcanvas offcanvas-start"
-    data-bs-scroll="true"
-    data-bs-backdrop="false"
-    tabindex="-1"
-    id="offcanvasScrolling"
-    aria-labelledby="offcanvasScrollingLabel"
-  >
+  <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+    id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header">
       <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
         Il tuo carrello
       </h2>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="offcanvas"
-        aria-label="Close"
-      ></button>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-      <div v-for="dish in myOrder.dishes" class="dishCard pe-5">
+      <div v-for="dish in myOrder.dishes" class="dishCard mb-2">
         <!-- IMMAGINE -->
 
-        <div
-          class="dishImage col-2"
-          data-bs-toggle="modal"
-          :data-bs-target="`#dish-` + dish.id"
-        >
+        <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
           <img :src="dish.image" alt="dish.name" />
         </div>
         <!-- TESTO -->
@@ -498,48 +429,34 @@ export default {
           <h5>{{ dish.name }}</h5>
           <p>{{ dish.description }}</p>
         </div>
-        <!-- PREZZO -->
-        <div class="dishPrice col-2">
-          <h5>€ {{ euroCheck(dish.price) }}</h5>
+        <div class="col-2"><!-- PREZZO -->
+          <div class="dishPrice col-12">
+            <h5>€ {{ euroCheck(dish.price) }}</h5>
+          </div>
+          <!-- QUANTITà-->
+          <div class="dishPrice col-12">
+            <h5> x {{ dish.quantity }}</h5>
+          </div>
         </div>
+
         <!-- MODAL CONTENT -->
-        <div
-          class="modal fade"
-          :id="`dish-` + dish.id"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-          tabindex="-1"
-          :aria-labelledby="`dish-` + dish.id"
-          aria-hidden="true"
-        >
-          <div
-            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
-          >
+        <div class="modal fade" :id="`dish-` + dish.id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          :aria-labelledby="`dish-` + dish.id" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
                   Dettagli: {{ dish.name }}
                 </h5>
-                <button
-                  type="button"
-                  class="btn-close w-25"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
+                <button type="button" class="btn-close w-25" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <img :src="dish.image" alt="dish.name" class="modalImage" />
                 <p>Descrizione: {{ dish.description }}</p>
                 <h6>Prezzo: €{{ euroCheck(dish.price) }}</h6>
               </div>
-              <div
-                class="modal-footer d-flex flex-column justify-content-center align-items-center"
-              >
-                <button
-                  type="button"
-                  class="btn btn-secondary mb-2"
-                  data-bs-dismiss="modal"
-                >
+              <div class="modal-footer d-flex flex-column justify-content-center align-items-center">
+                <button type="button" class="btn btn-secondary mb-2" data-bs-dismiss="modal">
                   Chiudi
                 </button>
               </div>
@@ -554,18 +471,12 @@ export default {
         </div>
       </div>
 
-      <div
-        class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
-        v-if="this.myOrder.dishes"
-      >
+      <div class="offcanvas-footer d-flex flex-column justify-content-center mb-5" v-if="this.myOrder.dishes">
         <h4 class="text-center mb-2">PREZZO TOTALE</h4>
 
         <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
 
-        <router-link
-          :to="{ name: 'restaurants.checkout' }"
-          class="router-link text-center"
-        >
+        <router-link :to="{ name: 'restaurants.checkout' }" class="router-link text-center">
           <button type="button" class="btn btn-primary btn-lg">
             Procedi al pagamento
           </button>
@@ -576,39 +487,20 @@ export default {
 
   <!-- CART OFFCANVAS -->
 
-  <div
-    class="offcanvas offcanvas-start"
-    data-bs-scroll="true"
-    data-bs-backdrop="false"
-    tabindex="-1"
-    id="offcanvasScrolling"
-    aria-labelledby="offcanvasScrollingLabel"
-  >
+  <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+    id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header">
       <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
         Il tuo carrello
       </h2>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="offcanvas"
-        aria-label="Close"
-      ></button>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
-      <div
-        v-if="myOrder.dishes"
-        v-for="dish in myOrder.dishes"
-        class="d-flex flex-column pe-5"
-      >
-        <div class="dishCard">
+      <div v-if="myOrder.dishes" v-for="dish in myOrder.dishes" class="d-flex flex-column pe-5">
+        <div class="dishCard mb-3">
           <!-- IMMAGINE -->
 
-          <div
-            class="dishImage col-2"
-            data-bs-toggle="modal"
-            :data-bs-target="`#dish-` + dish.id"
-          >
+          <div class="dishImage col-2 " data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
             <img :src="dish.image" alt="dish.name" />
           </div>
           <!-- TESTO -->
@@ -624,27 +516,19 @@ export default {
             </h5>
           </div>
         </div>
-        <span class="text-secondary text-end"
-          >{{ euroCheck(dish.price) }} x {{ dish.quantity }}</span
-        >
+        <span class="text-secondary text-end">{{ euroCheck(dish.price) }} x {{ dish.quantity }}</span>
       </div>
 
       <div v-else class="d-flex flex-column pe-5">
         <span class="text-secondary">Il tuo carrello è vuoto.</span>
       </div>
     </div>
-    <div
-      class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
-      v-if="this.myOrder.dishes"
-    >
+    <div class="offcanvas-footer d-flex flex-column justify-content-center mb-5" v-if="this.myOrder.dishes">
       <h4 class="text-center mb-2">PREZZO TOTALE</h4>
 
       <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
 
-      <router-link
-        :to="{ name: 'restaurants.checkout' }"
-        class="router-link text-center"
-      >
+      <router-link :to="{ name: 'restaurants.checkout' }" class="router-link text-center">
         <button type="button" class="btn btn-primary btn-lg">
           Procedi al pagamento
         </button>
@@ -861,6 +745,7 @@ button {
   background-color: white;
   flex: 0 0 auto;
   color: $darkblue;
+  border-bottom: 1px solid rgba($midblue, 0.2);
 
   .dishImage {
     height: 80px;
@@ -884,7 +769,7 @@ button {
   .dishInfo,
   .dishPrice {
     display: flex;
-    border-bottom: 1px solid rgba($midblue, 0.2);
+    // border-bottom: 1px solid rgba($midblue, 0.2);
     flex-direction: column;
     justify-content: center;
 
@@ -941,5 +826,9 @@ button {
 .blueColor {
   background-color: $midblue;
   color: white;
+}
+
+.offcanvas {
+  width: calc(100% / 3);
 }
 </style>
