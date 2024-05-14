@@ -1,7 +1,5 @@
 <script>
-
 import { api, store } from "../store";
-
 
 export default {
   data() {
@@ -11,8 +9,6 @@ export default {
     };
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
-
-    
 
   watch: {
     authorization: {
@@ -35,7 +31,6 @@ export default {
           selector: "#dropin-container",
         },
         function (err, instance) {
-
           if (err) {
             console.error(err);
             return;
@@ -171,17 +166,19 @@ export default {
         <input type="hidden" name="token" :value="authorization" />
 
         <div id="dropin-container"></div>
-        
-        <button id="submit-button" type="submit" class="btn btn-primary">Submit</button>
-      </form>
+        <div class="text-dark mb-2">
+          <i>I dati accompagnati da * sono obbligatori</i>
+        </div>
 
-    
+        <button id="submit-button" type="submit" class="btn btn-primary">
+          Submit
+        </button>
+      </form>
     </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
-
 @use "../style/partials/mixins" as *;
 
 @use "../style/partials/variables" as *;
@@ -221,5 +218,9 @@ label {
 .button--green:hover {
   background-color: #8bdda8;
   color: white;
+}
+
+i {
+  font-size: 0.8rem;
 }
 </style>

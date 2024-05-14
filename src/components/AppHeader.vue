@@ -35,7 +35,7 @@ export default {
           >
         </li>
 
-        <li class="nav-item me-4 d-none">
+        <li class="nav-item me-4">
           <router-link
             :to="{ name: 'payment.landing' }"
             class="nav-link text-white"
