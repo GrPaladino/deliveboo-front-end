@@ -2,43 +2,43 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 import dropin from "braintree-web-drop-in";
-import {store} from "../store/index.js";
+import { store } from "../store/index.js";
 
 export default {
-    data () {
-        return{
-            store,
-        }
-    }
+  data() {
+    return {
+      store,
+    };
+  }
 };
 
 /**
  * to do implementare il metodo per il pagamento
  * Tokenization Key: "sandbox_rz8tc8v5_9bpqhpnxss37n4yn"
  * 
- * */ 
+ * */
 
 
 </script>
 
 <template>
-    <div class="container ps-2 pt-2">
+  <div class="container ps-2 pt-2">
 
-        <div class="card my-3">lista prodotti carrello</div>
-        
-        <div class="card my-3">Resoconto  totale carrello</div>
+    <div class="card my-3">lista prodotti carrello</div>
 
-
-        <!-- todo: legare il form alla chiamata per la conferma del pagamento -->
-        <form class="col-3" action="">
-            
-            <div id="dropin-container"></div>
-            <button id="submit-button" class="button button--small button--green">Purchase</button>
-        
-        </form>
+    <div class="card my-3">Resoconto totale carrello</div>
 
 
-    </div>
+    <!-- todo: legare il form alla chiamata per la conferma del pagamento -->
+    <form class="col-3" action="">
+
+      <div id="dropin-container"></div>
+      <button id="submit-button" class="button button--small button--green">Acquista</button>
+
+    </form>
+
+
+  </div>
 </template>
 
 <style lang="scss" scoped>

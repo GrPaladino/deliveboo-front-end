@@ -26,7 +26,7 @@ export default {
 
         <li class="nav-item me-4">
           <router-link :to="{ name: 'payment.landing' }" class="nav-link text-white"
-            aria-current="page">Payment</router-link>
+            aria-current="page">Pagamenti</router-link>
         </li>
       </ul>
       <ul class="chart-icon">
