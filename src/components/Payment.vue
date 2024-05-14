@@ -98,111 +98,124 @@ export default {
   <div class="mb-3">
     <div>
       <form
+        class="p-0"
         id="payment-form"
         :action="api.baseApiURI + 'order/make/payment'"
         method="post"
       >
         @csrf
         <!-- Name field with pattern restriction for letters only -->
-        <div class="mb-3">
-          <label for="customer_name" class="form-label"
-            >Nome e Cognome: *</label
-          >
-          <input
-            type="text"
-            class="form-control"
-            id="customer_name"
-            name="customer_name"
-            pattern="[A-Za-z\s]+"
-            required
-            max="200"
-            title="Inserire solo lettere."
-          />
+        <div class="card">
+          <div class="card-header px-3 pt-3">
+            <h2>Dati Cliente</h2>
+          </div>
+          <div class="card-body px-2">
+            <div class="mb-3">
+              <label for="customer_name" class="form-label"
+                >Nome e Cognome: *</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="customer_name"
+                name="customer_name"
+                pattern="[A-Za-z\s]+"
+                required
+                max="200"
+                title="Inserire solo lettere."
+              />
+            </div>
+
+            <!-- Email field with built-in email validation -->
+            <div class="mb-3">
+              <label for="email" class="form-label">Email: *</label>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                name="email"
+                required
+                max="200"
+              />
+            </div>
+
+            <!-- Phone field with pattern restriction for phone numbers -->
+            <div class="mb-3">
+              <label for="phone" class="form-label"
+                >Numero di telefono: *</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="phone"
+                name="phone"
+                required
+                max="20"
+              />
+            </div>
+
+            <!-- Address field with minlength and maxlength attributes -->
+            <div class="mb-3">
+              <label for="address" class="form-label">Indirizzo: *</label>
+              <input
+                type="text"
+                class="form-control"
+                id="address"
+                name="address"
+                max="250"
+                required
+              />
+            </div>
+
+            <input
+              type="hidden"
+              class="form-control"
+              id="date_time"
+              name="date_time"
+              required
+              readonly
+            />
+
+            <!-- Price field with minimum and maximum value restrictions -->
+            <div class="mb-3">
+              <label for="price" class="form-label">Totale:</label>
+              <input
+                type="float"
+                class="form-control"
+                id="price"
+                name="price"
+                :value="euroCheck(myOrder.price)"
+                required
+                readonly
+              />
+            </div>
+
+            <input
+              type="hidden"
+              name="orderData"
+              :value="JSON.stringify(myOrder.dishes)"
+            />
+            <!-- BRAINTREE DATA -->
+            <input
+              type="hidden"
+              name="amount"
+              :value="euroCheck(myOrder.price)"
+            />
+            <input type="hidden" name="token" :value="authorization" />
+
+            <div id="dropin-container"></div>
+
+            <div class="text-dark mb-2">
+              <i>I dati accompagnati da * sono obbligatori</i>
+            </div>
+          </div>
+
+          <div class="card-footer">
+            <button id="submit-button" type="submit" class="btn submit-button">
+              Invia
+            </button>
+          </div>
         </div>
-
-        <!-- Email field with built-in email validation -->
-        <div class="mb-3">
-          <label for="email" class="form-label">Email: *</label>
-          <input
-            type="email"
-            class="form-control"
-            id="email"
-            name="email"
-            required
-            max="200"
-          />
-        </div>
-
-        <!-- Phone field with pattern restriction for phone numbers -->
-        <div class="mb-3">
-          <label for="phone" class="form-label">Numero di telefono: *</label>
-          <input
-            type="text"
-            class="form-control"
-            id="phone"
-            name="phone"
-            required
-            max="20"
-          />
-        </div>
-
-        <!-- Address field with minlength and maxlength attributes -->
-        <div class="mb-3">
-          <label for="address" class="form-label">Indirizzo: *</label>
-          <input
-            type="text"
-            class="form-control"
-            id="address"
-            name="address"
-            max="250"
-            required
-          />
-        </div>
-
-        <input
-          type="hidden"
-          class="form-control"
-          id="date_time"
-          name="date_time"
-          required
-          readonly
-        
-        />
-
-
-        <!-- Price field with minimum and maximum value restrictions -->
-        <div class="mb-3">
-          <label for="price" class="form-label">Totale:</label>
-          <input
-            type="float"
-            class="form-control"
-            id="price"
-            name="price"
-            :value="euroCheck(myOrder.price)"
-            required
-            readonly
-          />
-        </div>
-
-        <input
-          type="hidden"
-          name="orderData"
-          :value="JSON.stringify(myOrder.dishes)"
-        />
-        <!-- BRAINTREE DATA -->
-        <input type="hidden" name="amount" :value="euroCheck(myOrder.price)" />
-        <input type="hidden" name="token" :value="authorization" />
-
-        <div id="dropin-container"></div>
-
-        <div class="text-dark mb-2">
-          <i>I dati accompagnati da * sono obbligatori</i>
-        </div>
-
-        <button id="submit-button" type="submit" class="btn btn-primary">
-          Submit
-        </button>
-
       </form>
     </div>
   </div>
@@ -212,7 +225,8 @@ export default {
 @use "../style/partials/mixins" as *;
 
 @use "../style/partials/variables" as *;
-label {
+label,
+h2 {
   color: $darkblue;
 }
 
@@ -252,5 +266,10 @@ label {
 
 i {
   font-size: 0.8rem;
+}
+
+.submit-button {
+  background-color: $midblue;
+  color: white;
 }
 </style>

@@ -10,7 +10,6 @@ export default {
 
       store,
       myOrder: [],
-
     };
   },
   watch: {
@@ -33,7 +32,6 @@ export default {
   components: { Payment },
 
   methods: {
-
     fetchOrder() {
       let order = localStorage.getItem("myOrder");
       if (order) {
@@ -58,7 +56,6 @@ export default {
       let formattedPrice = Number(price).toFixed(2);
       formattedPrice = formattedPrice.replace(".", ",");
       return formattedPrice;
-
     },
     // PLUS AND MINUS BUTTONS
     quantity(operator, dish) {
@@ -122,8 +119,6 @@ export default {
           );
         }
       }
-
-
     },
 
     // VALIDATION FOR INPUTS
@@ -155,7 +150,7 @@ export default {
             (9999.99 -
               (this.myOrder.price -
                 (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
-            dish.price
+              dish.price
           );
           potentialNewPrice =
             this.myOrder.price -
@@ -190,9 +185,7 @@ export default {
   },
 
   created() {
-
     this.fetchOrder();
-
   },
 
   async mounted() {
@@ -205,10 +198,9 @@ export default {
 
 <template>
   <div class="container d-flex justify-content-center py-3">
-    <div class="row justify-content-center containerApp p-4 container ">
-
-      <div class="col-12 col-md-8 px-2">
-        <div class="card  ">
+    <div class="row justify-content-center containerApp px-4 container">
+      <div class="col-12 col-md-7 px-2 mt-4">
+        <div class="card">
           <div class="card-header px-3 pt-3">
             <h2>Il tuo ordine :</h2>
           </div>
@@ -217,35 +209,62 @@ export default {
             <div v-if="this.myOrder.dishes.length == 0">
               <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
               <router-link to="/">
-                <button class="btn btn-primary">Torna alla home</button></router-link>
+                <button class="btn btn-primary">
+                  Torna alla home
+                </button></router-link
+              >
             </div>
             <div v-if="this.myOrder.dishes.length > 0">
-              <div v-for="dish in myOrder.dishes" class="dishCard pe-2 col-12 col-md-6 w-100 mb-1">
+              <div
+                v-for="dish in myOrder.dishes"
+                class="dishCard pe-2 col-12 col-md-6 w-100 mb-1"
+              >
                 <!-- IMMAGINE -->
 
-                <div class="dishImage col-2" data-bs-toggle="modal" :data-bs-target="`#dish-` + dish.id">
+                <div
+                  class="dishImage col-2"
+                  data-bs-toggle="modal"
+                  :data-bs-target="`#dish-` + dish.id"
+                >
                   <img :src="dish.image" alt="dish.name" />
                 </div>
                 <!-- TESTO -->
-                <div class="dishInfo col-6 px-2">
+                <div class="dishInfo col-6 col-sm-5 col-md-6 px-2">
                   <h5>{{ dish.name }}</h5>
                   <p>{{ dish.description }}</p>
                 </div>
-                <!-- PREZZO -->
-                <div class="dishPrice col-2">
-                  <h5> € {{ euroCheck(dish.price) }}</h5>
-                </div>
+                <div class="col-4 col-sm-5 col-md-4 row">
+                  <!-- PREZZO -->
+                  <div class="dishPrice col-xl-6 col-lg-12">
+                    <h5>€ {{ euroCheck(dish.price) }}</h5>
+                  </div>
 
-                <!-- QUANTITA -->
-                <div class="amountContainer col-2">
-                  <button id="minus" class="quantityButton rounded-start" @click="quantity($event.target.id, dish)">
-                    -
-                  </button>
-                  <input type="number" :id="dish.id" min="0" :value="dish.quantity" @keyup="getClass($event.target.id)"
-                    @blur="inputValidation($event.target.id, dish)" />
-                  <button id="plus" class="quantityButton rounded-end" @click="quantity($event.target.id, dish)">
-                    +
-                  </button>
+                  <!-- QUANTITA -->
+                  <div class="amountContainer col-xl-6 col-lg-12">
+                    <button
+                      id="minus"
+                      class="quantityButton rounded-start"
+                      @click="quantity($event.target.id, dish)"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      class="number_dishes"
+                      :id="dish.id"
+                      min="0"
+                      :value="dish.quantity"
+                      @keyup="getClass($event.target.id)"
+                      @blur="inputValidation($event.target.id, dish)"
+                    />
+                    <button
+                      id="plus"
+                      class="quantityButton rounded-end"
+                      @click="quantity($event.target.id, dish)"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
               </div>
               <!-- QUANTITA
@@ -256,16 +275,18 @@ export default {
           </div>
           <div class="card-footer pb-3">
             <div>
-              <h3 class="totalPrice mt-2">La tua spesa sarà di € {{ euroCheck(this.myOrder.price) }}</h3>
+              <h3 class="totalPrice mt-2">
+                La tua spesa sarà di € {{ euroCheck(this.myOrder.price) }}
+              </h3>
             </div>
           </div>
-
         </div>
       </div>
-      <div class="col-12 col-md-4 px-2 pe-5">
-        <Payment :authorization="this.tokenApi" :myOrder="this.myOrder"></Payment>
-
-
+      <div class="col-12 col-md-5 px-2">
+        <Payment
+          :authorization="this.tokenApi"
+          :myOrder="this.myOrder"
+        ></Payment>
       </div>
     </div>
   </div>
@@ -276,8 +297,8 @@ export default {
 
 @use "../style/partials/variables" as *;
 
-
-.totalPrice {
+.totalPrice,
+h2 {
   color: $darkblue;
 }
 
@@ -315,7 +336,7 @@ export default {
 }
 
 .containerApp {
-  height: calc(100vh - $headerHeight - $footerHeight);
+  /* height: calc(100vh - $headerHeight - $footerHeight); */
   background-color: white;
   overflow: auto;
   overflow-x: hidden;
@@ -455,6 +476,7 @@ button {
   background-color: white;
   flex: 0 0 auto;
   color: $darkblue;
+  border-bottom: 1px solid rgba($midblue, 0.2);
 
   .dishImage {
     height: 80px;
@@ -473,7 +495,7 @@ button {
   .dishInfo,
   .dishPrice {
     display: flex;
-    border-bottom: 1px solid rgba($midblue, 0.2);
+    /*   border-bottom: 1px solid rgba($midblue, 0.2); */
     flex-direction: column;
     justify-content: center;
 
@@ -493,14 +515,14 @@ button {
 .amountContainer {
   align-items: center;
   display: flex;
-  border-bottom: 1px solid rgba($midblue, 0.2);
+  /* border-bottom: 1px solid rgba($midblue, 0.2); */
 
   // INPUT NUMBER ARROW HIDDEN
   input[type="number"] {
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
     appearance: textfield;
-    width: 50px;
+    width: 40px;
     height: 30px;
     text-align: center;
   }
