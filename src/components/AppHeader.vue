@@ -1,17 +1,19 @@
 <script>
-// import { store } from "../store";
+import { store } from "../store";
 export default {
   data() {
     return {
-      // store,
+      store,
     };
   },
 
-  methods: {},
+
 };
 </script>
 
 <template>
+
+
   <nav class="headerNav navbar navbar-expand-lg">
     <div class="container-md d-flex">
       <ul class="navbar-ul">
@@ -30,9 +32,14 @@ export default {
         </li>
       </ul>
       <ul class="chart-icon">
-        <li class="nav-item me-4 ">
+        <li class="nav-item me-4 position-relative">
           <router-link :to="{ name: 'restaurants.checkout' }" class="nav-link text-white"
             aria-current="page">Carrello</router-link>
+            <span v-if="store.orderQuantity" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+              {{store.orderQuantity}}
+                <!-- <span class="visually-hidden">unread messages</span> -->
+            </span>
+
         </li>
       </ul>
 
@@ -95,8 +102,14 @@ export default {
 
   .chart-icon li {
     @include d-flex-center;
-
     color: white;
+
+    .badge {
+      width: 52%;
+      font-size: .6rem;
+      text-align: center;
+    }
+
   }
 }
 </style>

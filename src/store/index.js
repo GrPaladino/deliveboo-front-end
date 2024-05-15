@@ -7,4 +7,12 @@ export const api = {
 export const store = reactive({
   restaurants: [],
   cart: [],
+  orderQuantity: 0,
+
+  badgeIncrement() {
+    this.orderQuantity++;
+  },
+  badgeDecrement() {
+    this.orderQuantity--;
+  }
 });
