@@ -273,10 +273,11 @@ export default {
             </div>
           </div>
           <div class="card-footer pb-3">
-            <div>
+            <div id="totalPrice">
               <h3 class="totalPrice mt-2">
-                La tua spesa sarà di € {{ euroCheck(this.myOrder.price) }}
+                TOTALE 
               </h3>
+              <p class="m-0 fs-3">€ {{ euroCheck(this.myOrder.price) }}</p>
             </div>
           </div>
         </div>
@@ -552,5 +553,11 @@ button {
 .blueColor {
   background-color: $midblue;
   color: white;
+}
+
+#totalPrice {
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
 }
 </style>
