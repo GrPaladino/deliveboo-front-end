@@ -82,11 +82,12 @@ export default {
 
 <template>
   <div class="row align-items-center" id="jumboTron">
+    <!-- * Jumbo -->
     <div class="col-sm-12 col-md-6 jumboTextContainer">
       <h2 class="display-2 title text-center">
         Ordina subito con Boolivery! 🛵🍝
       </h2>
-
+      <!-- bottone che porta ai ristoranti -->
       <div
         class="btn-restaurant mb-3 col-8"
         onclick="document.getElementById('searchSection').scrollIntoView();"
@@ -94,26 +95,29 @@ export default {
         <div class="btn btn--action">
           <span class="guest">Vai alla ricerca</span>
         </div>
-
       </div>
+
       <h5 class="title">oppure</h5>
       <h3 class="display-5 title">Sei un ristoratore?</h3>
-      <!-- BUTTON -->
+
+      <!-- BUTTON redirect backoffice -->
       <div class="btn-restaurant mb-3 col-8">
         <a class="btn btn--action" href="http://127.0.0.1:8000/login"><span class="user">Accedi al tuo
             account</span></a>
       </div>
+
     </div>
   </div>
 
   <div class="containerApp" id="searchSection">
 
-    <!-- ROW -->
+    <!-- * ROW -->
     <div class="row h-100">
-      <!-- Search column -->
+      <!-- Colonna selezione/filtri ricerca -->
       <div class="col-2 col-md-2 searchColumn" id="search">
         <h3 class="my-3 title">Filtri</h3>
 
+        <!-- list opzioni filtri -->
         <ul class="d-flex flex-column align-items-center">
 
           <li
@@ -122,40 +126,46 @@ export default {
             :id="badge.label"
             @click="search(badge.label, $event.target.id)"
           >
-
             {{ badge.label }}
           </li>
+
         </ul>
         <div class="sidebar-toggle" @click="sideToggler()">
           <span class="navbar-toggler-icon"></span>
         </div>
       </div>
 
-      <!-- Results column -->
+      <!-- * Colonna risultati - Ristoranti -->
       <div class="col result-column px-3 py-4">
         <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
+        
         <!-- bottone scrollTop -->
-
-
         <div class="row pe-2 d-flex justify-content-center justify-content-md-start">
           <div v-for="(restaurant, index) in this.restaurants"
             class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
             <app-card :restaurant="restaurant" :index="index" class="h-100" />
           </div>
 
+          <!-- ! se lista ristoranti vuota -->
           <div v-if="this.restaurants.length == 0">
             <p class="text-center text-secondary">
               Nessun risultato corrispondente. 😓
             </p>
           </div>
+
           <!-- bottone per lo scrollOnTop -->
           <div class="btn-back-to-top mb-3 col-8 btn btn-demetrio" onclick="window.scrollTo({ top: 0});">
-            <div class="btn btn--action"><span class="listR">↑ Torna
-                in cima</span></div>
+            <div class="btn btn--action">
+              <span class="listR">↑ Torna in cima</span>
+            </div>
+
           </div>
         </div>
+
       </div>
+
     </div>
+    
   </div>
 </template>
 
