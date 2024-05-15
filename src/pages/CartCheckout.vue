@@ -9,26 +9,11 @@ export default {
       tokenApi: "",
 
       store,
-      myOrder: [],
+    
+      
     };
   },
-  watch: {
-    myOrder: {
-      handler() {
-        if (this.myOrder && this.cartCheck === true) {
-          localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
-          // console.log("Pushed to storage");
-        }
-        if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
-          this.myOrder = [];
-          localStorage.removeItem("myOrder");
-          // console.log("Removed from storage");
-        }
-      },
-      deep: true,
-    },
-  },
-
+ 
   components: { Payment },
 
   methods: {
@@ -36,8 +21,9 @@ export default {
       let order = localStorage.getItem("myOrder");
       if (order) {
         this.myOrder = JSON.parse(order);
-        // console.log(this.myOrder);
         // console.log(this.myOrder.dishes.length);
+           
+        
       }
     },
 
@@ -66,10 +52,15 @@ export default {
           value.classList.add("off");
         }
         value.value--;
+        store.badgeDecrement();
 
         let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
         if (dishInOrder) {
           dishInOrder.quantity--;
+          // store.orderQuantity = store.orderQuantity--;
+
+          this.value = dishInOrder.quantity;
+          
           if (dishInOrder.quantity === 0) {
             this.myOrder.dishes = this.myOrder.dishes.filter(
               (d) => d.id !== dish.id
@@ -79,7 +70,7 @@ export default {
         }
       }
       if (operator == "plus") {
-        // SE MYORDER NON ESISTE
+        // SE MY ORDER NON ESISTE
         if (!this.myOrder.dishes) {
           this.myOrder = {
             restaurant_id: this.restaurant.id,
@@ -101,12 +92,15 @@ export default {
 
         if (potentialPrice <= 9999.99) {
           value.value++;
+          store.badgeIncrement();
           // console.log(this.restaurant.dishes);
           // LOGICA PLUS
 
           let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
           if (dishInOrder) {
             dishInOrder.quantity++;
+            // store.orderQuantity = store.orderQuantity++;
+
           } else {
             this.myOrder.dishes.push({ ...dish, quantity: 1 });
           }
@@ -120,6 +114,7 @@ export default {
         }
       }
     },
+  
 
     // VALIDATION FOR INPUTS
     inputValidation(event, dish) {
@@ -138,6 +133,7 @@ export default {
 
         // Calcola la nuova quantità e il nuovo prezzo potenziale
         let newQuantity = parseInt(input.value);
+        
         let potentialNewPrice =
           this.myOrder.price -
           (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
@@ -167,6 +163,7 @@ export default {
           if (dishInOrder) {
             this.myOrder.price = potentialNewPrice;
             dishInOrder.quantity = newQuantity;
+            
           } else {
             this.myOrder.dishes.push({ ...dish, quantity: newQuantity });
             this.myOrder.price = potentialNewPrice;
@@ -202,17 +199,15 @@ export default {
       <div class="col-12 col-md-7 px-2 mt-4">
         <div class="card">
           <div class="card-header px-3 pt-3">
-            <h2>Il tuo ordine :</h2>
+            <h2>Il tuo ordine</h2>
           </div>
           <div class="card-body">
-            <h2>{{ this.myOrder.dishes.lenght }}</h2>
-            <div v-if="this.myOrder.dishes.length == 0">
+            <div v-if="!this.myOrder.dishes.length">
               <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
               <router-link to="/">
                 <button class="btn btn-primary">
                   Torna alla home
-                </button></router-link
-              >
+                </button></router-link>
             </div>
             <div v-if="this.myOrder.dishes.length > 0">
               <div

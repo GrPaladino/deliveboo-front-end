@@ -30,6 +30,11 @@ export default {
       handler() {
         if (this.myOrder && this.cartCheck === true) {
           localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
+    //       this.myOrder.dishes.forEach(dish => {
+         
+    //      store.orderQuantity = store.orderQuantity + dish.quantity;
+    //    }
+    //  );
           // console.log("Pushed to storage");
         }
         if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
@@ -57,6 +62,7 @@ export default {
     emptyCart() {
       localStorage.removeItem("myOrder");
       this.myOrder = [];
+      store.orderQuantity = 0;
       // console.log("localStorage svuotato!");
       let inputs = document.querySelectorAll("input");
       inputs.forEach((input) => {
@@ -108,10 +114,12 @@ export default {
           value.classList.add("off");
         }
         value.value--;
+        store.badgeDecrement();
 
         let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
         if (dishInOrder) {
           dishInOrder.quantity--;
+
           if (dishInOrder.quantity === 0) {
             this.myOrder.dishes = this.myOrder.dishes.filter(
               (d) => d.id !== dish.id
@@ -143,12 +151,16 @@ export default {
 
           if (potentialPrice <= 9999.99) {
             value.value++;
+            store.badgeIncrement();
             // console.log(this.restaurant.dishes);
             // LOGICA PLUS
 
             let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
             if (dishInOrder) {
               dishInOrder.quantity++;
+
+              
+
             } else {
               this.myOrder.dishes.push({ ...dish, quantity: 1 });
             }
@@ -261,6 +273,7 @@ export default {
           // console.log(order);
           // MYORDER UGUALE A LOCALSTORAGE
           this.myOrder = order;
+
           // CONTROLLO SE L'ORDINE CORRISPONDE AL RISTORANTE
           if (this.restaurant.id == order.restaurant_id) {
             // console.log(this.restaurant.id);
@@ -272,6 +285,10 @@ export default {
               let dish = document.getElementById(order.dishes[i].id);
               // console.log(dish);
               dish.value = order.dishes[i].quantity;
+
+              // aggiungo la quantitá del badge
+              store.orderQuantity += parseInt(dish.value);
+
               dish.classList.remove("off");
             }
           }
@@ -281,6 +298,8 @@ export default {
       }
       this.cartCheck = true;
     },
+
+    
   },
 
   created() {
@@ -399,7 +418,7 @@ export default {
         creare variabile per contare la quantità dei piatti inseriti nel carrello
         -->
 
-        <span>{{ myOrder.dishes.length }}</span>
+        <!-- <span>{{ myOrder.dishes.length }}</span> -->
       </div>
 
       <!-- </router-link

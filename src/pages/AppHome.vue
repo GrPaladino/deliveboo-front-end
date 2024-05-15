@@ -16,8 +16,39 @@ export default {
       activeTypes: [],
 
     };
-
   },
+
+  //   watch: {
+  //   restaurant: {
+  //     handler() {
+  //       if (this.restaurant && this.filled === false) {
+  //         // console.log("watcher");
+  //         this.filled = true;
+  //         setTimeout(this.cartQuantity, 300);
+  //       }
+  //     },
+  //     deep: true,
+  //   },
+  //   myOrder: {
+  //     handler() {
+  //       if (this.myOrder && this.cartCheck === true) {
+  //         localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
+  //   //       this.myOrder.dishes.forEach(dish => {
+         
+  //   //      store.orderQuantity = store.orderQuantity + dish.quantity;
+  //   //    }
+  //   //  );
+  //         // console.log("Pushed to storage");
+  //       }
+  //       if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
+  //         this.myOrder = [];
+  //         localStorage.removeItem("myOrder");
+  //         // console.log("Removed from storage");
+  //       }
+  //     },
+  //     deep: true,
+  //   },
+  // },
   components: { AppCard },
   methods: {
     sideToggler() {
