@@ -115,7 +115,7 @@ export default {
   <div class="row align-items-center" id="jumboTron">
     <div class="col-sm-12 col-md-6 jumboTextContainer">
       <h2 class="display-2 title text-center">
-        Ordina subito con Boolivery! 🛵🍝
+        Ordina subito con Boolivery! 🛵🍝 
       </h2>
 
       <div
@@ -163,7 +163,7 @@ export default {
       </div>
 
       <!-- Results column -->
-      <div class="col result-column px-3 py-4">
+      <div class="col result-column px-5 py-4">
         <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
         <!-- bottone scrollTop -->
 

@@ -29,10 +29,7 @@ export default {
 
       <!-- BADGE -->
       <div id="badgesContainer">
-        <span v-for="badge in restaurant.types" class="badge mx-2" :style="`background-image:url(` +
-    badge.image +
-    `); background-size: cover; background-repeat: no-repeat; border-radius: 0`
-    ">
+        <span v-for="badge in restaurant.types" class="badge mx-2" >
           {{ badge.label }}
           <!-- <div class="typeBadge">
             <div class="badgeImg">
@@ -137,14 +134,16 @@ h3.detailCap {
 }
 
 span {
+  color:$darkblue;
   z-index: 2;
-  text-shadow: 0px 0px 20px black;
+  // text-shadow: 0px 0px 20px black;
   font-size: 100%;
   letter-spacing: 2px;
-  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
-    2px 2px 0 #000;
+//  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+    // 2px 2px 0 #000;
   margin: 5px 0;
-
+border:2px solid $darkblue;
+border-radius: 30px;
 }
 
 .rightColumn {
