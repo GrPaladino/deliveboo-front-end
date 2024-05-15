@@ -6,6 +6,7 @@ export default {
     return {
       api,
       store,
+      redirect: false,
     };
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
@@ -68,6 +69,7 @@ export default {
           e.preventDefault(); // Previene il comportamento di default del form
 
           var formData = new FormData(this);
+          
 
           fetch(this.action, {
             method: "POST",
@@ -77,6 +79,10 @@ export default {
             .then((data) => {
               if (data.success) {
                 console.log("successo");
+                this.redirect = true;
+                store.buyerData = data;
+
+
               } else {
                 console.log("fail");
               }
@@ -84,14 +90,25 @@ export default {
             .catch((error) => {
               console.log("error");
             });
+
         });
     },
+  //   handleRedirect() {
+  //     if(this.redirect) {
+  //       this.$router.go({name: 'payment.landing'})
+  //     }
+  //   },
+
+  //   redirect() {
+  //   setTimeout(() => this.handleRedirect(), 5000);
+  // },
   },
   created() {},
   mounted() {
     document.getElementById("date_time").value = this.getCurrentDateTime();
     this.formCatch();
   },
+
 };
 </script>
 <template>
