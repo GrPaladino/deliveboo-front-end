@@ -17,6 +17,8 @@ export default {
   components: { Payment },
 
   methods: {
+   
+    
     fetchOrder() {
       let order = localStorage.getItem("myOrder");
       if (order) {
@@ -194,7 +196,15 @@ export default {
 </script>
 
 <template>
-  <div class="container d-flex justify-content-center py-3">
+  <div v-if="!this.myOrder.dishes || !store.orderQuantity" class="text-center mt-2">
+              <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
+              <router-link :to="{name: 'home'}">
+                <button class="btn btn-primary ">
+                  Torna alla home
+                </button>
+                </router-link>
+            </div>
+  <div v-else class="container d-flex justify-content-center py-3">
     <div class="row justify-content-center containerApp px-4 container">
       <div class="col-12 col-md-7 px-2 mt-4">
         <div class="card">
@@ -202,14 +212,8 @@ export default {
             <h2>Il tuo ordine</h2>
           </div>
           <div class="card-body">
-            <div v-if="!this.myOrder.dishes.length">
-              <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
-              <router-link to="/">
-                <button class="btn btn-primary">
-                  Torna alla home
-                </button></router-link>
-            </div>
-            <div v-if="this.myOrder.dishes.length > 0">
+            
+            <div v-if="this.myOrder.dishes.length">
               <div
                 v-for="dish in myOrder.dishes"
                 class="dishCard pe-2 col-12 col-md-6 w-100 mb-1"
@@ -285,6 +289,7 @@ export default {
       </div>
     </div>
   </div>
+  
 </template>
 
 <style lang="scss" scoped>
