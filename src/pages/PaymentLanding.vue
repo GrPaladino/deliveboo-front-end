@@ -1,11 +1,14 @@
 <script>
 /* import MyComponent from "./components/MyComponent.vue" */
 import axios from "axios";
+import { store } from "../store";
+
 
 export default {
   data() {
     return {
       title: "Hello world",
+      store,
     };
   },
 };
@@ -24,11 +27,11 @@ export default {
             <h3>Riepilogo ordine</h3>
           </div>
           <div class="card-body">
-            <p><strong>Nome cliente: </strong></p>
-            <p><strong>Indirizzo: </strong></p>
-            <p><strong>Numero di telefono: </strong></p>
-            <p><strong>Email: </strong></p>
-            <p><strong>Token di consegna:</strong></p>
+            <p><strong>Nome cliente: </strong>{{ store.buyerData.customer_name }}</p>
+            <p><strong>Indirizzo: </strong>{{ store.buyerData.address }}</p>
+            <p><strong>Numero di telefono: </strong>{{ store.buyerData.phone }}</p>
+            <p><strong>Email: </strong>{{ store.buyerData.email }}</p>
+            <p><strong>Totale:</strong>{{ store.buyerData.amount }}</p>
           </div>
           <div class="card-footer">
             <!-- 

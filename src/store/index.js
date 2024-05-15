@@ -8,6 +8,7 @@ export const store = reactive({
   restaurants: [],
   cart: [],
   orderQuantity: 0,
+  buyerData: '',
 
   badgeIncrement() {
     this.orderQuantity++;
