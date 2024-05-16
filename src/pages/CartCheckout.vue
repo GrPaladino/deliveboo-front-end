@@ -37,6 +37,7 @@ export default {
     euroCheck(price) {
       let formattedPrice = Number(price).toFixed(2);
       formattedPrice = formattedPrice.replace(".", ",");
+      store.orderPrice = formattedPrice;
       return formattedPrice;
     },
     // PLUS AND MINUS BUTTONS
@@ -172,6 +173,19 @@ export default {
       }
       console.log("INPUT VALIDATION -> myOrder", this.myOrder);
     },
+
+    // EMPTY CART OF ALL ITEMS
+    emptyCart() {
+      localStorage.removeItem("myOrder");
+      // this.myOrder = [];
+      store.orderQuantity = 0;
+      // console.log("localStorage svuotato!");
+      let inputs = document.getElementsByName("input");
+      inputs.forEach((input) => {
+        input.value = 0;
+        input.classList.add("off");
+      });
+    },
   },
 
   created() {
@@ -187,7 +201,9 @@ export default {
 </script>
 
 <template>
-  <div v-if="!this.myOrder.dishes" class="text-center mt-2">
+  <div
+    v-if="!this.myOrder.dishes || !store.orderQuantity"
+    class="text-center mt-2">
     <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
     <router-link :to="{ name: 'home' }">
       <button class="btn btn-primary">Torna alla home</button>
@@ -233,8 +249,9 @@ export default {
                       -
                     </button>
                     <input
+                      name="input"
                       type="number"
-                      class="number_dishes"
+                      class="number_dishes input"
                       :id="dish.id"
                       min="0"
                       :value="dish.quantity"
@@ -261,6 +278,12 @@ export default {
               <p class="m-0 fs-3">€ {{ euroCheck(this.myOrder.price) }}</p>
             </div>
           </div>
+          <button
+            @click="emptyCart()"
+            type="button"
+            class="btn btn-outline-warning empty-cart m-2 w-50">
+            Svuota carrello
+          </button>
         </div>
       </div>
       <div class="col-12 col-md-5 px-2">

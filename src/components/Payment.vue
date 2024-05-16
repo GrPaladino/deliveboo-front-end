@@ -69,7 +69,6 @@ export default {
           e.preventDefault(); // Previene il comportamento di default del form
 
           var formData = new FormData(this);
-          
 
           fetch(this.action, {
             method: "POST",
@@ -81,8 +80,6 @@ export default {
                 console.log("successo");
                 this.redirect = true;
                 store.buyerData = data;
-
-
               } else {
                 console.log("fail");
               }
@@ -90,25 +87,23 @@ export default {
             .catch((error) => {
               console.log("error");
             });
-
         });
     },
-  //   handleRedirect() {
-  //     if(this.redirect) {
-  //       this.$router.go({name: 'payment.landing'})
-  //     }
-  //   },
+    //   handleRedirect() {
+    //     if(this.redirect) {
+    //       this.$router.go({name: 'payment.landing'})
+    //     }
+    //   },
 
-  //   redirect() {
-  //   setTimeout(() => this.handleRedirect(), 5000);
-  // },
+    //   redirect() {
+    //   setTimeout(() => this.handleRedirect(), 5000);
+    // },
   },
   created() {},
   mounted() {
     document.getElementById("date_time").value = this.getCurrentDateTime();
     this.formCatch();
   },
-
 };
 </script>
 <template>
@@ -118,8 +113,7 @@ export default {
         class="p-0"
         id="payment-form"
         :action="api.baseApiURI + 'order/make/payment'"
-        method="post"
-      >
+        method="post">
         @csrf
         <!-- Name field with pattern restriction for letters only -->
         <div class="card">
@@ -139,8 +133,7 @@ export default {
                 pattern="[A-Za-z\s]+"
                 required
                 max="200"
-                title="Inserire solo lettere."
-              />
+                title="Inserire solo lettere." />
             </div>
 
             <!-- Email field with built-in email validation -->
@@ -152,8 +145,7 @@ export default {
                 id="email"
                 name="email"
                 required
-                max="200"
-              />
+                max="200" />
             </div>
 
             <!-- Phone field with pattern restriction for phone numbers -->
@@ -167,8 +159,7 @@ export default {
                 id="phone"
                 name="phone"
                 required
-                max="20"
-              />
+                max="20" />
             </div>
 
             <!-- Address field with minlength and maxlength attributes -->
@@ -180,8 +171,7 @@ export default {
                 id="address"
                 name="address"
                 max="250"
-                required
-              />
+                required />
             </div>
 
             <input
@@ -190,8 +180,7 @@ export default {
               id="date_time"
               name="date_time"
               required
-              readonly
-            />
+              readonly />
 
             <!-- Price field with minimum and maximum value restrictions -->
             <div class="mb-3">
@@ -201,23 +190,20 @@ export default {
                 class="form-control"
                 id="price"
                 name="price"
-                :value="euroCheck(myOrder.price)"
+                :value="euroCheck(parseInt(store.orderPrice))"
                 required
-                readonly
-              />
+                readonly />
             </div>
 
             <input
               type="hidden"
               name="orderData"
-              :value="JSON.stringify(myOrder.dishes)"
-            />
+              :value="JSON.stringify(myOrder.dishes)" />
             <!-- BRAINTREE DATA -->
             <input
               type="hidden"
               name="amount"
-              :value="euroCheck(myOrder.price)"
-            />
+              :value="euroCheck(parseInt(store.orderPrice))" />
             <input type="hidden" name="token" :value="authorization" />
 
             <div id="dropin-container"></div>

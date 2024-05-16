@@ -30,11 +30,7 @@ export default {
       handler() {
         if (this.myOrder && this.cartCheck === true) {
           localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
-          //       this.myOrder.dishes.forEach(dish => {
 
-          //      store.orderQuantity = store.orderQuantity + dish.quantity;
-          //    }
-          //  );
           // console.log("Pushed to storage");
         }
         if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
@@ -309,15 +305,13 @@ export default {
   <div class="container py-3">
     <div
       class="row justify-content-between containerApp p-3"
-      v-if="this.restaurant"
-    >
+      v-if="this.restaurant">
       <!-- ! RESTAURANT COLUMN -->
       <div class="col-sm-12 col-md-3 px-0 bg-white leftColumn">
         <router-link
           :to="{ name: 'home' }"
           class="col-lg-3 col-md-6 col-sm-12"
-          id="addButton"
-        >
+          id="addButton">
           <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
           <button class="ballButton" @click="checkEmpty()">👈🏻</button>
         </router-link>
@@ -327,8 +321,7 @@ export default {
         <img
           :src="restaurant.image"
           :alt="restaurant.name"
-          class="w-100 border border-5 border-info rounded"
-        />
+          class="w-100 border border-5 border-info rounded" />
 
         <div class="my-3">
           <h1>{{ restaurant.name }}</h1>
@@ -353,15 +346,13 @@ export default {
       <div class="col-md-9 col-sm-12 rightColumn row border-start">
         <div
           v-for="dish in restaurant.dishes"
-          class="dishCard col-xl-6 col-lg-12 mb-1"
-        >
+          class="dishCard col-xl-6 col-lg-12 mb-1">
           <!-- IMMAGINE -->
 
           <div
             class="dishImage col-2"
             data-bs-toggle="modal"
-            :data-bs-target="`#dish-` + dish.id"
-          >
+            :data-bs-target="`#dish-` + dish.id">
             <img :src="dish.image" alt="dish.name" class="dish-preview" />
           </div>
           <!-- TESTO -->
@@ -381,8 +372,7 @@ export default {
               <button
                 id="minus"
                 class="quantityButton rounded-start"
-                @click="quantity($event.target.id, dish)"
-              >
+                @click="quantity($event.target.id, dish)">
                 -
               </button>
               <input
@@ -393,13 +383,11 @@ export default {
                 value="0"
                 class="off"
                 @keyup="getClass($event.target.id)"
-                @blur="inputValidation($event.target.id, dish)"
-              />
+                @blur="inputValidation($event.target.id, dish)" />
               <button
                 id="plus"
                 class="quantityButton rounded-end"
-                @click="quantity($event.target.id, dish)"
-              >
+                @click="quantity($event.target.id, dish)">
                 +
               </button>
             </div>
@@ -412,11 +400,9 @@ export default {
             data-bs-keyboard="false"
             tabindex="-1"
             :aria-labelledby="`dish-` + dish.id"
-            aria-hidden="true"
-          >
+            aria-hidden="true">
             <div
-              class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
-            >
+              class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="staticBackdropLabel">
@@ -426,8 +412,7 @@ export default {
                     type="button"
                     class="btn-close w-25"
                     data-bs-dismiss="modal"
-                    aria-label="Close"
-                  ></button>
+                    aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <img :src="dish.image" alt="dish.name" class="modalImage" />
@@ -435,13 +420,11 @@ export default {
                   <h6>Prezzo: €{{ dish.price }}</h6>
                 </div>
                 <div
-                  class="modal-footer d-flex flex-column justify-content-center align-items-center"
-                >
+                  class="modal-footer d-flex flex-column justify-content-center align-items-center">
                   <button
                     type="button"
                     class="btn btn-secondary mb-2"
-                    data-bs-dismiss="modal"
-                  >
+                    data-bs-dismiss="modal">
                     Chiudi
                   </button>
                 </div>
@@ -465,8 +448,7 @@ export default {
         type="button"
         data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasScrolling"
-        aria-controls="offcanvasScrolling"
-      >
+        aria-controls="offcanvasScrolling">
         🛒
         <!-- da sistemare il counter/badge sul carrello 
         creare variabile per contare la quantità dei piatti inseriti nel carrello
@@ -488,8 +470,7 @@ export default {
     data-bs-backdrop="false"
     tabindex="-1"
     id="offcanvasScrolling"
-    aria-labelledby="offcanvasScrollingLabel"
-  >
+    aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header">
       <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
         Il tuo carrello
@@ -498,8 +479,7 @@ export default {
         type="button"
         class="btn-close"
         data-bs-dismiss="offcanvas"
-        aria-label="Close"
-      ></button>
+        aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
       <div v-for="dish in myOrder.dishes" class="dishCard mb-2">
@@ -508,8 +488,7 @@ export default {
         <div
           class="dishImage col-2"
           data-bs-toggle="modal"
-          :data-bs-target="`#dish-` + dish.id"
-        >
+          :data-bs-target="`#dish-` + dish.id">
           <img :src="dish.image" alt="dish.name" />
         </div>
         <!-- TESTO -->
@@ -536,11 +515,9 @@ export default {
           data-bs-keyboard="false"
           tabindex="-1"
           :aria-labelledby="`dish-` + dish.id"
-          aria-hidden="true"
-        >
+          aria-hidden="true">
           <div
-            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle"
-          >
+            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel">
@@ -550,8 +527,7 @@ export default {
                   type="button"
                   class="btn-close w-25"
                   data-bs-dismiss="modal"
-                  aria-label="Close"
-                ></button>
+                  aria-label="Close"></button>
               </div>
               <div class="modal-body">
                 <img :src="dish.image" alt="dish.name" class="modalImage" />
@@ -559,13 +535,11 @@ export default {
                 <h6>Prezzo: €{{ euroCheck(dish.price) }}</h6>
               </div>
               <div
-                class="modal-footer d-flex flex-column justify-content-center align-items-center"
-              >
+                class="modal-footer d-flex flex-column justify-content-center align-items-center">
                 <button
                   type="button"
                   class="btn btn-secondary mb-2"
-                  data-bs-dismiss="modal"
-                >
+                  data-bs-dismiss="modal">
                   Chiudi
                 </button>
               </div>
@@ -582,16 +556,14 @@ export default {
 
       <div
         class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
-        v-if="this.myOrder.dishes"
-      >
+        v-if="this.myOrder.dishes">
         <h4 class="text-center mb-2">PREZZO TOTALE</h4>
 
         <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
 
         <router-link
           :to="{ name: 'restaurants.checkout' }"
-          class="router-link text-center"
-        >
+          class="router-link text-center">
           <button type="button" class="btn btn-primary btn-lg">
             Procedi al pagamento
           </button>
@@ -608,8 +580,7 @@ export default {
     data-bs-backdrop="false"
     tabindex="-1"
     id="offcanvasScrolling"
-    aria-labelledby="offcanvasScrollingLabel"
-  >
+    aria-labelledby="offcanvasScrollingLabel">
     <div class="offcanvas-header">
       <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
         Il tuo carrello
@@ -618,23 +589,20 @@ export default {
         type="button"
         class="btn-close"
         data-bs-dismiss="offcanvas"
-        aria-label="Close"
-      ></button>
+        aria-label="Close"></button>
     </div>
     <div class="offcanvas-body">
       <div
         v-if="myOrder.dishes"
         v-for="dish in myOrder.dishes"
-        class="d-flex flex-column pe-5"
-      >
+        class="d-flex flex-column pe-5">
         <div class="dishCard mb-3">
           <!-- IMMAGINE -->
 
           <div
             class="dishImage col-2"
             data-bs-toggle="modal"
-            :data-bs-target="`#dish-` + dish.id"
-          >
+            :data-bs-target="`#dish-` + dish.id">
             <img :src="dish.image" alt="dish.name" />
           </div>
           <!-- TESTO -->
@@ -661,16 +629,14 @@ export default {
     </div>
     <div
       class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
-      v-if="this.myOrder.dishes"
-    >
+      v-if="this.myOrder.dishes">
       <h4 class="text-center mb-2">PREZZO TOTALE</h4>
 
       <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
 
       <router-link
         :to="{ name: 'restaurants.checkout' }"
-        class="router-link text-center"
-      >
+        class="router-link text-center">
         <button type="button" class="btn btn-primary btn-lg">
           Procedi al pagamento
         </button>
