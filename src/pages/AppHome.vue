@@ -109,7 +109,7 @@ export default {
 
 <template>
   <div class="row align-items-center" id="jumboTron">
-    <div class="col-sm-12 col-md-6 jumboTextContainer">
+    <div class="jumboTextContainer">
       <h2 class="display-2 title text-center">
         Ordina subito con Boolivery! 🛵🍝
       </h2>
@@ -134,9 +134,9 @@ export default {
 
   <div class="containerApp" id="searchSection">
     <!-- ROW -->
-    <div class="row h-100">
+    <div class="row main-row">
       <!-- Search column -->
-      <div class="col-2 col-md-2 searchColumn" id="search">
+      <div class="col-5 col-sm-4 col-md-3 col-lg-2 searchColumn" id="search">
         <h3 class="my-3 title">Filtri</h3>
 
         <ul class="d-flex flex-column align-items-center">
@@ -144,7 +144,9 @@ export default {
             v-for="badge in types"
             class="badgeSelector"
             :id="badge.label"
+
             @click="search(badge.label, $event.target.id)">
+
             {{ badge.label }}
           </li>
         </ul>
@@ -154,15 +156,17 @@ export default {
       </div>
 
       <!-- Results column -->
-      <div class="col result-column px-5 py-4">
+      <div class="col-7 col-sm-8 col-md-9 col-lg-10 result-column px-5 py-4">
         <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
         <!-- bottone scrollTop -->
 
         <div
+
           class="row pe-2 d-flex justify-content-center justify-content-md-start">
           <div
             v-for="(restaurant, index) in this.restaurants"
             class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
+
             <app-card :restaurant="restaurant" :index="index" class="h-100" />
           </div>
 
@@ -174,7 +178,9 @@ export default {
           <!-- bottone per lo scrollOnTop -->
           <div
             class="btn-back-to-top mb-3 col-8 btn btn-demetrio"
+
             onclick="window.scrollTo({ top: 0});">
+
             <div class="btn btn--action">
               <span class="listR">↑ Torna in cima</span>
             </div>
@@ -188,10 +194,6 @@ export default {
 <style lang="scss" scoped>
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
-
-#searchSection {
-  height: 100vh;
-}
 
 li {
   position: relative;
@@ -293,16 +295,16 @@ li {
 }
 
 .containerApp {
-  min-height: 100vh;
-  overflow: auto;
+  /*   min-height: 100vh;
+  overflow: auto; */
   overflow-x: hidden;
 }
 
 // TYPE BADGES
 
-#search {
+/* #search {
   min-width: 160px;
-}
+} */
 
 .searchColumn {
   background-color: white;
@@ -310,7 +312,7 @@ li {
 
   border-right: 2px solid rgba($midblue, 0.2);
   position: relative;
-  overflow: scroll;
+  /*   overflow: scroll; */
 
   .title {
     width: 30%;
@@ -371,7 +373,7 @@ li {
 
 // RESTAURANT CARDS
 .result-column {
-  overflow: auto;
+
   background-color: white;
 
   .cardContainer {
