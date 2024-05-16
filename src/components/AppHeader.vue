@@ -6,40 +6,46 @@ export default {
       store,
     };
   },
-
-
 };
 </script>
 
 <template>
-
-
   <nav class="headerNav navbar navbar-expand-lg">
     <div class="container-md d-flex">
       <ul class="navbar-ul">
         <li class="nav-item me-4">
-          <router-link :to="{ name: 'home' }" class="nav-link text-white" aria-current="page">
-            <a class="navbar-brand"><img src="../assets/img/boolivery_manager.svg" alt="" /></a></router-link>
+          <router-link
+            :to="{ name: 'home' }"
+            class="nav-link text-white"
+            aria-current="page">
+            <a class="navbar-brand"
+              ><img src="../assets/img/boolivery_manager.svg" alt="" /></a
+          ></router-link>
           <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
         </li>
         <li class="nav-item me-4">
-          <router-link :to="{ name: 'home' }" class="nav-link text-white" aria-current="page">Home</router-link>
-        </li>
-
-        <li class="nav-item me-4">
-          <router-link :to="{ name: 'payment.landing' }" class="nav-link text-white"
-            aria-current="page">Pagamenti</router-link>
+          <router-link
+            :to="{ name: 'home' }"
+            class="nav-link text-white"
+            aria-current="page"
+            >Home</router-link
+          >
         </li>
       </ul>
       <ul class="chart-icon">
         <li class="nav-item me-4 position-relative">
-          <router-link :to="{ name: 'restaurants.checkout' }" class="nav-link text-white"
-            aria-current="page">Carrello</router-link>
-            <span v-if="store.orderQuantity" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-              {{store.orderQuantity}}
-                <!-- <span class="visually-hidden">unread messages</span> -->
-            </span>
-
+          <router-link
+            :to="{ name: 'restaurants.checkout' }"
+            class="nav-link text-white"
+            aria-current="page"
+            >Carrello</router-link
+          >
+          <span
+            v-if="store.orderQuantity"
+            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ store.orderQuantity }}
+            <!-- <span class="visually-hidden">unread messages</span> -->
+          </span>
         </li>
       </ul>
 
@@ -106,10 +112,9 @@ export default {
 
     .badge {
       width: 52%;
-      font-size: .6rem;
+      font-size: 0.6rem;
       text-align: center;
     }
-
   }
 }
 </style>
