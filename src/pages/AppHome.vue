@@ -14,7 +14,6 @@ export default {
       types: [],
       searchOn: false,
       activeTypes: [],
-
     };
   },
 
@@ -34,7 +33,7 @@ export default {
   //       if (this.myOrder && this.cartCheck === true) {
   //         localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
   //   //       this.myOrder.dishes.forEach(dish => {
-         
+
   //   //      store.orderQuantity = store.orderQuantity + dish.quantity;
   //   //    }
   //   //  );
@@ -98,16 +97,13 @@ export default {
         this.fetchRestaurants();
       }
     },
-
   },
 
   created() {
     this.fetchRestaurants();
   },
 
-  mounted() {
-
-  },
+  mounted() {},
 };
 </script>
 
@@ -115,30 +111,28 @@ export default {
   <div class="row align-items-center" id="jumboTron">
     <div class="col-sm-12 col-md-6 jumboTextContainer">
       <h2 class="display-2 title text-center">
-        Ordina subito con Boolivery! 🛵🍝 
+        Ordina subito con Boolivery! 🛵🍝
       </h2>
 
       <div
         class="btn-restaurant mb-3 col-8"
-        onclick="document.getElementById('searchSection').scrollIntoView();"
-      >
+        onclick="document.getElementById('searchSection').scrollIntoView();">
         <div class="btn btn--action">
           <span class="guest">Vai alla ricerca</span>
         </div>
-
       </div>
       <h5 class="title">oppure</h5>
       <h3 class="display-5 title">Sei un ristoratore?</h3>
       <!-- BUTTON -->
       <div class="btn-restaurant mb-3 col-8">
-        <a class="btn btn--action" href="http://127.0.0.1:8000/login"><span class="user">Accedi al tuo
-            account</span></a>
+        <a class="btn btn--action" href="http://127.0.0.1:8000/login"
+          ><span class="user">Accedi al tuo account</span></a
+        >
       </div>
     </div>
   </div>
 
   <div class="containerApp" id="searchSection">
-
     <!-- ROW -->
     <div class="row h-100">
       <!-- Search column -->
@@ -146,14 +140,11 @@ export default {
         <h3 class="my-3 title">Filtri</h3>
 
         <ul class="d-flex flex-column align-items-center">
-
           <li
             v-for="badge in types"
             class="badgeSelector"
             :id="badge.label"
-            @click="search(badge.label, $event.target.id)"
-          >
-
+            @click="search(badge.label, $event.target.id)">
             {{ badge.label }}
           </li>
         </ul>
@@ -167,9 +158,10 @@ export default {
         <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
         <!-- bottone scrollTop -->
 
-
-        <div class="row pe-2 d-flex justify-content-center justify-content-md-start">
-          <div v-for="(restaurant, index) in this.restaurants"
+        <div
+          class="row pe-2 d-flex justify-content-center justify-content-md-start">
+          <div
+            v-for="(restaurant, index) in this.restaurants"
             class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
             <app-card :restaurant="restaurant" :index="index" class="h-100" />
           </div>
@@ -180,9 +172,12 @@ export default {
             </p>
           </div>
           <!-- bottone per lo scrollOnTop -->
-          <div class="btn-back-to-top mb-3 col-8 btn btn-demetrio" onclick="window.scrollTo({ top: 0});">
-            <div class="btn btn--action"><span class="listR">↑ Torna
-                in cima</span></div>
+          <div
+            class="btn-back-to-top mb-3 col-8 btn btn-demetrio"
+            onclick="window.scrollTo({ top: 0});">
+            <div class="btn btn--action">
+              <span class="listR">↑ Torna in cima</span>
+            </div>
           </div>
         </div>
       </div>
@@ -220,7 +215,6 @@ li {
   background-size: cover;
   background-position: center;
 
-
   .jumboTextContainer {
     display: flex;
     justify-content: center;
@@ -228,7 +222,6 @@ li {
     flex-direction: column;
     padding: 60px 20px;
     border-radius: 3px;
-
   }
 
   // BUTTONS
@@ -288,7 +281,7 @@ li {
   }
 
   .title {
-    color: $midblue;
+    color: white;
     margin-bottom: 30px;
     // text-shadow: -2px -2px 15px #4477d5, 2px -2px 15px #4477d5,
     //   -2px 2px 15px #4477d5, 2px 2px 15px #4477d5;
@@ -378,7 +371,6 @@ li {
 
 // RESTAURANT CARDS
 .result-column {
-
   overflow: auto;
   background-color: white;
 
@@ -457,9 +449,6 @@ li {
   min-height: 100vh;
 }
 
-
-
-
 //bottone per lo scrollUp
 
 .btn-demetrio {
@@ -491,8 +480,6 @@ li {
     transition: all 0.1s ease 0s;
   }
 
-
-
   .btn--action .listR::before {
     content: "🍝";
   }
@@ -513,6 +500,5 @@ li {
   .btn--action:active {
     transform: translateY(5px);
   }
-
 }
 </style>
