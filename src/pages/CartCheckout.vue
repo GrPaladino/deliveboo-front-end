@@ -97,7 +97,6 @@ export default {
           let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
           if (dishInOrder) {
             dishInOrder.quantity++;
-            // store.orderQuantity = store.orderQuantity++;
           } else {
             this.myOrder.dishes.push({ ...dish, quantity: 1 });
           }
@@ -191,7 +190,6 @@ export default {
 
   created() {
     this.fetchOrder();
-    // this.orderQuantity = store.orderQuantity;
   },
 
   async mounted() {

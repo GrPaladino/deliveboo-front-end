@@ -7,7 +7,10 @@ export default {
     return {
       api,
       store,
-      // redirect: false,
+      username: "",
+      email: "",
+      phone: "",
+      address: "",
     };
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
@@ -24,7 +27,8 @@ export default {
   },
   methods: {
     handleLoading() {
-      store.loading = true;
+      if (this.username && this.email && this.phone && this.address)
+        store.loading = true;
     },
 
     dropin() {
@@ -90,10 +94,12 @@ export default {
                 store.orderQuantity = 0;
               } else {
                 console.log("fail");
+                store.loading = false;
               }
             })
             .catch((error) => {
               console.log("error");
+              store.loading = false;
             });
         });
     },
@@ -124,6 +130,7 @@ export default {
                 >Nome e Cognome: *</label
               >
               <input
+                v-model="username"
                 type="text"
                 class="form-control"
                 id="customer_name"
@@ -138,6 +145,7 @@ export default {
             <div class="mb-3">
               <label for="email" class="form-label">Email: *</label>
               <input
+                v-model="email"
                 type="email"
                 class="form-control"
                 id="email"
@@ -152,6 +160,7 @@ export default {
                 >Numero di telefono: *</label
               >
               <input
+                v-model="phone"
                 type="text"
                 class="form-control"
                 id="phone"
@@ -164,6 +173,7 @@ export default {
             <div class="mb-3">
               <label for="address" class="form-label">Indirizzo: *</label>
               <input
+                v-model="address"
                 type="text"
                 class="form-control"
                 id="address"
