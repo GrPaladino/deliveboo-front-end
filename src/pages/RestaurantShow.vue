@@ -300,6 +300,7 @@ export default {
 
     closeModal() {
       this.modal = false;
+      this.myOrder = this.myOrder;
       router.back();
     },
 

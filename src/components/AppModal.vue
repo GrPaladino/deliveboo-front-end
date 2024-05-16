@@ -4,12 +4,6 @@ export default {
     return {};
   },
 
-  methods: {
-    emptyChart() {
-      this.myOrder = [];
-    },
-  },
-
   components: {},
 
   emits: ["modal-close", "empty-cart"],
