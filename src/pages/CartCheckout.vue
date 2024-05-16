@@ -8,8 +8,9 @@ export default {
   data() {
     return {
       tokenApi: "",
-
+      myOrder: [],
       store,
+      orderQuantity: "",
     };
   },
 
@@ -55,7 +56,6 @@ export default {
         let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
         if (dishInOrder) {
           dishInOrder.quantity--;
-          // store.orderQuantity = store.orderQuantity--;
 
           this.value = dishInOrder.quantity;
 
@@ -191,6 +191,7 @@ export default {
 
   created() {
     this.fetchOrder();
+    // this.orderQuantity = store.orderQuantity;
   },
 
   async mounted() {
@@ -203,9 +204,7 @@ export default {
 
 <template>
   <App-loading v-show="store.loading" />
-  <div
-    v-if="!this.myOrder.dishes || !store.orderQuantity"
-    class="text-center mt-2">
+  <div v-if="!this.myOrder.dishes" class="text-center mt-2">
     <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
     <router-link :to="{ name: 'home' }">
       <button class="btn btn-primary">Torna alla home</button>
@@ -288,7 +287,7 @@ export default {
           </button>
         </div>
       </div>
-      <div class="col-12 col-md-5 px-2">
+      <div class="col-12 col-md-5 py-4">
         <Payment
           :authorization="this.tokenApi"
           :myOrder="this.myOrder"></Payment>

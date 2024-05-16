@@ -113,7 +113,6 @@ export default {
         id="payment-form"
         :action="api.baseApiURI + 'order/make/payment'"
         method="post">
-        @csrf
         <!-- Name field with pattern restriction for letters only -->
         <div class="card">
           <div class="card-header px-3 pt-3">
