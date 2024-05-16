@@ -442,20 +442,20 @@ export default {
            class="router-link"
          > -->
       <!-- <div class="bin" @click="emptyCart()">🗑️</div> -->
-
+      <!-- 
       <div
         class="goToCart"
         type="button"
         data-bs-toggle="offcanvas"
         data-bs-target="#offcanvasScrolling"
         aria-controls="offcanvasScrolling">
-        🛒
-        <!-- da sistemare il counter/badge sul carrello 
+        🛒 -->
+      <!-- da sistemare il counter/badge sul carrello 
         creare variabile per contare la quantità dei piatti inseriti nel carrello
         -->
 
-        <!-- <span>{{ myOrder.dishes.length }}</span> -->
-      </div>
+      <!-- <span>{{ myOrder.dishes.length }}</span> -->
+      <!-- </div> -->
 
       <!-- </router-link
     > -->
