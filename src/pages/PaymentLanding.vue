@@ -36,7 +36,10 @@ export default {
                 <strong>Numero di telefono: </strong>{{ store.buyerData.phone }}
               </p>
               <p><strong>Email: </strong>{{ store.buyerData.email }}</p>
-              <p><strong>Totale: </strong>{{ store.buyerData.amount }}</p>
+              <p>
+                <strong>Totale: € </strong
+                >{{ store.buyerData.amount.replace(".", ",") }}
+              </p>
             </div>
           </div>
         </div>
