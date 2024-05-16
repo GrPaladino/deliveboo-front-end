@@ -8,12 +8,13 @@ export const store = reactive({
   restaurants: [],
   cart: [],
   orderQuantity: 0,
-  buyerData: '',
+  orderPrice: "",
+  buyerData: "",
 
   badgeIncrement() {
     this.orderQuantity++;
   },
   badgeDecrement() {
     this.orderQuantity--;
-  }
+  },
 });
