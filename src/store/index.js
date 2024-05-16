@@ -11,6 +11,16 @@ export const store = reactive({
   orderPrice: "",
   buyerData: "",
 
+  modal: {
+    show: false,
+    brand: "",
+    model: "",
+    fullPrice: "",
+    finalPrice: "",
+    discount: "",
+    isSostenibility: "",
+  },
+
   badgeIncrement() {
     this.orderQuantity++;
   },
