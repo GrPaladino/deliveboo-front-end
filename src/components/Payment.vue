@@ -23,6 +23,10 @@ export default {
     },
   },
   methods: {
+    handleLoading() {
+      store.loading = true;
+    },
+
     dropin() {
       console.log;
       var button = document.querySelector("#submit-button");
@@ -81,6 +85,7 @@ export default {
                 console.log("successo");
                 router.push({ name: "payment.landing" });
                 store.buyerData = data;
+                store.loading = false;
               } else {
                 console.log("fail");
               }
@@ -206,7 +211,11 @@ export default {
           </div>
 
           <div class="card-footer">
-            <button id="submit-button" type="submit" class="btn submit-button">
+            <button
+              @click="handleLoading()"
+              id="submit-button"
+              type="submit"
+              class="btn submit-button">
               Invia
             </button>
           </div>

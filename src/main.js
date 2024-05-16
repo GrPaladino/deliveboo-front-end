@@ -38,6 +38,7 @@ import {
   faPaperPlane,
   faCopyright,
   faCartShopping,
+  faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 
 import {
@@ -75,7 +76,8 @@ library.add(
   faSkype,
   faInstagram,
   faCopyright,
-  faCartShopping
+  faCartShopping,
+  faSpinner
 );
 
 import App from "./App.vue";

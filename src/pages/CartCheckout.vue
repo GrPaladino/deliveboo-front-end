@@ -1,6 +1,7 @@
 <script>
 import axios from "axios";
 import Payment from "../components/Payment.vue";
+import AppLoading from "../components/AppLoading.vue";
 import { store, api } from "../store";
 
 export default {
@@ -12,7 +13,7 @@ export default {
     };
   },
 
-  components: { Payment },
+  components: { Payment, AppLoading },
 
   methods: {
     fetchOrder() {
@@ -201,6 +202,7 @@ export default {
 </script>
 
 <template>
+  <App-loading id="loading" v-show="store.loading" />
   <div
     v-if="!this.myOrder.dishes || !store.orderQuantity"
     class="text-center mt-2">
@@ -299,6 +301,18 @@ export default {
 @use "../style/partials/mixins" as *;
 
 @use "../style/partials/variables" as *;
+
+#loading {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba($color: #000000, $alpha: 0.5);
+}
 
 .totalPrice,
 h2 {
