@@ -277,12 +277,12 @@ export default {
               <p class="m-0 fs-3">€ {{ euroCheck(this.myOrder.price) }}</p>
             </div>
           </div>
-          <button
+          <!-- <button
             @click="emptyCart()"
             type="button"
             class="btn btn-outline-warning empty-cart m-2 w-50">
             Svuota carrello
-          </button>
+          </button> -->
         </div>
       </div>
       <div class="col-12 col-md-5 py-4">
