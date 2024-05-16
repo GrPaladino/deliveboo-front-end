@@ -1,12 +1,13 @@
 <script>
 import { api, store } from "../store";
+import { router } from "../router";
 
 export default {
   data() {
     return {
       api,
       store,
-      redirect: false,
+      // redirect: false,
     };
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
@@ -78,7 +79,7 @@ export default {
             .then((data) => {
               if (data.success) {
                 console.log("successo");
-                this.redirect = true;
+                router.push({ name: "payment.landing" });
                 store.buyerData = data;
               } else {
                 console.log("fail");
@@ -89,15 +90,6 @@ export default {
             });
         });
     },
-    //   handleRedirect() {
-    //     if(this.redirect) {
-    //       this.$router.go({name: 'payment.landing'})
-    //     }
-    //   },
-
-    //   redirect() {
-    //   setTimeout(() => this.handleRedirect(), 5000);
-    // },
   },
   created() {},
   mounted() {
