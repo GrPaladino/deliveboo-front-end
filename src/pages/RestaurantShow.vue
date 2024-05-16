@@ -1,5 +1,6 @@
 <script>
 import axios from "axios";
+import { router } from "../router";
 
 import { store, api } from "../store";
 import AppModal from "../components/AppModal.vue";
@@ -296,6 +297,16 @@ export default {
       }
       this.cartCheck = true;
     },
+
+    closeModal() {
+      this.modal = false;
+      router.back();
+    },
+
+    emptyModal() {
+      this.emptyCart;
+      this.modal = false;
+    },
   },
 
   created() {
@@ -307,7 +318,10 @@ export default {
 </script>
 
 <template>
-  <app-modal v-if="modal" />
+  <app-modal
+    v-if="modal"
+    @modal-close="closeModal"
+    @empty-cart="emptyModal()" />
   <div class="container py-3">
     <div
       class="row justify-content-between containerApp p-2"
