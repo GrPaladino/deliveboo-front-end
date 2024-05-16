@@ -300,12 +300,15 @@ export default {
 
     closeModal() {
       this.modal = false;
-      this.myOrder = this.myOrder;
-      router.back();
+      store.orderQuantity = 0;
+
+      // this.myOrder = JSON.parse(localStorage.getItem("myOrder"));
+      // router.back();
     },
 
     emptyModal() {
       this.emptyCart;
+      store.orderQuantity = 0;
       this.modal = false;
     },
   },
@@ -319,10 +322,7 @@ export default {
 </script>
 
 <template>
-  <app-modal
-    v-if="modal"
-    @modal-close="closeModal"
-    @empty-cart="emptyModal()" />
+  <app-modal v-if="modal" @modal-close="closeModal" @empty-cart="emptyModal" />
   <div class="container py-3">
     <div
       class="row justify-content-between containerApp p-2"
