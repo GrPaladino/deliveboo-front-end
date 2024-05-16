@@ -9,23 +9,17 @@ export default {
       tokenApi: "",
 
       store,
-    
-      
     };
   },
- 
+
   components: { Payment },
 
   methods: {
-   
-    
     fetchOrder() {
       let order = localStorage.getItem("myOrder");
       if (order) {
         this.myOrder = JSON.parse(order);
         // console.log(this.myOrder.dishes.length);
-           
-        
       }
     },
 
@@ -62,7 +56,7 @@ export default {
           // store.orderQuantity = store.orderQuantity--;
 
           this.value = dishInOrder.quantity;
-          
+
           if (dishInOrder.quantity === 0) {
             this.myOrder.dishes = this.myOrder.dishes.filter(
               (d) => d.id !== dish.id
@@ -102,7 +96,6 @@ export default {
           if (dishInOrder) {
             dishInOrder.quantity++;
             // store.orderQuantity = store.orderQuantity++;
-
           } else {
             this.myOrder.dishes.push({ ...dish, quantity: 1 });
           }
@@ -116,7 +109,6 @@ export default {
         }
       }
     },
-  
 
     // VALIDATION FOR INPUTS
     inputValidation(event, dish) {
@@ -135,7 +127,7 @@ export default {
 
         // Calcola la nuova quantità e il nuovo prezzo potenziale
         let newQuantity = parseInt(input.value);
-        
+
         let potentialNewPrice =
           this.myOrder.price -
           (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
@@ -165,7 +157,6 @@ export default {
           if (dishInOrder) {
             this.myOrder.price = potentialNewPrice;
             dishInOrder.quantity = newQuantity;
-            
           } else {
             this.myOrder.dishes.push({ ...dish, quantity: newQuantity });
             this.myOrder.price = potentialNewPrice;
@@ -196,14 +187,12 @@ export default {
 </script>
 
 <template>
-  <div v-if="!this.myOrder.dishes || !store.orderQuantity" class="text-center mt-2">
-              <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
-              <router-link :to="{name: 'home'}">
-                <button class="btn btn-primary ">
-                  Torna alla home
-                </button>
-                </router-link>
-            </div>
+  <div v-if="!this.myOrder.dishes" class="text-center mt-2">
+    <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
+    <router-link :to="{ name: 'home' }">
+      <button class="btn btn-primary">Torna alla home</button>
+    </router-link>
+  </div>
   <div v-else class="container d-flex justify-content-center py-3">
     <div class="row justify-content-center containerApp px-4 container">
       <div class="col-12 col-md-7 px-2 mt-4">
@@ -212,19 +201,16 @@ export default {
             <h2>Il tuo ordine</h2>
           </div>
           <div class="card-body">
-            
             <div v-if="this.myOrder.dishes.length">
               <div
                 v-for="dish in myOrder.dishes"
-                class="dishCard pe-2 col-12 col-md-6 w-100 mb-1"
-              >
+                class="dishCard pe-2 col-12 col-md-6 w-100 mb-1">
                 <!-- IMMAGINE -->
 
                 <div
                   class="dishImage col-2"
                   data-bs-toggle="modal"
-                  :data-bs-target="`#dish-` + dish.id"
-                >
+                  :data-bs-target="`#dish-` + dish.id">
                   <img :src="dish.image" alt="dish.name" />
                 </div>
                 <!-- TESTO -->
@@ -243,8 +229,7 @@ export default {
                     <button
                       id="minus"
                       class="quantityButton rounded-start"
-                      @click="quantity($event.target.id, dish)"
-                    >
+                      @click="quantity($event.target.id, dish)">
                       -
                     </button>
                     <input
@@ -254,13 +239,11 @@ export default {
                       min="0"
                       :value="dish.quantity"
                       @keyup="getClass($event.target.id)"
-                      @blur="inputValidation($event.target.id, dish)"
-                    />
+                      @blur="inputValidation($event.target.id, dish)" />
                     <button
                       id="plus"
                       class="quantityButton rounded-end"
-                      @click="quantity($event.target.id, dish)"
-                    >
+                      @click="quantity($event.target.id, dish)">
                       +
                     </button>
                   </div>
@@ -274,9 +257,7 @@ export default {
           </div>
           <div class="card-footer pb-3">
             <div id="totalPrice">
-              <h3 class="totalPrice mt-2">
-                TOTALE 
-              </h3>
+              <h3 class="totalPrice mt-2">TOTALE</h3>
               <p class="m-0 fs-3">€ {{ euroCheck(this.myOrder.price) }}</p>
             </div>
           </div>
@@ -285,12 +266,10 @@ export default {
       <div class="col-12 col-md-5 px-2">
         <Payment
           :authorization="this.tokenApi"
-          :myOrder="this.myOrder"
-        ></Payment>
+          :myOrder="this.myOrder"></Payment>
       </div>
     </div>
   </div>
-  
 </template>
 
 <style lang="scss" scoped>
@@ -556,8 +535,8 @@ button {
 }
 
 #totalPrice {
- display: flex;
- justify-content: space-between;
- align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
