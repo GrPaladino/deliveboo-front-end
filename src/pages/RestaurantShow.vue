@@ -171,16 +171,17 @@ export default {
             );
           }
         } else {
-          if (
-            (this.modal = true)
-            // confirm(
-            //   "Il carrello contiene piatti di un altro ristorante! Svuotare il carrello?"
-            // )
-          ) {
-            this.myOrder = [];
-          } else {
-            history.back();
-          }
+          this.modal = true;
+          // if (
+
+          // confirm(
+          //   "Il carrello contiene piatti di un altro ristorante! Svuotare il carrello?"
+          // )
+          // ) {
+          //   this.myOrder = [];
+          // } else {
+          //   history.back();
+          // }
         }
       }
 
@@ -286,6 +287,7 @@ export default {
               dish.value = order.dishes[i].quantity;
 
               // aggiungo la quantitá del badge
+              store.orderQuantity = 0;
               store.orderQuantity += parseInt(dish.value);
 
               dish.classList.remove("off");
@@ -300,16 +302,19 @@ export default {
 
     closeModal() {
       this.modal = false;
-      store.orderQuantity = 0;
+      // store.orderQuantity = 0;
 
       // this.myOrder = JSON.parse(localStorage.getItem("myOrder"));
       // router.back();
     },
 
     emptyModal() {
-      this.emptyCart;
+      localStorage.removeItem("myOrder");
+      this.myOrder = [];
+      // console.log("carrello svuotato");
       store.orderQuantity = 0;
       this.modal = false;
+      // console.log("chiusa");
     },
   },
 
