@@ -32,7 +32,7 @@ export default {
           >
         </li>
       </ul>
-      <ul class="chart-icon">
+      <ul v-if="store.orderQuantity" class="chart-icon">
         <li class="nav-item me-4 position-relative">
           <router-link
             :to="{ name: 'restaurants.checkout' }"

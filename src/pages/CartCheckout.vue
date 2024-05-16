@@ -178,8 +178,8 @@ export default {
     // EMPTY CART OF ALL ITEMS
     emptyCart() {
       localStorage.removeItem("myOrder");
-      // this.myOrder = [];
       store.orderQuantity = 0;
+      // this.myOrder = [];
       // console.log("localStorage svuotato!");
       let inputs = document.getElementsByName("input");
       inputs.forEach((input) => {

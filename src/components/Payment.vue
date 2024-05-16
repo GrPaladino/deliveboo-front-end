@@ -86,6 +86,8 @@ export default {
                 router.push({ name: "payment.landing" });
                 store.buyerData = data;
                 store.loading = false;
+                localStorage.removeItem("myOrder");
+                store.orderQuantity = 0;
               } else {
                 console.log("fail");
               }
