@@ -1,12 +1,16 @@
 <script>
 import { api, store } from "../store";
+import { router } from "../router";
 
 export default {
   data() {
     return {
       api,
       store,
-      redirect: false,
+      username: "",
+      email: "",
+      phone: "",
+      address: "",
     };
   },
   props: { authorization: { required: true, type: String }, myOrder: Object },
@@ -22,6 +26,11 @@ export default {
     },
   },
   methods: {
+    handleLoading() {
+      if (this.username && this.email && this.phone && this.address)
+        store.loading = true;
+    },
+
     dropin() {
       console.log;
       var button = document.querySelector("#submit-button");
@@ -78,26 +87,22 @@ export default {
             .then((data) => {
               if (data.success) {
                 console.log("successo");
-                this.redirect = true;
+                router.push({ name: "payment.landing" });
                 store.buyerData = data;
+                store.loading = false;
+                localStorage.removeItem("myOrder");
+                store.orderQuantity = 0;
               } else {
                 console.log("fail");
+                store.loading = false;
               }
             })
             .catch((error) => {
               console.log("error");
+              store.loading = false;
             });
         });
     },
-    //   handleRedirect() {
-    //     if(this.redirect) {
-    //       this.$router.go({name: 'payment.landing'})
-    //     }
-    //   },
-
-    //   redirect() {
-    //   setTimeout(() => this.handleRedirect(), 5000);
-    // },
   },
   created() {},
   mounted() {
@@ -114,7 +119,6 @@ export default {
         id="payment-form"
         :action="api.baseApiURI + 'order/make/payment'"
         method="post">
-        @csrf
         <!-- Name field with pattern restriction for letters only -->
         <div class="card">
           <div class="card-header px-3 pt-3">
@@ -126,6 +130,7 @@ export default {
                 >Nome e Cognome: *</label
               >
               <input
+                v-model="username"
                 type="text"
                 class="form-control"
                 id="customer_name"
@@ -140,6 +145,7 @@ export default {
             <div class="mb-3">
               <label for="email" class="form-label">Email: *</label>
               <input
+                v-model="email"
                 type="email"
                 class="form-control"
                 id="email"
@@ -154,6 +160,7 @@ export default {
                 >Numero di telefono: *</label
               >
               <input
+                v-model="phone"
                 type="text"
                 class="form-control"
                 id="phone"
@@ -166,6 +173,7 @@ export default {
             <div class="mb-3">
               <label for="address" class="form-label">Indirizzo: *</label>
               <input
+                v-model="address"
                 type="text"
                 class="form-control"
                 id="address"
@@ -214,7 +222,11 @@ export default {
           </div>
 
           <div class="card-footer">
-            <button id="submit-button" type="submit" class="btn submit-button">
+            <button
+              @click="handleLoading()"
+              id="submit-button"
+              type="submit"
+              class="btn submit-button">
               Invia
             </button>
           </div>

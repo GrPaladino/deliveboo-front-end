@@ -10,6 +10,7 @@ export const store = reactive({
   orderQuantity: 0,
   orderPrice: "",
   buyerData: "",
+  loading: false,
 
   badgeIncrement() {
     this.orderQuantity++;

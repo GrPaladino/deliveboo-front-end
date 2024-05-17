@@ -1,18 +1,20 @@
 <script>
 import axios from "axios";
 import Payment from "../components/Payment.vue";
+import AppLoading from "../components/AppLoading.vue";
 import { store, api } from "../store";
 
 export default {
   data() {
     return {
       tokenApi: "",
-
+      myOrder: [],
       store,
+      orderQuantity: "",
     };
   },
 
-  components: { Payment },
+  components: { Payment, AppLoading },
 
   methods: {
     fetchOrder() {
@@ -54,7 +56,6 @@ export default {
         let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
         if (dishInOrder) {
           dishInOrder.quantity--;
-          // store.orderQuantity = store.orderQuantity--;
 
           this.value = dishInOrder.quantity;
 
@@ -96,7 +97,6 @@ export default {
           let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
           if (dishInOrder) {
             dishInOrder.quantity++;
-            // store.orderQuantity = store.orderQuantity++;
           } else {
             this.myOrder.dishes.push({ ...dish, quantity: 1 });
           }
@@ -177,8 +177,8 @@ export default {
     // EMPTY CART OF ALL ITEMS
     emptyCart() {
       localStorage.removeItem("myOrder");
-      // this.myOrder = [];
       store.orderQuantity = 0;
+      // this.myOrder = [];
       // console.log("localStorage svuotato!");
       let inputs = document.getElementsByName("input");
       inputs.forEach((input) => {
@@ -201,9 +201,8 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="!this.myOrder.dishes || !store.orderQuantity"
-    class="text-center mt-2">
+  <App-loading v-show="store.loading" />
+  <div v-if="!this.myOrder.dishes" class="text-center mt-2">
     <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
     <router-link :to="{ name: 'home' }">
       <button class="btn btn-primary">Torna alla home</button>
@@ -278,15 +277,15 @@ export default {
               <p class="m-0 fs-3">€ {{ euroCheck(this.myOrder.price) }}</p>
             </div>
           </div>
-          <button
+          <!-- <button
             @click="emptyCart()"
             type="button"
             class="btn btn-outline-warning empty-cart m-2 w-50">
             Svuota carrello
-          </button>
+          </button> -->
         </div>
       </div>
-      <div class="col-12 col-md-5 px-2">
+      <div class="col-12 col-md-5 py-4">
         <Payment
           :authorization="this.tokenApi"
           :myOrder="this.myOrder"></Payment>

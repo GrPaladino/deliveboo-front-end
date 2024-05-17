@@ -116,8 +116,7 @@ export default {
 
       <div
         class="btn-restaurant mb-3 col-8"
-        onclick="document.getElementById('searchSection').scrollIntoView();"
-      >
+        onclick="document.getElementById('searchSection').scrollIntoView();">
         <div class="btn btn--action">
           <span class="guest">Vai alla ricerca</span>
         </div>
@@ -145,8 +144,9 @@ export default {
             v-for="badge in types"
             class="badgeSelector"
             :id="badge.label"
-            @click="search(badge.label, $event.target.id)"
-          >
+
+            @click="search(badge.label, $event.target.id)">
+
             {{ badge.label }}
           </li>
         </ul>
@@ -161,12 +161,12 @@ export default {
         <!-- bottone scrollTop -->
 
         <div
-          class="row pe-2 d-flex justify-content-center justify-content-md-start"
-        >
+
+          class="row pe-2 d-flex justify-content-center justify-content-md-start">
           <div
             v-for="(restaurant, index) in this.restaurants"
-            class="col-12 col-md-6 col-xl-4 p-2 mb-3 cardContainer"
-          >
+            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
+
             <app-card :restaurant="restaurant" :index="index" class="h-100" />
           </div>
 
@@ -178,8 +178,9 @@ export default {
           <!-- bottone per lo scrollOnTop -->
           <div
             class="btn-back-to-top mb-3 col-8 btn btn-demetrio"
-            onclick="window.scrollTo({ top: 0});"
-          >
+
+            onclick="window.scrollTo({ top: 0});">
+
             <div class="btn btn--action">
               <span class="listR">↑ Torna in cima</span>
             </div>
@@ -282,7 +283,7 @@ li {
   }
 
   .title {
-    color: $midblue;
+    color: white;
     margin-bottom: 30px;
     // text-shadow: -2px -2px 15px #4477d5, 2px -2px 15px #4477d5,
     //   -2px 2px 15px #4477d5, 2px 2px 15px #4477d5;
@@ -372,6 +373,7 @@ li {
 
 // RESTAURANT CARDS
 .result-column {
+
   background-color: white;
 
   .cardContainer {
