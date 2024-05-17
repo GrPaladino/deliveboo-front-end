@@ -108,81 +108,77 @@ export default {
 </script>
 
 <template>
-  <div class="row align-items-center" id="jumboTron">
-    <div class="jumboTextContainer">
-      <h2 class="display-2 title text-center">
-        Ordina subito con Boolivery! 🛵🍝
-      </h2>
-
-      <div
-        class="btn-restaurant mb-3 col-8"
-        onclick="document.getElementById('searchSection').scrollIntoView();">
-        <div class="btn btn--action">
-          <span class="guest">Vai alla ricerca</span>
-        </div>
-      </div>
-      <h5 class="title">oppure</h5>
-      <h3 class="display-5 title">Sei un ristoratore?</h3>
-      <!-- BUTTON -->
-      <div class="btn-restaurant mb-3 col-8">
-        <a class="btn btn--action" href="http://127.0.0.1:8000/login"
-          ><span class="user">Accedi al tuo account</span></a
-        >
-      </div>
-    </div>
-  </div>
-
-  <div class="containerApp" id="searchSection">
-    <!-- ROW -->
-    <div class="row main-row">
-      <!-- Search column -->
-      <div class="col-5 col-sm-4 col-md-3 col-lg-2 searchColumn" id="search">
-        <h3 class="my-3 title">Filtri</h3>
-
-        <ul class="d-flex flex-column align-items-center">
-          <li
-            v-for="badge in types"
-            class="badgeSelector"
-            :id="badge.label"
-
-            @click="search(badge.label, $event.target.id)">
-
-            {{ badge.label }}
-          </li>
-        </ul>
-        <div class="sidebar-toggle" @click="sideToggler()">
-          <span class="navbar-toggler-icon"></span>
-        </div>
-      </div>
-
-      <!-- Results column -->
-      <div class="col-7 col-sm-8 col-md-9 col-lg-10 result-column px-5 py-4">
-        <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
-        <!-- bottone scrollTop -->
+  <div class="wrapper">
+    <div class="row align-items-center" id="jumboTron">
+      <div class="jumboTextContainer col-md-8">
+        <h2 class="display-2 title text-center col-8">
+          Ordina subito con Boolivery! 🛵🍝
+        </h2>
 
         <div
-
-          class="row pe-2 d-flex justify-content-center justify-content-md-start">
-          <div
-            v-for="(restaurant, index) in this.restaurants"
-            class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
-
-            <app-card :restaurant="restaurant" :index="index" class="h-100" />
+          class="btn-restaurant mb-3 col-8"
+          onclick="document.getElementById('searchSection').scrollIntoView();">
+          <div class="btn btn--action">
+            <span class="guest">Vai alla ricerca</span>
           </div>
+        </div>
+        <h5 class="title">oppure</h5>
+        <h3 class="display-5 title">Sei un ristoratore?</h3>
+        <!-- BUTTON -->
+        <div class="btn-restaurant mb-3 col-8">
+          <a class="btn btn--action" href="http://127.0.0.1:8000/login"
+            ><span class="user">Accedi al tuo account</span></a
+          >
+        </div>
+      </div>
+    </div>
 
-          <div v-if="this.restaurants.length == 0">
-            <p class="text-center text-secondary">
-              Nessun risultato corrispondente. 😓
-            </p>
+    <div class="containerApp" id="searchSection">
+      <!-- ROW -->
+      <div class="row main-row">
+        <!-- Search column -->
+        <div class="col-5 col-sm-4 col-md-3 col-lg-2 searchColumn" id="search">
+          <h3 class="my-3 title">Filtri</h3>
+
+          <ul class="d-flex flex-column align-items-center">
+            <li
+              v-for="badge in types"
+              class="badgeSelector"
+              :id="badge.label"
+              @click="search(badge.label, $event.target.id)">
+              {{ badge.label }}
+            </li>
+          </ul>
+          <div class="sidebar-toggle" @click="sideToggler()">
+            <span class="navbar-toggler-icon"></span>
           </div>
-          <!-- bottone per lo scrollOnTop -->
+        </div>
+
+        <!-- Results column -->
+        <div class="col-7 col-sm-8 col-md-9 col-lg-10 result-column px-5 py-4">
+          <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
+          <!-- bottone scrollTop -->
+
           <div
-            class="btn-back-to-top mb-3 col-8 btn btn-demetrio"
+            class="row pe-2 d-flex justify-content-center justify-content-md-start">
+            <div
+              v-for="(restaurant, index) in this.restaurants"
+              class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
+              <app-card :restaurant="restaurant" :index="index" class="h-100" />
+            </div>
 
-            onclick="window.scrollTo({ top: 0});">
-
-            <div class="btn btn--action">
-              <span class="listR">↑ Torna in cima</span>
+            <div v-if="this.restaurants.length == 0">
+              <p class="text-center text-secondary">
+                Nessun risultato corrispondente. 😓
+              </p>
+            </div>
+            <!-- bottone per lo scrollOnTop -->
+            <div
+              class="btn-back-to-top mb-3 col-12 col-md-8 btn btn-demetrio"
+              onclick="window.scrollTo({ top: 0});">
+              <div class="btn btn--action">
+                <span class="listR">↑ Torna in cima</span>
+              </div>
             </div>
           </div>
         </div>
@@ -211,7 +207,7 @@ li {
 }
 
 #jumboTron {
-  height: 100vh;
+  height: calc(100vh - $headerHeight);
   background-image: url(../assets/img/jumbo-2.svg);
   background-repeat: no-repeat;
   background-size: cover;
@@ -298,6 +294,7 @@ li {
   /*   min-height: 100vh;
   overflow: auto; */
   overflow-x: hidden;
+  padding-top: $headerHeight;
 }
 
 // TYPE BADGES
@@ -373,7 +370,6 @@ li {
 
 // RESTAURANT CARDS
 .result-column {
-
   background-color: white;
 
   .cardContainer {
