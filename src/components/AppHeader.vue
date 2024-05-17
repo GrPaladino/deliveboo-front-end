@@ -23,7 +23,7 @@ export default {
           ></router-link>
           <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
         </li>
-        <li class="nav-item me-4">
+        <li class="nav-item me-4 nav-link">
           <router-link
             :to="{ name: 'home' }"
             class="nav-link text-white"
@@ -32,14 +32,17 @@ export default {
           >
         </li>
       </ul>
+
+      <!-- link Carrello -->
       <ul v-if="store.orderQuantity" class="chart-icon">
-        <li class="nav-item me-4 position-relative">
+        <li class="nav-item me-4 position-relative nav-link">
           <router-link
             :to="{ name: 'restaurants.checkout' }"
             class="nav-link text-white"
             aria-current="page"
             >Carrello</router-link
           >
+          <!-- Badge Carrello -->
           <span
             v-if="store.orderQuantity"
             class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -96,6 +99,9 @@ export default {
     // width: 100%;
     @include d-flex-center;
   }
+  .nav-link {
+    font-size: 1.4rem;
+  }
 
   img {
     height: 50px;
@@ -112,7 +118,7 @@ export default {
 
     .badge {
       width: 52%;
-      font-size: 0.6rem;
+      font-size: 0.9rem;
       text-align: center;
     }
   }
