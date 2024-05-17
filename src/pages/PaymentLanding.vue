@@ -14,10 +14,18 @@ export default {
 </script>
 
 <template>
-  <div class="payment-landing">
+  <div class="payment-landing py-2">
     <div class="container">
+      <router-link
+        :to="{ name: 'home' }"
+        type="button"
+        class="btn btn-primary my-3">
+        <i class="fa-solid fa-circle-arrow-left fa-beat me-1"></i>
+        Torna alla Home
+      </router-link>
       <div v-if="store.buyerData.success">
-        <h1 class="my-4">Risultato del pagamento</h1>
+        <!-- <h1 class="mt-4">Risultato del pagamento</h1> -->
+
         <div class="alert alert-success mb-4" role="alert">
           Pagamento avvenuto con successo
         </div>
@@ -45,7 +53,7 @@ export default {
         </div>
       </div>
       <div v-else>
-        <div class="alert alert-danger mt-4 text-center" role="alert">
+        <div class="alert alert-danger mt-2 text-center" role="alert">
           <p class="fs-2">Transazione fallita</p>
         </div>
       </div>
