@@ -14,11 +14,14 @@ export default {
   <footer>
     <div class="container-fluid">
       <div class="row align-items-center justify-content-center">
-        <p>Team 6</p>
-        <span>
-          Di Nicola Teora, Alberto Cavani, Demetrio Padre, Graziano Paladino,
-          Nicola Pio Gallo
-        </span>
+        <div class="px-5">
+          <p class="pt-3 px-4">
+            <small>
+              &copy; - Team 6: Nicola Teora, Alberto Cavani, Demetrio Padre,
+              Graziano Paladino, Nicola Pio Gallo
+            </small>
+          </p>
+        </div>
       </div>
     </div>
   </footer>
@@ -29,11 +32,13 @@ export default {
 @use "../style/partials/variables" as *;
 
 footer {
-  position: sticky;
-  bottom: 0;
+  /*  position: sticky; */
+  /* bottom: 0; */
   margin: auto 0;
-  height: $footerHeight;
+  /* height: $footerHeight; */
   box-shadow: 0 0 5px black;
-  background: $midblue;
+  .container-fluid {
+    background-color: $darkgray;
+  }
 }
 </style>
