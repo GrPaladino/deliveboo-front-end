@@ -21,12 +21,18 @@ export default {
 
 <template>
   <div class="app">
-    <app-header />
-    <router-view></router-view>
+    <app-header class="fixed-top" />
+    <div class="main-container">
+      <router-view></router-view>
+    </div>
     <!-- <app-footer /> -->
   </div>
 </template>
 
 <style lang="scss">
 @use "./style/general.scss";
+@use "./style/partials/variables" as *;
+.main-container {
+  margin-top: $headerHeight;
+}
 </style>
