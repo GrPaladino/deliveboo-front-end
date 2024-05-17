@@ -351,8 +351,8 @@ export default {
 
         <div class="my-3">
           <h1>{{ restaurant.name }}</h1>
-          <h5>☎️{{ restaurant.phone }}</h5>
-          <h5 class="detailCap">🏠{{ restaurant.address }}</h5>
+          <h5>☎️ {{ restaurant.phone }}</h5>
+          <h5 class="detailCap">🏠 {{ restaurant.address }}</h5>
         </div>
 
         <!-- BADGE -->
