@@ -201,94 +201,98 @@ export default {
 </script>
 
 <template>
-  <App-loading v-show="store.loading" />
-  <div v-if="!this.myOrder.dishes" class="text-center mt-2">
-    <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
-    <router-link :to="{ name: 'home' }">
-      <button class="btn btn-primary">Torna alla home</button>
-    </router-link>
-  </div>
-  <div v-else class="container d-flex justify-content-center py-3">
-    <div class="row justify-content-center containerApp px-4 container">
-      <div class="col-12 col-md-7 px-2 mt-4">
-        <div class="card">
-          <div class="card-header px-3 pt-3">
-            <h2>Il tuo ordine</h2>
-          </div>
-          <div class="card-body">
-            <div v-if="this.myOrder.dishes.length">
-              <div
-                v-for="dish in myOrder.dishes"
-                class="dishCard pe-2 col-12 col-md-6 w-100 mb-1">
-                <!-- IMMAGINE -->
-
+  <div class="wrapper">
+    <App-loading v-show="store.loading" />
+    <div v-if="!this.myOrder.dishes" class="text-center mt-2">
+      <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
+      <router-link :to="{ name: 'home' }">
+        <button class="btn btn-primary">Torna alla home</button>
+      </router-link>
+    </div>
+    <div v-else class="container d-flex justify-content-center py-3">
+      <div class="row justify-content-center containerApp px-4 container">
+        <div class="col-12 col-md-7 px-2 mt-4">
+          <div class="card">
+            <div class="card-header px-3 pt-3">
+              <h2>Il tuo ordine</h2>
+            </div>
+            <div class="card-body">
+              <div v-if="this.myOrder.dishes.length">
                 <div
-                  class="dishImage col-2"
-                  data-bs-toggle="modal"
-                  :data-bs-target="`#dish-` + dish.id">
-                  <img :src="dish.image" alt="dish.name" />
-                </div>
-                <!-- TESTO -->
-                <div class="dishInfo d-none d-md-block col-3 col-md-5 px-2">
-                  <h5>{{ dish.name }}</h5>
-                  <p>{{ dish.description }}</p>
-                </div>
-                <div class="col-5 col-md-4 row text-end">
-                  <!-- PREZZO -->
-                  <div class="dishPrice col-xl-6 col-lg-12">
-                    <h5>€ {{ euroCheck(dish.price) }}</h5>
-                  </div>
+                  v-for="dish in myOrder.dishes"
+                  class="dishCard pe-2 col-12 col-md-6 w-100 mb-1">
+                  <!-- IMMAGINE -->
 
-                  <!-- QUANTITA -->
-                  <div class="amountContainer col-12 col-xl-6 col-lg-12">
-                    <button
-                      id="minus"
-                      class="quantityButton rounded-start"
-                      @click="quantity($event.target.id, dish)">
-                      -
-                    </button>
-                    <input
-                      name="input"
-                      type="number"
-                      class="number_dishes input"
-                      :id="dish.id"
-                      min="0"
-                      :value="dish.quantity"
-                      @keyup="getClass($event.target.id)"
-                      @blur="inputValidation($event.target.id, dish)" />
-                    <button
-                      id="plus"
-                      class="quantityButton rounded-end"
-                      @click="quantity($event.target.id, dish)">
-                      +
-                    </button>
+                  <div
+                    class="dishImage col-2"
+                    data-bs-toggle="modal"
+                    :data-bs-target="`#dish-` + dish.id">
+                    <img :src="dish.image" alt="dish.name" />
+                  </div>
+                  <!-- TESTO -->
+                  <div class="dishInfo d-none d-md-block col-3 col-md-5 px-2">
+                    <h5>{{ dish.name }}</h5>
+                    <p>{{ dish.description }}</p>
+                  </div>
+                  <div class="col-5 col-md-4 row text-end">
+                    <!-- PREZZO -->
+                    <div class="dishPrice col-xl-6 col-lg-12">
+                      <h5>€ {{ euroCheck(dish.price) }}</h5>
+                    </div>
+
+                    <!-- QUANTITA -->
+                    <div class="amountContainer col-12 col-xl-6 col-lg-12">
+                      <button
+                        id="minus"
+                        class="quantityButton rounded-start"
+                        @click="quantity($event.target.id, dish)">
+                        -
+                      </button>
+                      <input
+                        name="input"
+                        type="number"
+                        class="number_dishes input"
+                        :id="dish.id"
+                        min="0"
+                        :value="dish.quantity"
+                        @keyup="getClass($event.target.id)"
+                        @blur="inputValidation($event.target.id, dish)" />
+                      <button
+                        id="plus"
+                        class="quantityButton rounded-end"
+                        @click="quantity($event.target.id, dish)">
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- QUANTITA
+                <!-- QUANTITA
           <div class="dishPrice col-2">
             <h5>x {{ dish.quantity }}</h5>
           </div> -->
+              </div>
             </div>
-          </div>
-          <div class="card-footer pb-3">
-            <div id="totalPrice">
-              <h3 class="totalPrice mt-2">TOTALE</h3>
-              <p class="m-0 fs-3 pe-2">€ {{ euroCheck(this.myOrder.price) }}</p>
+            <div class="card-footer pb-3">
+              <div id="totalPrice">
+                <h3 class="totalPrice mt-2">TOTALE</h3>
+                <p class="m-0 fs-3 pe-2">
+                  € {{ euroCheck(this.myOrder.price) }}
+                </p>
+              </div>
             </div>
-          </div>
-          <!-- <button
+            <!-- <button
             @click="emptyCart()"
             type="button"
             class="btn btn-outline-warning empty-cart m-2 w-50">
             Svuota carrello
           </button> -->
+          </div>
         </div>
-      </div>
-      <div class="col-12 col-md-5 py-4">
-        <Payment
-          :authorization="this.tokenApi"
-          :myOrder="this.myOrder"></Payment>
+        <div class="col-12 col-md-5 py-4">
+          <Payment
+            :authorization="this.tokenApi"
+            :myOrder="this.myOrder"></Payment>
+        </div>
       </div>
     </div>
   </div>
@@ -299,6 +303,9 @@ export default {
 
 @use "../style/partials/variables" as *;
 
+.wrapper {
+  height: 100%;
+}
 .totalPrice,
 h2 {
   color: $darkblue;
