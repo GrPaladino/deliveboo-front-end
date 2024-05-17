@@ -23,7 +23,7 @@ export default {
           ></router-link>
           <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
         </li>
-        <li class="nav-item me-4 nav-link">
+        <li class="nav-item me-4 nav-link d-none d-md-block">
           <router-link
             :to="{ name: 'home' }"
             class="nav-link text-white"

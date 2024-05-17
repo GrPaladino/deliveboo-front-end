@@ -229,18 +229,18 @@ export default {
                   <img :src="dish.image" alt="dish.name" />
                 </div>
                 <!-- TESTO -->
-                <div class="dishInfo col-6 col-sm-5 col-md-6 px-2">
+                <div class="dishInfo d-none d-md-block col-3 col-md-5 px-2">
                   <h5>{{ dish.name }}</h5>
                   <p>{{ dish.description }}</p>
                 </div>
-                <div class="col-4 col-sm-5 col-md-4 row">
+                <div class="col-5 col-md-4 row text-end">
                   <!-- PREZZO -->
                   <div class="dishPrice col-xl-6 col-lg-12">
                     <h5>€ {{ euroCheck(dish.price) }}</h5>
                   </div>
 
                   <!-- QUANTITA -->
-                  <div class="amountContainer col-xl-6 col-lg-12">
+                  <div class="amountContainer col-12 col-xl-6 col-lg-12">
                     <button
                       id="minus"
                       class="quantityButton rounded-start"
@@ -274,7 +274,7 @@ export default {
           <div class="card-footer pb-3">
             <div id="totalPrice">
               <h3 class="totalPrice mt-2">TOTALE</h3>
-              <p class="m-0 fs-3">€ {{ euroCheck(this.myOrder.price) }}</p>
+              <p class="m-0 fs-3 pe-2">€ {{ euroCheck(this.myOrder.price) }}</p>
             </div>
           </div>
           <!-- <button
@@ -475,6 +475,7 @@ button {
 .dishCard {
   height: fit-content;
   display: flex;
+  justify-content: space-between;
   background-color: white;
   flex: 0 0 auto;
   color: $darkblue;
@@ -517,6 +518,7 @@ button {
 .amountContainer {
   align-items: center;
   display: flex;
+  justify-content: end;
   /* border-bottom: 1px solid rgba($midblue, 0.2); */
 
   // INPUT NUMBER ARROW HIDDEN

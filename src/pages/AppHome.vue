@@ -174,7 +174,7 @@ export default {
             </div>
             <!-- bottone per lo scrollOnTop -->
             <div
-              class="btn-back-to-top mb-3 col-8 btn btn-demetrio"
+              class="btn-back-to-top mb-3 col-12 col-md-8 btn btn-demetrio"
               onclick="window.scrollTo({ top: 0});">
               <div class="btn btn--action">
                 <span class="listR">↑ Torna in cima</span>
