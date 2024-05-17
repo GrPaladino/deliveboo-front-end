@@ -13,7 +13,7 @@ export default {
   <nav class="headerNav navbar navbar-expand-lg">
     <div class="container-md d-flex">
       <ul class="navbar-ul">
-        <li class="nav-item me-4">
+        <li class="nav-item me-4 d-flex">
           <router-link
             :to="{ name: 'home' }"
             class="nav-link text-white"
