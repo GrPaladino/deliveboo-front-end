@@ -685,7 +685,8 @@ export default {
 @use "../style/partials/variables" as *;
 
 .container {
-  height: calc(100vh - $footerHeight - $headerHeight);
+  // height: calc(100vh - $footerHeight - $headerHeight);
+  // height: 100vh;
 }
 
 // GO TO CART

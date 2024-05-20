@@ -25,7 +25,7 @@ export default {
     <div class="main-container">
       <router-view></router-view>
     </div>
-    <app-footer />
+    <!-- <app-footer /> -->
   </div>
 </template>
 
