@@ -389,7 +389,7 @@ export default {
           <!-- PREZZO -->
           <div class="dishPrice col-3 justify-self-end">
             <div>
-              <h5>€ {{ dish.price }}</h5>
+              <h5>€ {{ euroCheck(dish.price) }}</h5>
             </div>
 
             <!-- QUANTITA  col-2-->
@@ -443,7 +443,7 @@ export default {
                 <div class="modal-body">
                   <img :src="dish.image" alt="dish.name" class="modalImage" />
                   <p>Descrizione: {{ dish.description }}</p>
-                  <h6>Prezzo: €{{ dish.price }}</h6>
+                  <h6>Prezzo: € {{ euroCheck(dish.price) }}</h6>
                 </div>
                 <div
                   class="modal-footer d-flex flex-column justify-content-center align-items-center">
