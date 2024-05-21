@@ -8,15 +8,24 @@ export default {
     };
   },
   props: { restaurant: Object, index: Number, types: Array },
+  methods: {},
 };
 </script>
 
 <template>
-  <router-link :to="{
-    name: 'restaurants.show',
-    params: { slug: restaurant.slug },
-  }" class="router-link">
+  <router-link
+    :to="{
+      name: 'restaurants.show',
+      params: { slug: restaurant.slug },
+    }"
+    class="router-link"
+  >
     <div class="myCard">
+      <!-- <div class="badgesContainer" :id="'list-' + restaurant.id">
+        <span v-for="badge in restaurant.types" class="badge mx-2">
+          {{ badge.label }}
+        </span>
+      </div> -->
       <!-- Restaurant image -->
       <div class="coverImage">
         <img :src="restaurant.image" />
@@ -26,19 +35,6 @@ export default {
         <h3 class="detailCap">{{ restaurant.name }}</h3>
         <p class="detailCap">{{ restaurant.address }}</p>
       </div>
-
-      <!-- BADGE -->
-      <div id="badgesContainer">
-        <span v-for="badge in restaurant.types" class="badge mx-2" >
-          {{ badge.label }}
-          <!-- <div class="typeBadge">
-            <div class="badgeImg">
-              <img :src="badge.image" alt="" width="100%" />
-            </div>
-            <span>{{ badge.label }}</span>
-          </div> -->
-        </span>
-      </div>
     </div>
   </router-link>
 </template>
@@ -47,12 +43,28 @@ export default {
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
 
+// .badgesContainer {
+//   position: absolute;
+//   border: 1px solid $secondary;
+//   background-color: white;
+//   display: none;
+//   flex-direction: column;
+//   margin: 0;
+//   transform: translateZ(50);
+//   .badge {
+//     color: $secondary;
+//     font-size: 17px;
+//   }
+// }
+
 .myCard {
+  position: relative;
   background-color: white;
   height: 100%;
-  color: $darkblue;
+  z-index: 2;
+  color: $secondary;
   border-radius: 5px;
-  border: 1px solid $darkblue;
+  border: 1px solid $secondary;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -64,9 +76,8 @@ export default {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    // flex-grow: 1;
+    flex-grow: 1;
   }
-
   &:hover {
     box-shadow: 0 0 7px black;
     transform: scale(1.02);
@@ -78,10 +89,13 @@ export default {
     overflow: hidden;
     // border-radius: 10px;
     margin-bottom: 15px;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 16 / 9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     img {
-      height: 100%;
+      width: 100%;
     }
   }
 }
@@ -89,7 +103,6 @@ export default {
 h3.detailCap {
   font-size: 25px;
 }
-
 .detailCap {
   text-transform: capitalize;
   white-space: nowrap;
@@ -103,54 +116,11 @@ h3.detailCap {
   text-decoration: none;
 }
 
-#badgesContainer {
-  margin-bottom: 30px;
-  flex-grow: 1;
-
-  // .badge {
-  //   display: inline-block;
-  //   margin-right: 10px;
-
-  //   .typeBadge {
-  //     // border: 3px solid $midblue;
-  //     width: 100%;
-  //     border-radius: 60%;
-  //     overflow: hidden;
-  //     position: relative;
-  //     display: flex;
-  //     justify-content: center;
-  //     align-items: center;
-  //     height: 32px;
-  //     width: 100%;
-  //     object-fit: cover;
-
-  //     .badgeImg {
-  //       position: absolute;
-  //       width: 100%;
-  //       filter: brightness(90%);
-  //     }
-  //   }
-  // }
-}
-
-span {
-  color:$darkblue;
-  z-index: 2;
-  // text-shadow: 0px 0px 20px black;
-  font-size: 100%;
-  letter-spacing: 2px;
-//  text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
-    // 2px 2px 0 #000;
-  margin: 5px 0;
-border:2px solid $darkblue;
-border-radius: 30px;
-}
-
 .rightColumn {
   padding: 0;
   // height: calc(100vh - $headerHeight - $footerHeight);
   overflow: auto;
-  // background-color: $midblue;
+  // background-color: $primary;
   display: flex;
   justify-content: start;
   flex-wrap: wrap;

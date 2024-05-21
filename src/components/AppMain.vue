@@ -19,7 +19,7 @@ export default {
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
 
-div {
-  min-height: calc(100vh - $footerHeight - $headerHeight);
-}
+// div {
+//   min-height: calc(100vh - $footerHeight - $headerHeight);
+// }
 </style>

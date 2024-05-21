@@ -1,17 +1,34 @@
 <script>
 import axios from "axios";
 import Payment from "../components/Payment.vue";
-import AppLoading from "../components/AppLoading.vue";
+import AppLoading from "./AppLoading.vue";
 import { store, api } from "../store";
 
 export default {
   data() {
     return {
       tokenApi: "",
-      myOrder: [],
       store,
-      orderQuantity: "",
+      myOrder: [],
     };
+  },
+  watch: {
+    myOrder: {
+      handler() {
+        if (this.myOrder) {
+          localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
+          store.myOrder = this.myOrder;
+          // console.log("Pushed to storage");
+        }
+        if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
+          this.myOrder = [];
+          localStorage.removeItem("myOrder");
+          store.myOrder = this.myOrder;
+          // console.log("Removed from storage");
+        }
+      },
+      deep: true,
+    },
   },
 
   components: { Payment, AppLoading },
@@ -21,25 +38,13 @@ export default {
       let order = localStorage.getItem("myOrder");
       if (order) {
         this.myOrder = JSON.parse(order);
-        // console.log(this.myOrder.dishes.length);
-      }
-    },
-
-    getClass(event) {
-      let input = document.getElementById(event);
-      if (input.value > 0) {
-        input.classList.remove("off");
-      } else {
-        input.classList.add("off");
       }
     },
 
     // CONVERT TO EURO FORMAT
-
     euroCheck(price) {
       let formattedPrice = Number(price).toFixed(2);
       formattedPrice = formattedPrice.replace(".", ",");
-      store.orderPrice = formattedPrice;
       return formattedPrice;
     },
     // PLUS AND MINUS BUTTONS
@@ -47,18 +52,11 @@ export default {
       let value = document.getElementById(dish.id);
       console.log("QUANTITY -> questo è dish", dish);
       if (operator == "minus" && value.value > 0) {
-        if (value.value == 1) {
-          value.classList.add("off");
-        }
         value.value--;
-        store.badgeDecrement();
 
         let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
         if (dishInOrder) {
           dishInOrder.quantity--;
-
-          this.value = dishInOrder.quantity;
-
           if (dishInOrder.quantity === 0) {
             this.myOrder.dishes = this.myOrder.dishes.filter(
               (d) => d.id !== dish.id
@@ -68,7 +66,7 @@ export default {
         }
       }
       if (operator == "plus") {
-        // SE MY ORDER NON ESISTE
+        // SE MYORDER NON ESISTE
         if (!this.myOrder.dishes) {
           this.myOrder = {
             restaurant_id: this.restaurant.id,
@@ -79,18 +77,11 @@ export default {
 
         // SE L'ID DEL RISTORANTE COMBACIA CON QUELLO NELL'ORDINE
 
-        // SE ORDINE NON ESISTE
-        // SE IL VALUE SALE
-        if (value.value == 0) {
-          value.classList.remove("off");
-        }
-
         let potentialPrice =
           parseFloat(this.myOrder.price) + parseFloat(dish.price);
 
         if (potentialPrice <= 9999.99) {
           value.value++;
-          store.badgeIncrement();
           // console.log(this.restaurant.dishes);
           // LOGICA PLUS
 
@@ -104,11 +95,11 @@ export default {
           this.myOrder.price =
             parseFloat(this.myOrder.price) + parseFloat(dish.price);
         } else {
-          alert(
-            "Aggiungendo questo piatto, si supererebbe il limite di prezzo del carrello di 9999.99€."
-          );
+          this.cartLimitModal();
         }
       }
+
+      // console.log(this.myOrder);
     },
 
     // VALIDATION FOR INPUTS
@@ -128,7 +119,6 @@ export default {
 
         // Calcola la nuova quantità e il nuovo prezzo potenziale
         let newQuantity = parseInt(input.value);
-
         let potentialNewPrice =
           this.myOrder.price -
           (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
@@ -147,9 +137,8 @@ export default {
             this.myOrder.price -
             (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
             newQuantity * dish.price;
-          alert(
-            "Il limite di prezzo del carrello di 9999.99€ è stato superato. La quantità è stata aggiustata al valore massimo possibile."
-          );
+          this.cartLimitModal();
+
           potentialNewPrice;
         }
 
@@ -174,17 +163,32 @@ export default {
       console.log("INPUT VALIDATION -> myOrder", this.myOrder);
     },
 
-    // EMPTY CART OF ALL ITEMS
-    emptyCart() {
-      localStorage.removeItem("myOrder");
-      store.orderQuantity = 0;
-      // this.myOrder = [];
-      // console.log("localStorage svuotato!");
-      let inputs = document.getElementsByName("input");
-      inputs.forEach((input) => {
-        input.value = 0;
-        input.classList.add("off");
-      });
+    openModal(dish) {
+      let modal = document.getElementById("dish-modal-" + dish);
+      console.log("dish-modal-" + dish);
+      modal.style.display = "block";
+    },
+    closeModal(dish) {
+      let modal = document.getElementById("dish-modal-" + dish);
+      modal.style.display = "none";
+    },
+
+    cartLimitModal() {
+      let modal = document.getElementById("cartLimitModal");
+      modal.style.display = "block";
+    },
+    cartLimitModalClose() {
+      let modal = document.getElementById("cartLimitModal");
+      modal.style.display = "none";
+    },
+    //DEFINED CHECK
+    exists(item) {
+      // console.log("controllo", item);
+      if (item != undefined && item.length) {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 
@@ -195,105 +199,121 @@ export default {
   async mounted() {
     let response = await axios.get(api.baseApiURI + "order/generate");
     this.tokenApi = response.data.token;
-    // console.log(this.tokenApi);
+    console.log(this.tokenApi);
   },
 };
 </script>
 
 <template>
-  <div class="wrapper">
-    <App-loading v-show="store.loading" />
-    <div v-if="!this.myOrder.dishes" class="text-center mt-2">
-      <h1 class="text-danger">Il tuo carrello è vuoto!</h1>
-      <router-link :to="{ name: 'home' }">
-        <button class="btn btn-primary">Torna alla home</button>
-      </router-link>
-    </div>
-    <div v-else class="container d-flex justify-content-center py-3">
-      <div class="row justify-content-center containerApp px-4 container">
-        <div class="col-12 col-md-7 px-2 mt-4">
-          <div class="card">
-            <div class="card-header px-3 pt-3">
-              <h2>Il tuo ordine</h2>
-            </div>
-            <div class="card-body">
-              <div v-if="this.myOrder.dishes.length">
-                <div
-                  v-for="dish in myOrder.dishes"
-                  class="dishCard pe-2 col-12 col-md-6 w-100 mb-1">
-                  <!-- IMMAGINE -->
-
-                  <div
-                    class="dishImage col-2"
-                    data-bs-toggle="modal"
-                    :data-bs-target="`#dish-` + dish.id">
-                    <img :src="dish.image" alt="dish.name" />
-                  </div>
-                  <!-- TESTO -->
-                  <div class="dishInfo d-none d-md-block col-3 col-md-5 px-2">
-                    <h5>{{ dish.name }}</h5>
-                    <p>{{ dish.description }}</p>
-                  </div>
-                  <div class="col-5 col-md-4 row text-end">
-                    <!-- PREZZO -->
-                    <div class="dishPrice col-xl-6 col-lg-12">
-                      <h5>€ {{ euroCheck(dish.price) }}</h5>
-                    </div>
-
-                    <!-- QUANTITA -->
-                    <div class="amountContainer col-12 col-xl-6 col-lg-12">
-                      <button
-                        id="minus"
-                        class="quantityButton rounded-start"
-                        @click="quantity($event.target.id, dish)">
-                        -
-                      </button>
-                      <input
-                        name="input"
-                        type="number"
-                        class="number_dishes input"
-                        :id="dish.id"
-                        min="0"
-                        :value="dish.quantity"
-                        @keyup="getClass($event.target.id)"
-                        @blur="inputValidation($event.target.id, dish)" />
-                      <button
-                        id="plus"
-                        class="quantityButton rounded-end"
-                        @click="quantity($event.target.id, dish)">
-                        +
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <!-- QUANTITA
-          <div class="dishPrice col-2">
-            <h5>x {{ dish.quantity }}</h5>
-          </div> -->
-              </div>
-            </div>
-            <div class="card-footer pb-3">
-              <div id="totalPrice">
-                <h3 class="totalPrice mt-2">TOTALE</h3>
-                <p class="m-0 fs-3 pe-2">
-                  € {{ euroCheck(this.myOrder.price) }}
-                </p>
-              </div>
-            </div>
-            <!-- <button
-            @click="emptyCart()"
-            type="button"
-            class="btn btn-outline-warning empty-cart m-2 w-50">
-            Svuota carrello
-          </button> -->
-          </div>
+  <app-loading v-if="store.loading" />
+  <div class="row justify-content-between containerApp ps-3">
+    <div class="col-12 col-md-8 px-2">
+      <!-- MODAL -->
+      <div class="customModal" id="cartLimitModal">
+        <div class="close" @click="cartLimitModalClose()">
+          <i class="fa-solid fa-circle-xmark fa-2xl text-primary"></i>
         </div>
-        <div class="col-12 col-md-5 py-4">
-          <Payment
-            :authorization="this.tokenApi"
-            :myOrder="this.myOrder"></Payment>
+        <div>
+          <h3 class="text-danger">ATTENZIONE</h3>
+        </div>
+
+        <div>
+          <p class="fs-5">
+            Hai raggiunto il limite di 9999.99€! Il carrello contiene la
+            quantità massima di piatti possibile.
+          </p>
         </div>
       </div>
+
+      <!-- EMPTY CART -->
+      <div
+        v-if="!this.myOrder.dishes || this.myOrder.dishes.length == 0"
+        class="noItems"
+      >
+        <h1 class="text-danger text-center">Il tuo carrello è vuoto!</h1>
+        <router-link to="/">
+          <button class="btn btn-primary">Torna alla home</button></router-link
+        >
+      </div>
+
+      <!-- CART -->
+      <div v-if="this.myOrder.dishes && this.myOrder.dishes.length > 0">
+        <div class="dishesContainer">
+          <div v-for="dish in this.myOrder.dishes" class="dishCard pe-5 col-12">
+            <!-- IMMAGINE -->
+
+            <div class="dishImage col-2" @click="openModal(dish.id)">
+              >
+              <img :src="dish.image" alt="dish.name" />
+            </div>
+            <!-- TESTO -->
+            <div class="dishInfo col-6 px-2">
+              <h5>{{ dish.name }}</h5>
+              <p>{{ dish.description }}</p>
+            </div>
+
+            <!-- PREZZO -->
+            <div class="dishPrice col-4">
+              <h5 class="text-center">€ {{ euroCheck(dish.price) }}</h5>
+              <!-- QUANTITA -->
+              <div class="amountContainer col-2">
+                <button
+                  id="minus"
+                  class="quantityButton me-2"
+                  @click="quantity($event.target.id, dish)"
+                >
+                  -
+                </button>
+                <input
+                  type="number"
+                  :id="dish.id"
+                  min="0"
+                  step="1"
+                  :value="dish.quantity"
+                  class="off rounded border border-primary-subtle border-2"
+                  @blur="inputValidation($event.target.id, dish)"
+                />
+                <button
+                  id="plus"
+                  class="quantityButton ms-2"
+                  @click="quantity($event.target.id, dish)"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <!-- MODAL -->
+            <div class="customModal" :id="'dish-modal-' + dish.id">
+              <div class="close" @click="closeModal(dish.id)">
+                <i class="fa-solid fa-circle-xmark fa-2xl text-primary"></i>
+              </div>
+              <div>
+                <h3>{{ dish.name }}</h3>
+              </div>
+              <div class="modalImage">
+                <img :src="dish.image" :alt="dish.name" />
+              </div>
+              <div>
+                <p class="fs-5">{{ dish.description }}</p>
+                <span class="fs-2">€ {{ euroCheck(dish.price) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h2 class="totalPrice">
+            TOTALE € {{ euroCheck(this.myOrder.price) }}
+          </h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-4 px-2 pe-5">
+      <Payment
+        :authorization="this.tokenApi"
+        :myOrder="this.myOrder"
+        v-if="this.myOrder.dishes && this.myOrder.dishes.length > 0"
+      ></Payment>
     </div>
   </div>
 </template>
@@ -303,18 +323,61 @@ export default {
 
 @use "../style/partials/variables" as *;
 
-.wrapper {
-  height: 100%;
+.noItems {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
 }
-.totalPrice,
-h2 {
-  color: $darkblue;
+
+.totalPrice {
+  color: $secondary;
+  text-align: center;
+  margin-top: 30px;
+}
+
+.customModal {
+  text-align: center;
+  display: none;
+  color: $secondary;
+  background-color: white;
+  z-index: 5;
+  max-width: 30vw;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 5px 0 rgba(black, 0.2);
+  .modalImage {
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    margin: 20px 0;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 30px;
+    top: 20px;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 }
 
 // GO TO CART
 .goToCart {
   position: absolute;
-  background-color: $midblue;
+  background-color: $primary;
   border-radius: 50%;
   aspect-ratio: 1/1;
   max-width: 100px;
@@ -322,7 +385,7 @@ h2 {
   justify-content: center;
   align-items: center;
   font-size: 4rem;
-  text-shadow: 5px 5px 5px $darkblue;
+  text-shadow: 5px 5px 5px $secondary;
   right: 30px;
   bottom: 30px;
 
@@ -330,47 +393,26 @@ h2 {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
-
   &:hover {
     transform: scale(1.1);
     transition: all 0.08s ease 0.08s;
   }
 }
 
-// MODAL CLASSES
-
-.modalImage {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
 .containerApp {
-  /* height: calc(100vh - $headerHeight - $footerHeight); */
+  height: calc(100vh - $headerHeight - $footerHeight);
   background-color: white;
   overflow: auto;
   overflow-x: hidden;
 }
 
-// .leftColumn {
-//   height: 100%;
-//   position: relative;
-//   color: $darkblue;
-//   background-color: white;
-//   text-align: center;
-//   // min-height: calc(100vh - $headerHeight - $footerHeight);
-//   border-right: 2px solid rgba($midblue, 0.2);
-//   border-bottom: 2px solid rgba($midblue, 0.2);
-// }
-
 #badgesContainer {
   margin-bottom: 30px;
-
   .badge {
     display: inline-block;
     margin-right: 10px;
 
     .typeBadge {
-      // border: 3px solid $midblue;
       width: 100%;
       border-radius: 50px;
       overflow: hidden;
@@ -390,7 +432,6 @@ h2 {
         text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
           2px 2px 0 #000;
       }
-
       .badgeImg {
         position: absolute;
         width: 100%;
@@ -402,9 +443,7 @@ h2 {
 
 .leftColumn {
   padding: 0;
-  // height: calc(100vh - $headerHeight - $footerHeight);
   overflow: auto;
-  // background-color: $midblue;
   display: flex;
   justify-content: start;
   flex-wrap: wrap;
@@ -452,7 +491,6 @@ h2 {
     transition-duration: 400ms;
     transform: scale(1.1, 1.1) translate3d(0, 0, 0);
     cursor: pointer;
-
     i {
       color: #2929b9;
     }
@@ -479,33 +517,37 @@ button {
 
 // DISH CARD
 
+.dishesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
 .dishCard {
+  padding: 20px;
   height: fit-content;
   display: flex;
-  justify-content: space-between;
   background-color: white;
   flex: 0 0 auto;
-  color: $darkblue;
-  border-bottom: 1px solid rgba($midblue, 0.2);
+  color: $secondary;
+  border-bottom: 1px solid rgba($primary, 0.2);
 
   .dishImage {
-    height: 80px;
-    width: 80px;
+    height: 100px;
+    width: 100px;
     overflow: hidden;
     object-fit: contain;
     display: flex;
+    border-radius: 500px;
     justify-content: center;
-
     img {
       height: 100%;
       width: auto;
     }
   }
-
   .dishInfo,
   .dishPrice {
     display: flex;
-    /*   border-bottom: 1px solid rgba($midblue, 0.2); */
     flex-direction: column;
     justify-content: center;
 
@@ -525,19 +567,17 @@ button {
 .amountContainer {
   align-items: center;
   display: flex;
-  justify-content: end;
-  /* border-bottom: 1px solid rgba($midblue, 0.2); */
+  justify-content: center;
 
   // INPUT NUMBER ARROW HIDDEN
   input[type="number"] {
     -webkit-appearance: textfield;
     -moz-appearance: textfield;
     appearance: textfield;
-    width: 40px;
+    width: 50px;
     height: 30px;
     text-align: center;
   }
-
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -548,26 +588,22 @@ button {
     flex-shrink: 0;
     height: 30px;
     width: 30px;
-    background-color: $midblue;
+    border-radius: 500px;
+    background-color: $primary;
     color: white;
     font-size: 20px;
     display: flex;
     justify-content: center;
-  }
-
-  .off {
-    color: lightgray;
+    align-items: center;
+    &:active {
+      transform: scale(0.9);
+      background-color: $tertiary;
+    }
   }
 }
 
 .blueColor {
-  background-color: $midblue;
+  background-color: $primary;
   color: white;
-}
-
-#totalPrice {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

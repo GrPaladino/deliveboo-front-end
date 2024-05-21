@@ -2,12 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 
 import AppHome from "./pages/AppHome.vue";
 import RestaurantShow from "./pages/RestaurantShow.vue";
-
-import CartView from "./pages/CartView.vue";
-
+import RestaurantsList from "./pages/RestaurantsList.vue";
 import CartCheckout from "./pages/CartCheckout.vue";
-
-import PaymentLanding from "./pages/PaymentLanding.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -24,14 +20,14 @@ const router = createRouter({
       component: RestaurantShow,
     },
     {
+      path: "/restaurants",
+      name: "restaurants",
+      component: RestaurantsList,
+    },
+    {
       path: "/checkout",
       name: "restaurants.checkout",
       component: CartCheckout,
-    },
-    {
-      path: "/paymentLanding",
-      name: "payment.landing",
-      component: PaymentLanding,
     },
   ],
 });

@@ -1,9 +1,8 @@
 <script>
 import axios from "axios";
-import { router } from "../router";
 
 import { store, api } from "../store";
-import AppModal from "../components/AppModal.vue";
+// import AppCard from "../components/AppCard.vue";
 
 export default {
   data() {
@@ -14,12 +13,8 @@ export default {
       types: [],
       store,
       myOrder: [],
-      modal: false,
     };
   },
-
-  components: { AppModal },
-
   watch: {
     restaurant: {
       handler() {
@@ -35,13 +30,17 @@ export default {
       handler() {
         if (this.myOrder && this.cartCheck === true) {
           localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
+          console.log("Pushed to storage");
+          console.log("Old", store.myOrder);
 
-          // console.log("Pushed to storage");
+          store.myOrder = this.myOrder;
+          console.log("New", store.myOrder);
         }
         if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
           this.myOrder = [];
           localStorage.removeItem("myOrder");
-          // console.log("Removed from storage");
+          console.log("Removed from storage");
+          store.myOrder = this.myOrder;
         }
       },
       deep: true,
@@ -63,7 +62,6 @@ export default {
     emptyCart() {
       localStorage.removeItem("myOrder");
       this.myOrder = [];
-      store.orderQuantity = 0;
       // console.log("localStorage svuotato!");
       let inputs = document.querySelectorAll("input");
       inputs.forEach((input) => {
@@ -115,12 +113,10 @@ export default {
           value.classList.add("off");
         }
         value.value--;
-        store.badgeDecrement();
 
         let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
         if (dishInOrder) {
           dishInOrder.quantity--;
-
           if (dishInOrder.quantity === 0) {
             this.myOrder.dishes = this.myOrder.dishes.filter(
               (d) => d.id !== dish.id
@@ -141,7 +137,6 @@ export default {
 
         // SE L'ID DEL RISTORANTE COMBACIA CON QUELLO NELL'ORDINE
         if (this.myOrder.restaurant_id == this.restaurant.id) {
-          // SE ORDINE NON ESISTE
           // SE IL VALUE SALE
           if (value.value == 0) {
             value.classList.remove("off");
@@ -152,7 +147,6 @@ export default {
 
           if (potentialPrice <= 9999.99) {
             value.value++;
-            store.badgeIncrement();
             // console.log(this.restaurant.dishes);
             // LOGICA PLUS
 
@@ -166,26 +160,12 @@ export default {
             this.myOrder.price =
               parseFloat(this.myOrder.price) + parseFloat(dish.price);
           } else {
-            alert(
-              "Aggiungendo questo piatto, si supererebbe il limite di prezzo del carrello di 9999.99€."
-            );
+            this.cartLimitModal();
           }
         } else {
-          this.modal = true;
-          // if (
-
-          // confirm(
-          //   "Il carrello contiene piatti di un altro ristorante! Svuotare il carrello?"
-          // )
-          // ) {
-          //   this.myOrder = [];
-          // } else {
-          //   history.back();
-          // }
+          this.alertModal();
         }
       }
-
-      // console.log(this.myOrder);
     },
 
     // VALIDATION FOR INPUTS
@@ -206,53 +186,54 @@ export default {
         };
       }
       if (!input.value) input.value = 0;
+      if (this.myOrder.restaurant_id == this.restaurant.id) {
+        if (input.reportValidity()) {
+          let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
 
-      if (input.reportValidity()) {
-        let dishInOrder = this.myOrder.dishes.find((d) => d.id === dish.id);
-
-        // Calcola la nuova quantità e il nuovo prezzo potenziale
-        let newQuantity = parseInt(input.value);
-        let potentialNewPrice =
-          this.myOrder.price -
-          (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
-          newQuantity * dish.price;
-
-        // Controlla se il prezzo supera il limite prima di aggiornare l'ordine
-        if (potentialNewPrice > 9999.99) {
-          // Calcola la quantità massima possibile senza superare il limite
-          newQuantity = Math.floor(
-            (9999.99 -
-              (this.myOrder.price -
-                (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
-              dish.price
-          );
-          potentialNewPrice =
+          // Calcola la nuova quantità e il nuovo prezzo potenziale
+          let newQuantity = parseInt(input.value);
+          let potentialNewPrice =
             this.myOrder.price -
             (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
             newQuantity * dish.price;
-          alert(
-            "Il limite di prezzo del carrello di 9999.99€ è stato superato. La quantità è stata aggiustata al valore massimo possibile."
-          );
-          potentialNewPrice;
-        }
 
-        // Aggiorna l'ordine solo se la nuova quantità è maggiore di zero
-        if (newQuantity > 0) {
-          if (dishInOrder) {
-            this.myOrder.price = potentialNewPrice;
-            dishInOrder.quantity = newQuantity;
-          } else {
-            this.myOrder.dishes.push({ ...dish, quantity: newQuantity });
-            this.myOrder.price = potentialNewPrice;
+          // Controlla se il prezzo supera il limite prima di aggiornare l'ordine
+          if (potentialNewPrice > 9999.99) {
+            // Calcola la quantità massima possibile senza superare il limite
+            newQuantity = Math.floor(
+              (9999.99 -
+                (this.myOrder.price -
+                  (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
+                dish.price
+            );
+            potentialNewPrice =
+              this.myOrder.price -
+              (dishInOrder ? dishInOrder.quantity * dish.price : 0) +
+              newQuantity * dish.price;
+            this.cartLimitModal();
+            potentialNewPrice;
           }
-          input.value = newQuantity;
-        } else if (dishInOrder) {
-          // Rimuovi il piatto dall'ordine se la quantità è 0
-          this.myOrder.dishes = this.myOrder.dishes.filter(
-            (d) => d.id !== dish.id
-          );
-          this.myOrder.price -= dishInOrder.quantity * dish.price;
+
+          // Aggiorna l'ordine solo se la nuova quantità è maggiore di zero
+          if (newQuantity > 0) {
+            if (dishInOrder) {
+              this.myOrder.price = potentialNewPrice;
+              dishInOrder.quantity = newQuantity;
+            } else {
+              this.myOrder.dishes.push({ ...dish, quantity: newQuantity });
+              this.myOrder.price = potentialNewPrice;
+            }
+            input.value = newQuantity;
+          } else if (dishInOrder) {
+            // Rimuovi il piatto dall'ordine se la quantità è 0
+            this.myOrder.dishes = this.myOrder.dishes.filter(
+              (d) => d.id !== dish.id
+            );
+            this.myOrder.price -= dishInOrder.quantity * dish.price;
+          }
         }
+      } else {
+        this.alertModal();
       }
       console.log("INPUT VALIDATION -> myOrder", this.myOrder);
     },
@@ -273,7 +254,6 @@ export default {
           // console.log(order);
           // MYORDER UGUALE A LOCALSTORAGE
           this.myOrder = order;
-
           // CONTROLLO SE L'ORDINE CORRISPONDE AL RISTORANTE
           if (this.restaurant.id == order.restaurant_id) {
             // console.log(this.restaurant.id);
@@ -285,11 +265,6 @@ export default {
               let dish = document.getElementById(order.dishes[i].id);
               // console.log(dish);
               dish.value = order.dishes[i].quantity;
-
-              // aggiungo la quantitá del badge
-              store.orderQuantity = 0;
-              store.orderQuantity += parseInt(dish.value);
-
               dish.classList.remove("off");
             }
           }
@@ -300,24 +275,61 @@ export default {
       this.cartCheck = true;
     },
 
-    closeModal() {
-      this.modal = false;
-      // store.orderQuantity = 0;
-
-      // this.myOrder = JSON.parse(localStorage.getItem("myOrder"));
-      // router.back();
+    openModal(dish) {
+      let modal = document.getElementById("dish-modal-" + dish);
+      console.log("dish-modal-" + dish);
+      modal.style.display = "block";
+    },
+    closeModal(dish) {
+      let modal = document.getElementById("dish-modal-" + dish);
+      modal.style.display = "none";
     },
 
-    emptyModal() {
-      localStorage.removeItem("myOrder");
-      this.myOrder = [];
-      // console.log("carrello svuotato");
-      store.orderQuantity = 0;
-      this.modal = false;
-      // console.log("chiusa");
+    cartLimitModal() {
+      let modal = document.getElementById("cartLimitModal");
+      modal.style.display = "block";
+    },
+    cartLimitModalClose() {
+      let modal = document.getElementById("cartLimitModal");
+      modal.style.display = "none";
+    },
+
+    alertModal() {
+      let modal = document.getElementById("restaurantOrderModal");
+      modal.style.display = "block";
+    },
+
+    alertAccept(dish) {
+      let input = document.getElementById(dish.id);
+      if (input.value == 0) input.value = 1;
+      let modal = document.getElementById("restaurantOrderModal");
+      modal.style.display = "none";
+      this.myOrder = {
+        restaurant_id: this.restaurant.id,
+        dishes: [],
+        price: 0,
+      };
+      this.myOrder.dishes.push({ ...dish, quantity: input.value });
+      this.myOrder.price = dish.price * input.value;
+      input.classList.remove("off");
+      if (this.myOrder.price > 9999.99) {
+        newQuantity = Math.floor(
+          (9999.99 -
+            (this.myOrder.price -
+              (dishInOrder ? dishInOrder.quantity * dish.price : 0))) /
+            dish.price
+        );
+        alert(
+          "Il limite di prezzo del carrello di 9999.99€ è stato superato. La quantità è stata aggiustata al valore massimo possibile."
+        );
+      }
+    },
+    alertDecline() {
+      let modal = document.getElementById("restaurantOrderModal");
+      modal.style.display = "none";
+      history.back();
     },
   },
-
   created() {
     this.fetchRestaurants();
   },
@@ -327,353 +339,155 @@ export default {
 </script>
 
 <template>
-  <app-modal v-if="modal" @modal-close="closeModal" @empty-cart="emptyModal" />
-  <div class="container py-3">
+  <!-- CODICE -->
+  <div
+    class="row justify-content-between containerApp ps-3"
+    v-if="this.restaurant"
+  >
     <div
-      class="row justify-content-between containerApp p-2"
-      v-if="this.restaurant">
-      <!-- ! RESTAURANT COLUMN -->
-      <div class="col-sm-12 col-md-3 px-0 bg-white leftColumn">
-        <router-link
-          :to="{ name: 'home' }"
-          class="col-lg-3 col-md-6 col-sm-12"
-          id="addButton">
-          <!-- <div class="col-lg-3 col-md-6 col-sm-12" id="addButton"> -->
-          <button class="ballButton" @click="checkEmpty()">👈🏻</button>
+      class="col-12 bg-white p-0 m-0 restaurantJumbo"
+      :style="
+        'background-image: url(' +
+        restaurant.image +
+        ');background-size: cover; background-position: center'
+      "
+    ></div>
+    <!-- RESTAURANT DETAILS -->
+    <div id="data">
+      <div class="container" id="info">
+        <router-link :to="{ name: 'home' }" class="" id="backButton">
+          <button class="ballButton" @click="checkEmpty()">
+            👈🏻<span class="fs-5">Indietro</span>
+          </button>
         </router-link>
-        <!-- </div> -->
-
-        <!-- RESTAURANT DETAILS -->
-        <img
-          :src="restaurant.image"
-          :alt="restaurant.name"
-          class="w-100 border border-5 border-info rounded" />
-
-        <div class="my-3">
-          <h1>{{ restaurant.name }}</h1>
-          <h5>☎️ {{ restaurant.phone }}</h5>
-          <h5 class="detailCap">🏠 {{ restaurant.address }}</h5>
-        </div>
-
-        <!-- BADGE -->
-        <div id="badgesContainer">
-          <div class="badge" v-for="badge in types">
-            <div class="typeBadge">
-              <!-- <div class="badgeImg">
-                <img :src="badge.image" alt="" width="100%" />
-              </div> -->
-              <span>{{ badge.label }}</span>
+        <div class="row">
+          <!-- RESTAURANT DATA -->
+          <div class="my-3">
+            <h1 class="restaurantTitle">
+              {{ restaurant.name }}
+            </h1>
+            <h5>☎️ {{ restaurant.phone }}</h5>
+            <h5 class="detailCap">🏠 {{ restaurant.address }}</h5>
+          </div>
+          <!-- BADGE -->
+          <div id="badgesContainer">
+            <div class="badge" v-for="badge in types">
+              <div class="typeBadge">
+                <div class="badgeImg">
+                  <img :src="badge.image" alt="" width="100%" />
+                </div>
+                <span>{{ badge.label }}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+          <!-- END BADGES -->
+          <hr />
+          <div class="dishesContainer">
+            <!-- MODAL -->
+            <div class="customModal" id="cartLimitModal">
+              <div class="close" @click="cartLimitModalClose()">
+                <i class="fa-solid fa-circle-xmark fa-2xl text-primary"></i>
+              </div>
+              <div>
+                <h3 class="text-danger">ATTENZIONE</h3>
+              </div>
 
-      <!-- ! DISHES COLUMN -->
-      <div class="col-md-9 col-sm-12 rightColumn row border-start">
-        <div
-          v-for="dish in restaurant.dishes"
-          class="dishCard col-xl-6 col-lg-12 mb-1">
-          <!-- IMMAGINE -->
-
-          <div
-            class="dishImage col-2"
-            data-bs-toggle="modal"
-            :data-bs-target="`#dish-` + dish.id">
-            <img :src="dish.image" alt="dish.name" class="dish-preview" />
-          </div>
-          <!-- TESTO -->
-          <div class="dishInfo col-6 px-2">
-            <h5>{{ dish.name }}</h5>
-            <p>{{ dish.description }}</p>
-          </div>
-          <!-- PREZZO -->
-          <div class="dishPrice col-3 justify-self-end">
-            <div>
-              <h5>€ {{ euroCheck(dish.price) }}</h5>
+              <div>
+                <p class="fs-5">
+                  Hai raggiunto il limite di 9999.99€! Il carrello contiene la
+                  quantità massima di piatti possibile.
+                </p>
+              </div>
             </div>
-
-            <!-- QUANTITA  col-2-->
-            <!-- <div class="amountContainer col-2"> -->
-            <div class="amountContainer">
-              <button
-                id="minus"
-                class="quantityButton rounded-start"
-                @click="quantity($event.target.id, dish)">
-                -
-              </button>
-              <input
-                type="number"
-                :id="dish.id"
-                min="0"
-                step="1"
-                value="0"
-                class="off"
-                @keyup="getClass($event.target.id)"
-                @blur="inputValidation($event.target.id, dish)" />
-              <button
-                id="plus"
-                class="quantityButton rounded-end"
-                @click="quantity($event.target.id, dish)">
-                +
-              </button>
-            </div>
-          </div>
-          <!-- MODAL CONTENT -->
-          <div
-            class="modal fade"
-            :id="`dish-` + dish.id"
-            data-bs-backdrop="static"
-            data-bs-keyboard="false"
-            tabindex="-1"
-            :aria-labelledby="`dish-` + dish.id"
-            aria-hidden="true">
             <div
-              class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="staticBackdropLabel">
-                    Dettagli: {{ dish.name }}
-                  </h5>
+              v-for="dish in restaurant.dishes"
+              class="dishCard pe-5 col-12 col-md-6"
+            >
+              <!-- IMMAGINE -->
+
+              <div class="dishImage col-2" @click="openModal(dish.id)">
+                >
+                <img :src="dish.image" alt="dish.name" />
+              </div>
+              <!-- TESTO -->
+              <div class="dishInfo col-6 px-2">
+                <h5>{{ dish.name }}</h5>
+                <p>{{ dish.description }}</p>
+              </div>
+
+              <!-- PREZZO -->
+              <div class="dishPrice col-4">
+                <h5>€ {{ euroCheck(dish.price) }}</h5>
+                <!-- QUANTITA -->
+                <div class="amountContainer col-2">
                   <button
-                    type="button"
-                    class="btn-close w-25"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <img :src="dish.image" alt="dish.name" class="modalImage" />
-                  <p>Descrizione: {{ dish.description }}</p>
-                  <h6>Prezzo: € {{ euroCheck(dish.price) }}</h6>
-                </div>
-                <div
-                  class="modal-footer d-flex flex-column justify-content-center align-items-center">
+                    id="minus"
+                    class="quantityButton me-2"
+                    @click="quantity($event.target.id, dish)"
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    :id="dish.id"
+                    min="0"
+                    step="1"
+                    value="0"
+                    class="off rounded border border-primary-subtle border-2"
+                    @keyup="getClass($event.target.id)"
+                    @blur="inputValidation($event.target.id, dish)"
+                  />
                   <button
-                    type="button"
-                    class="btn btn-secondary mb-2"
-                    data-bs-dismiss="modal">
-                    Chiudi
+                    id="plus"
+                    class="quantityButton ms-2"
+                    @click="quantity($event.target.id, dish)"
+                  >
+                    +
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Scrollable modal -->
-      <!-- Button trigger modal -->
-
-      <!-- Modal -->
-
-      <!-- <router-link
-           :to="{
-             name: 'restaurants.checkout',
-             params: { slug: restaurant.slug },
-           }"
-           class="router-link"
-         > -->
-      <!-- <div class="bin" @click="emptyCart()">🗑️</div> -->
-      <!-- 
-      <div
-        class="goToCart"
-        type="button"
-        data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasScrolling"
-        aria-controls="offcanvasScrolling">
-        🛒 -->
-      <!-- da sistemare il counter/badge sul carrello 
-        creare variabile per contare la quantità dei piatti inseriti nel carrello
-        -->
-
-      <!-- <span>{{ myOrder.dishes.length }}</span> -->
-      <!-- </div> -->
-
-      <!-- </router-link
-    > -->
-    </div>
-  </div>
-
-  <!-- CART OFFCANVAS -->
-
-  <div
-    class="offcanvas offcanvas-start"
-    data-bs-scroll="true"
-    data-bs-backdrop="false"
-    tabindex="-1"
-    id="offcanvasScrolling"
-    aria-labelledby="offcanvasScrollingLabel">
-    <div class="offcanvas-header">
-      <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
-        Il tuo carrello
-      </h2>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="offcanvas"
-        aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-      <div v-for="dish in myOrder.dishes" class="dishCard mb-2">
-        <!-- IMMAGINE -->
-
-        <div
-          class="dishImage col-2"
-          data-bs-toggle="modal"
-          :data-bs-target="`#dish-` + dish.id">
-          <img :src="dish.image" alt="dish.name" />
-        </div>
-        <!-- TESTO -->
-        <div class="dishInfo col-6 px-2">
-          <h5>{{ dish.name }}</h5>
-          <p>{{ dish.description }}</p>
-        </div>
-        <div class="col-2">
-          <!-- PREZZO -->
-          <div class="dishPrice col-12">
-            <h5>€ {{ euroCheck(dish.price) }}</h5>
-          </div>
-          <!-- QUANTITà-->
-          <div class="dishPrice col-12">
-            <h5>x {{ dish.quantity }}</h5>
-          </div>
-        </div>
-
-        <!-- MODAL CONTENT -->
-        <div
-          class="modal fade"
-          :id="`dish-` + dish.id"
-          data-bs-backdrop="static"
-          data-bs-keyboard="false"
-          tabindex="-1"
-          :aria-labelledby="`dish-` + dish.id"
-          aria-hidden="true">
-          <div
-            class="modal-dialog modal-dialog-centered position-absolute top-50 start-50 translate-middle">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">
-                  Dettagli: {{ dish.name }}
-                </h5>
-                <button
-                  type="button"
-                  class="btn-close w-25"
-                  data-bs-dismiss="modal"
-                  aria-label="Close"></button>
+              <!-- ALERT MODAL -->
+              <div class="customModal" id="restaurantOrderModal">
+                <div>
+                  <h3 class="text-danger">ATTENZIONE</h3>
+                </div>
+                <div>
+                  <p class="fs-5">
+                    Il tuo carrello contiene piatti di un altro ristorante. Vuoi
+                    svuotare il carrello per procedere?
+                  </p>
+                  <div class="d-flex justify-content-evenly g-3">
+                    <button
+                      class="btn btn-primary"
+                      @click="this.alertAccept(dish)"
+                    >
+                      Procedi
+                    </button>
+                    <button class="btn btn-danger" @click="this.alertDecline()">
+                      Annulla
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div class="modal-body">
-                <img :src="dish.image" alt="dish.name" class="modalImage" />
-                <p>Descrizione: {{ dish.description }}</p>
-                <h6>Prezzo: €{{ euroCheck(dish.price) }}</h6>
-              </div>
-              <div
-                class="modal-footer d-flex flex-column justify-content-center align-items-center">
-                <button
-                  type="button"
-                  class="btn btn-secondary mb-2"
-                  data-bs-dismiss="modal">
-                  Chiudi
-                </button>
+              <!-- MODAL -->
+              <div class="customModal" :id="'dish-modal-' + dish.id">
+                <div class="close" @click="closeModal(dish.id)">
+                  <i class="fa-solid fa-circle-xmark fa-2xl text-primary"></i>
+                </div>
+                <div>
+                  <h3>{{ dish.name }}</h3>
+                </div>
+                <div class="modalImage">
+                  <img :src="dish.image" :alt="dish.name" />
+                </div>
+                <div>
+                  <p class="fs-5">{{ dish.description }}</p>
+                  <span class="fs-2">€ {{ euroCheck(dish.price) }}</span>
+                </div>
               </div>
             </div>
-
-            <h5 class="overflow-visible">€{{ dish.price }}</h5>
-            <!-- QUANTITA -->
-            <div class="dishQuantity col-2">
-              <h5>x {{ dish.quantity }}</h5>
-            </div>
           </div>
         </div>
-      </div>
-
-      <div
-        class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
-        v-if="this.myOrder.dishes">
-        <h4 class="text-center mb-2">PREZZO TOTALE</h4>
-
-        <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
-
-        <router-link
-          :to="{ name: 'restaurants.checkout' }"
-          class="router-link text-center">
-          <button type="button" class="btn btn-primary btn-lg">
-            Procedi al pagamento
-          </button>
-        </router-link>
-      </div>
-    </div>
-  </div>
-
-  <!-- CART OFFCANVAS -->
-
-  <div
-    class="offcanvas offcanvas-start"
-    data-bs-scroll="true"
-    data-bs-backdrop="false"
-    tabindex="-1"
-    id="offcanvasScrolling"
-    aria-labelledby="offcanvasScrollingLabel">
-    <div class="offcanvas-header">
-      <h2 class="offcanvas-title" id="offcanvasScrollingLabel">
-        Il tuo carrello
-      </h2>
-      <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="offcanvas"
-        aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-      <div
-        v-if="myOrder.dishes"
-        v-for="dish in myOrder.dishes"
-        class="d-flex flex-column pe-5">
-        <div class="dishCard mb-3">
-          <!-- IMMAGINE -->
-
-          <div
-            class="dishImage col-2"
-            data-bs-toggle="modal"
-            :data-bs-target="`#dish-` + dish.id">
-            <img :src="dish.image" alt="dish.name" />
-          </div>
-          <!-- TESTO -->
-          <div class="dishInfo col-7 px-2">
-            <h5>{{ dish.name }}</h5>
-            <p>{{ dish.description }}</p>
-          </div>
-          <!-- PREZZO -->
-          <div class="dishPrice col-3">
-            <h5>
-              €
-              {{ euroCheck(parseFloat(dish.price * dish.quantity)) }}
-            </h5>
-          </div>
-        </div>
-        <span class="text-secondary text-end"
-          >{{ euroCheck(dish.price) }} x {{ dish.quantity }}</span
-        >
-      </div>
-
-      <div v-else class="d-flex flex-column pe-5">
-        <span class="text-secondary">Il tuo carrello è vuoto.</span>
-      </div>
-    </div>
-    <div
-      class="offcanvas-footer d-flex flex-column justify-content-center mb-5"
-      v-if="this.myOrder.dishes">
-      <h4 class="text-center mb-2">PREZZO TOTALE</h4>
-
-      <h2 class="text-center mb-5">€{{ euroCheck(this.myOrder.price) }}</h2>
-
-      <router-link
-        :to="{ name: 'restaurants.checkout' }"
-        class="router-link text-center">
-        <button type="button" class="btn btn-primary btn-lg">
-          Procedi al pagamento
-        </button>
-      </router-link>
-      <div class="btn btn-danger btn-lg" @click="emptyCart()">
-        Svuota il carrello
       </div>
     </div>
   </div>
@@ -684,102 +498,83 @@ export default {
 
 @use "../style/partials/variables" as *;
 
-.container {
-  // height: calc(100vh - $footerHeight - $headerHeight);
-  // height: 100vh;
-}
-
-// GO TO CART
-.bin {
-  position: absolute;
-  background-color: red;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  max-width: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 4rem;
-  text-shadow: 0 1px 5px black;
-  right: 150px;
-  bottom: 30px;
-
-  &:hover {
-    transform: scale(1.1);
-    transition: all 0.08s ease 0.08s;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    transition: all 0.08s ease 0.08s;
-  }
-}
-
-// GO TO CART
-.goToCart {
-  position: fixed;
-  background-color: $midblue;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  max-width: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 4rem;
-  text-shadow: 5px 5px 5px $darkblue;
-  right: 30px;
-  bottom: 30px;
-
-  &:hover {
-    transform: scale(1.1);
-    transition: all 0.08s ease 0.08s;
-  }
-
-  &:hover {
-    transform: scale(1.1);
-    transition: all 0.08s ease 0.08s;
-  }
-}
-
 // MODAL CLASSES
 
-.modalImage {
-  width: 100%;
-  margin-bottom: 20px;
+.customModal {
+  display: none;
+  background-color: white;
+  z-index: 5;
+  max-width: 30vw;
+  overflow: hidden;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 10px 5px 0 rgba(black, 0.2);
+  .modalImage {
+    width: 100%;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    margin: 20px 0;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: fill;
+    }
+  }
+
+  .close {
+    position: absolute;
+    right: 30px;
+    top: 20px;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 }
 
 .containerApp {
-  /* height: calc(100vh - $headerHeight - $footerHeight); */
   background-color: white;
-  overflow: auto;
   overflow-x: hidden;
-  /* position: relative; */
 }
 
-.leftColumn {
-  height: 100%;
+.restaurantJumbo {
+  aspect-ratio: 11 / 3;
+  overflow: hidden;
+  display: flex;
   position: relative;
-  color: $darkblue;
-  background-color: white;
-  text-align: center;
-  // min-height: calc(100vh - $headerHeight - $footerHeight);
-  /*   border-right: 2px solid rgba($midblue, 0.2);
-  border-bottom: 2px solid rgba($midblue, 0.2); */
 }
 
+#data {
+  display: flex;
+
+  #info {
+    box-shadow: 0 0 10px 0 rgba(black, 0.2);
+    flex: 1;
+    // position: relative;
+    background-color: white;
+    z-index: 0;
+    margin-top: -15%;
+    border-radius: 15px;
+    color: $secondary;
+    text-align: center;
+    .restaurantTitle {
+      color: $tertiary;
+    }
+    padding-bottom: 15px;
+  }
+  padding-bottom: 30px;
+}
 #badgesContainer {
   margin-bottom: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-
   .badge {
     display: inline-block;
-    margin-right: 5px;
-    padding: 3px 0;
+    margin-right: 10px;
 
     .typeBadge {
-      // border: 3px solid $midblue;
+      // border: 3px solid $primary;
       width: 100%;
       border-radius: 50px;
       overflow: hidden;
@@ -788,21 +583,18 @@ export default {
       justify-content: center;
       align-items: center;
       height: 40px;
-      width: 135px;
+      width: 120px;
       object-fit: cover;
-      border: 3px solid $darkblue;
-      border-radius: 30px;
+      box-shadow: 0 2px 3px 2px rgba(black, 0.2);
 
       span {
         z-index: 2;
-        /* text-shadow: 0px 0px 20px black; */
+        text-shadow: 0px 0px 20px black;
         font-size: 17px;
-        color: $darkblue;
         letter-spacing: 2px;
-        /* text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
-          2px 2px 0 #000; */
+        text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000,
+          2px 2px 0 #000;
       }
-
       .badgeImg {
         position: absolute;
         width: 100%;
@@ -810,16 +602,6 @@ export default {
       }
     }
   }
-}
-
-.rightColumn {
-  padding: 0;
-  overflow: auto;
-  // background-color: $midblue;
-  display: flex;
-  justify-content: start;
-  flex-wrap: wrap;
-  align-content: flex-start;
 }
 
 .detailCap {
@@ -834,24 +616,23 @@ export default {
 // BUTTON
 /* BACK BUTTON */
 
-#addButton {
-  transform: translate(30%, 7%);
+#backButton {
+  transform: translate(0, -150%);
   position: absolute;
   left: 0;
   top: 0;
   align-items: center;
-  min-height: 350px;
   text-decoration: none;
 
   .ballButton {
-    height: 40px;
-    width: 40px;
+    background-color: $primary;
+    box-shadow: 0 0 10px 0 rgba(black, 0.2);
     position: relative;
-    background-color: white;
-    padding: 10px;
-    border-radius: 50%;
+    color: white;
+    padding: 5px 10px 10px 10px;
+    border-radius: 500px;
     position: relative;
-    font-size: 1.5rem;
+    font-size: 2rem;
     text-align: center;
     transform: translate3d(0, 0, 0);
     transition: transform ease-out 200ms;
@@ -863,7 +644,6 @@ export default {
     transition-duration: 400ms;
     transform: scale(1.1, 1.1) translate3d(0, 0, 0);
     cursor: pointer;
-
     i {
       color: #2929b9;
     }
@@ -871,11 +651,15 @@ export default {
     &:hover {
       transform: scale(1.2, 1.2) translate3d(0, 0, 0);
     }
+    span {
+      line-height: 50px;
+      transform: translateY(10%);
+    }
   }
 }
 
 button {
-  background-color: transparent;
+  // background-color: transparent;
   border: 0;
   cursor: pointer;
 }
@@ -890,37 +674,37 @@ button {
 
 // DISH CARD
 
+.dishesContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
 .dishCard {
+  padding-bottom: 20px;
   height: fit-content;
   display: flex;
   background-color: white;
   flex: 0 0 auto;
-  color: $darkblue;
-  border-bottom: 1px solid rgba($midblue, 0.2);
+  color: $secondary;
+  border-bottom: 1px solid rgba($primary, 0.2);
 
   .dishImage {
-    height: 80px;
-    width: 80px;
+    height: 100px;
+    width: 100px;
     overflow: hidden;
     object-fit: contain;
     display: flex;
+    border-radius: 500px;
     justify-content: center;
-
     img {
       height: 100%;
       width: auto;
     }
   }
-
-  .dishImage:hover {
-    border: 3px solid greenyellow;
-    cursor: pointer;
-  }
-
   .dishInfo,
   .dishPrice {
     display: flex;
-    // border-bottom: 1px solid rgba($midblue, 0.2);
     flex-direction: column;
     justify-content: center;
 
@@ -940,7 +724,7 @@ button {
 .amountContainer {
   align-items: center;
   display: flex;
-  /*  border-bottom: 1px solid rgba($midblue, 0.2); */
+  justify-content: center;
 
   // INPUT NUMBER ARROW HIDDEN
   input[type="number"] {
@@ -951,7 +735,6 @@ button {
     height: 30px;
     text-align: center;
   }
-
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -962,11 +745,17 @@ button {
     flex-shrink: 0;
     height: 30px;
     width: 30px;
-    background-color: $midblue;
+    border-radius: 500px;
+    background-color: $primary;
     color: white;
     font-size: 20px;
     display: flex;
     justify-content: center;
+    align-items: center;
+    &:active {
+      transform: scale(0.9);
+      background-color: $tertiary;
+    }
   }
 
   .off {
@@ -975,11 +764,7 @@ button {
 }
 
 .blueColor {
-  background-color: $midblue;
+  background-color: $primary;
   color: white;
-}
-
-.offcanvas {
-  width: calc(100% / 3);
 }
 </style>

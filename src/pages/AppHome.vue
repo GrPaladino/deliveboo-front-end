@@ -1,8 +1,8 @@
 <script>
 import { store, api } from "../store";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import axios from "axios";
 import AppCard from "../components/AppCard.vue";
+import Slider from "../components/Slider.vue";
 
 export default {
   data() {
@@ -14,41 +14,10 @@ export default {
       types: [],
       searchOn: false,
       activeTypes: [],
+      hoverTimeout: null,
     };
   },
-
-  //   watch: {
-  //   restaurant: {
-  //     handler() {
-  //       if (this.restaurant && this.filled === false) {
-  //         // console.log("watcher");
-  //         this.filled = true;
-  //         setTimeout(this.cartQuantity, 300);
-  //       }
-  //     },
-  //     deep: true,
-  //   },
-  //   myOrder: {
-  //     handler() {
-  //       if (this.myOrder && this.cartCheck === true) {
-  //         localStorage.setItem("myOrder", JSON.stringify(this.myOrder));
-  //   //       this.myOrder.dishes.forEach(dish => {
-
-  //   //      store.orderQuantity = store.orderQuantity + dish.quantity;
-  //   //    }
-  //   //  );
-  //         // console.log("Pushed to storage");
-  //       }
-  //       if (this.myOrder.dishes && this.myOrder.dishes.length == 0) {
-  //         this.myOrder = [];
-  //         localStorage.removeItem("myOrder");
-  //         // console.log("Removed from storage");
-  //       }
-  //     },
-  //     deep: true,
-  //   },
-  // },
-  components: { AppCard },
+  components: { AppCard, Slider },
   methods: {
     sideToggler() {
       const sidebar = document.querySelector(".sidebar");
@@ -68,7 +37,6 @@ export default {
       const argumentString = Array.isArray(argument)
         ? argument.join("&")
         : argument;
-
       axios
         .get(api.baseApiURI + "restaurants/search=" + argumentString)
         .then((response) => {
@@ -77,25 +45,66 @@ export default {
     },
 
     search(name, event) {
-      console.log(
-        "ho cliccato: " + name + " " + "Tipi attivi ora: " + this.activeTypes
-      );
       if (!this.activeTypes.includes(name)) {
         this.activeTypes.push(name);
-        console.log("non c'era " + this.activeTypes);
       } else {
         this.activeTypes = this.activeTypes.filter(
           (elemento) => elemento !== name
         );
-        console.log("c'era " + this.activeTypes);
       }
       let thisButton = document.getElementById(event);
       thisButton.classList.toggle("on");
       this.filteredRestaurants(this.activeTypes);
-
       if (this.activeTypes.length === 0) {
         this.fetchRestaurants();
       }
+    },
+
+    thumbFilter(name) {
+      if (!this.activeTypes.includes(name)) {
+        this.activeTypes.push(name);
+      } else {
+        this.activeTypes = this.activeTypes.filter(
+          (elemento) => elemento !== name
+        );
+      }
+      let filterButtons = document.querySelectorAll(".badgeSelector");
+      console.log(filterButtons);
+      filterButtons.forEach((element) => {
+        if (element.innerText == name) {
+          element.classList.toggle("on");
+        }
+      });
+
+      this.filteredRestaurants(this.activeTypes);
+      if (this.activeTypes.length === 0) {
+        this.fetchRestaurants();
+      }
+      document.getElementById("restaurantsView").scrollIntoView({
+        behavior: "smooth",
+      });
+    },
+    mouseover(index) {
+      clearTimeout(this.hoverTimeout);
+
+      this.hoverTimeout = setTimeout(() => {
+        const hoverDiv = document.getElementById("list-" + index);
+        hoverDiv.style.display = "flex";
+      }, 650);
+    },
+    coordinates(e, index) {
+      let hoverDiv = document.getElementById("list-" + index);
+      var xOffset = e.layerX;
+      var yOffset = e.layerY;
+
+      hoverDiv.style.left = xOffset + "px";
+      hoverDiv.style.top = yOffset + "px";
+    },
+
+    mouseout(index) {
+      clearTimeout(this.hoverTimeout);
+      const hoverDiv = document.getElementById("list-" + index);
+      hoverDiv.style.display = "none";
     },
   },
 
@@ -108,78 +117,96 @@ export default {
 </script>
 
 <template>
-  <div class="wrapper">
-    <div class="row align-items-center" id="jumboTron">
-      <div class="jumboTextContainer col-md-8">
-        <h2 class="display-2 title text-center col-8">
-          Ordina subito con Boolivery! 🛵🍝
-        </h2>
+  <!-- JUMBO -->
+  <div class="row align-items-center justify-content-center" id="jumboTron">
+    <div class="jumboTextContainer col-5">
+      <h2 class="display-2 title text-center mt-3 text-nowrap">
+        Ordina subito con
+      </h2>
+      <h1 class="display-1 fw-bold my-0 title text-center">Boolivery!</h1>
+      <h2 class="display-1 title text-center mb-5">🛵🍝</h2>
 
-        <div
-          class="btn-restaurant mb-3 col-8"
-          onclick="document.getElementById('searchSection').scrollIntoView();">
-          <div class="btn btn--action">
-            <span class="guest">Vai alla ricerca</span>
-          </div>
-        </div>
-        <h5 class="title">oppure</h5>
-        <h3 class="display-5 title">Sei un ristoratore?</h3>
-        <!-- BUTTON -->
-        <div class="btn-restaurant mb-3 col-8">
-          <a class="btn btn--action" href="http://127.0.0.1:8000/login"
-            ><span class="user">Accedi al tuo account</span></a
-          >
+      <div
+        class="btn-restaurant mb-3 col-12 col-md-8"
+        onclick="document.getElementById('searchSection').scrollIntoView();"
+      >
+        <div class="btn btn--action">
+          <span class="guest">Vai alla ricerca</span>
         </div>
       </div>
+      <span class="text-white text-center">oppure</span>
+
+      <span class="text-white text-center fs-4">Sei un ristoratore?</span>
+
+      <a href="http://127.0.0.1:8000/login" class="text-center"
+        ><span class="text-white text-center text-decoration-underline"
+          >Accedi al tuo ristorante</span
+        ></a
+      >
     </div>
+  </div>
+  <!-- SLIDER -->
+  <div id="categoriesSlider">
+    <div id="waveBackground"></div>
+    <div class="container">
+      <Slider :types="types" @filter="thumbFilter" v-if="types.length"></Slider>
+    </div>
+  </div>
 
-    <div class="containerApp" id="searchSection">
-      <!-- ROW -->
-      <div class="row main-row">
-        <!-- Search column -->
-        <div class="col-5 col-sm-4 col-md-3 col-lg-2 searchColumn" id="search">
-          <h3 class="my-3 title">Filtri</h3>
+  <!-- RICERCA -->
+  <div class="containerApp" id="searchSection">
+    <!-- ROW -->
+    <div class="row h-100 justify-content-center">
+      <!-- Search column -->
+      <div class="col-2 col-md-2 searchColumn" id="search">
+        <h3 class="my-3 title">Filtri</h3>
 
-          <ul class="d-flex flex-column align-items-center">
-            <li
-              v-for="badge in types"
-              class="badgeSelector"
-              :id="badge.label"
-              @click="search(badge.label, $event.target.id)">
-              {{ badge.label }}
-            </li>
-          </ul>
-          <div class="sidebar-toggle" @click="sideToggler()">
-            <span class="navbar-toggler-icon"></span>
-          </div>
+        <ul class="d-flex flex-column align-items-center">
+          <li
+            v-for="badge in types"
+            class="badgeSelector"
+            :id="badge.label"
+            @click="search(badge.label, $event.target.id)"
+          >
+            {{ badge.label }}
+          </li>
+        </ul>
+        <div class="sidebar-toggle" @click="sideToggler()">
+          <span class="navbar-toggler-icon"></span>
         </div>
+      </div>
 
-        <!-- Results column -->
-        <div class="col-7 col-sm-8 col-md-9 col-lg-10 result-column px-5 py-4">
-          <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
-          <!-- bottone scrollTop -->
+      <!-- Results column -->
+      <div class="col result-column px-3 py-4" id="restaurantsView">
+        <h3 class="mb-3 title text-center">I nostri ristoranti</h3>
 
+        <div
+          class="row pe-2 d-flex justify-content-center justify-content-md-start"
+        >
           <div
-            class="row pe-2 d-flex justify-content-center justify-content-md-start">
-            <div
-              v-for="(restaurant, index) in this.restaurants"
-              class="col-sm-5 col-md-4 col-xl-3 p-2 mb-3 cardContainer">
-              <app-card :restaurant="restaurant" :index="index" class="h-100" />
+            v-for="(restaurant, index) in this.restaurants"
+            class="col-sm-5 col-md-4 col-lg-3 p-2 mb-3 cardContainer"
+          >
+            <app-card
+              v-if="restaurant"
+              :restaurant="restaurant"
+              :index="index"
+              @mouseover="mouseover(restaurant.id)"
+              @mouseout="mouseout(restaurant.id)"
+              @mousemove="coordinates($event, restaurant.id)"
+            />
+            <div class="badgesContainer" :id="'list-' + restaurant.id">
+              <span v-for="badge in restaurant.types" class="badge mx-2">
+                {{ badge.label }}
+              </span>
             </div>
+          </div>
 
-            <div v-if="this.restaurants.length == 0">
-              <p class="text-center text-secondary">
-                Nessun risultato corrispondente. 😓
-              </p>
-            </div>
-            <!-- bottone per lo scrollOnTop -->
-            <div
-              class="btn-back-to-top mb-3 col-12 col-md-8 btn btn-demetrio"
-              onclick="window.scrollTo({ top: 0});">
-              <div class="btn btn--action">
-                <span class="listR">↑ Torna in cima</span>
-              </div>
-            </div>
+          <!-- BADGE -->
+          <div v-if="this.restaurants.length == 0">
+            <p class="text-center text-secondary">
+              Nessun risultato corrispondente. 😓
+            </p>
           </div>
         </div>
       </div>
@@ -191,13 +218,37 @@ export default {
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
 
+.row {
+  margin: 0;
+}
+.badgesContainer {
+  z-index: 999;
+  position: absolute;
+  border: 1px solid $secondary;
+  // transform: translate(50%, -50%);
+  background-color: white;
+  display: none;
+  flex-direction: column;
+  margin: 25px;
+  .badge {
+    color: $secondary;
+    font-size: 17px;
+  }
+}
+
+#searchSection {
+  width: 80%;
+  overflow-x: hidden;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 li {
   position: relative;
   min-width: 140px;
   &.on {
-    color: green !important;
-    border: 3px solid green !important;
-
+    color: $primary !important;
+    border: 3px solid $primary !important;
     &::before {
       position: absolute;
       content: "✔";
@@ -207,8 +258,8 @@ li {
 }
 
 #jumboTron {
-  height: calc(100vh - $headerHeight);
-  background-image: url(../assets/img/jumbo-2.svg);
+  max-height: 65vh;
+  background-image: url(../assets/img/bg_hero-wide.png);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
@@ -220,96 +271,135 @@ li {
     flex-direction: column;
     padding: 60px 20px;
     border-radius: 3px;
+
+    // BUTTONS
+    .btn-restaurant {
+      .btn--action {
+        font-size: 1.5rem;
+        display: block;
+        padding: 1rem;
+        border-radius: 100px;
+        background-color: white;
+        color: $primary;
+        transition: all 0.5s ease 0s;
+        box-shadow: 0 10px $secondary;
+      }
+
+      .btn--action span {
+        display: inline-block;
+        position: relative;
+        transition: all 0.5s ease;
+      }
+
+      .btn--action span::before {
+        display: inline-block;
+        position: absolute;
+        top: 50%;
+        font-size: 2rem;
+        transform: translate(-100%, -50%);
+        left: 1.5rem;
+        opacity: 0;
+        transition: all 0.1s ease 0s;
+      }
+      .btn--action .guest::before {
+        content: "🍔";
+      }
+      .btn--action .user::before {
+        content: "🧑🏻‍🍳";
+      }
+      .btn--action:hover {
+        background-color: $tertiary;
+        color: white;
+      }
+
+      .btn--action:hover span {
+        padding-left: 1.5rem;
+      }
+
+      .btn--action:hover span:before {
+        left: 0;
+        opacity: 1;
+      }
+
+      .btn--action:active {
+        transform: translateY(5px);
+      }
+    }
+    .title {
+      color: $primary;
+    }
   }
+}
 
-  // BUTTONS
-  .btn-restaurant {
-    .btn--action {
-      font-size: 1.5rem;
-      display: block;
-      padding: 1rem;
-      border-radius: 100px;
-      background-color: $midblue;
-      color: white;
-      transition: all 0.5s ease 0s;
-      box-shadow: 0 10px $darkblue;
-    }
+#categoriesSlider {
+  position: relative;
+  padding: 50px 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  &::before {
+    content: "";
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(../assets/img/wave3.svg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    filter: invert(34%) sepia(52%) saturate(2509%) hue-rotate(215deg)
+      brightness(97%) contrast(99%);
+  }
+  .container {
+    position: relative;
 
-    .btn--action span {
-      display: inline-block;
-      position: relative;
-      transition: all 0.5s ease;
-    }
-
-    .btn--action span::before {
-      display: inline-block;
-      position: absolute;
-      top: 50%;
-      font-size: 2rem;
-      transform: translate(-100%, -50%);
-      left: 1.5rem;
-      opacity: 0;
-      transition: all 0.1s ease 0s;
-    }
-
-    .btn--action .guest::before {
-      content: "🍔";
-    }
-
-    .btn--action .user::before {
-      content: "🧑🏻‍🍳";
-    }
-
-    .btn--action:hover {
-      background-color: $darkblue;
-    }
-
-    .btn--action:hover span {
-      padding-left: 1.5rem;
-    }
-
-    .btn--action:hover span:before {
-      left: 0;
-      opacity: 1;
-    }
-
-    .btn--action:active {
-      transform: translateY(5px);
+    .thumbnail {
+      width: 200px;
+      img {
+        width: 200px;
+      }
     }
   }
+}
+.swiper {
+  width: 100%;
+  height: 100%;
+}
 
-  .title {
-    color: white;
-    margin-bottom: 30px;
-    // text-shadow: -2px -2px 15px #4477d5, 2px -2px 15px #4477d5,
-    //   -2px 2px 15px #4477d5, 2px 2px 15px #4477d5;
-  }
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .title {
-  color: $darkblue;
-}
-
-.containerApp {
-  /*   min-height: 100vh;
-  overflow: auto; */
-  overflow-x: hidden;
-  padding-top: $headerHeight;
+  color: $secondary;
 }
 
 // TYPE BADGES
 
-/* #search {
+#search {
   min-width: 160px;
-} */
+}
 
 .searchColumn {
   background-color: white;
   text-align: center;
-
-  border-right: 2px solid rgba($midblue, 0.2);
-  position: relative;
-  /*   overflow: scroll; */
+  // border-right: 2px solid rgba($primary, 0.2);
 
   .title {
     width: 30%;
@@ -322,7 +412,6 @@ li {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-
     .badge {
       display: block;
       width: 100%;
@@ -332,7 +421,6 @@ li {
         display: flex;
         justify-content: center;
         align-items: center;
-
         .imgBadge {
           width: 100%;
           cursor: pointer;
@@ -345,7 +433,7 @@ li {
         }
 
         .label {
-          color: $darkblue;
+          color: $secondary;
           text-align: left;
           font-size: large;
           font-weight: 100;
@@ -358,145 +446,31 @@ li {
 
 .badgeSelector {
   cursor: pointer;
-  color: $darkblue;
+  color: $secondary;
   font-size: 1.3rem;
   text-align: center;
   width: 80%;
   margin: 7px 0;
 
-  border: 2px solid $darkblue;
+  border: 2px solid $secondary;
   border-radius: 500px;
 }
 
 // RESTAURANT CARDS
 .result-column {
+  overflow-x: hidden;
   background-color: white;
-
-  .cardContainer {
-    display: flex;
-    flex-direction: column;
-    // flex-wrap: wrap;
-  }
 }
 
-// SIDEBAR
+.cardContainer {
+  position: relative;
+}
 
-.sidebar {
+.typesHover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: absolute;
   top: 0;
-  left: 0;
-  width: 250px;
-  transition: width 0.3s ease-in-out;
-}
-
-.sidebar.collapsed {
-  width: 50px;
-}
-
-.sidebar.collapsed.sidebar-brand,
-.sidebar.collapsed.sidebar-nav li {
-  display: none;
-}
-
-.sidebar.collapsed.sidebar-brand.collapsed,
-.sidebar.collapsed.sidebar-nav li.collapsed {
-  display: block;
-}
-
-.sidebar-brand {
-  padding: 1rem;
-  text-align: center;
-}
-
-.sidebar-nav {
-  list-style: none;
-  padding: 0;
-}
-
-.sidebar-nav li a {
-  display: block;
-  padding: 0.5rem 1rem;
-  color: #333;
-  text-decoration: none;
-}
-
-.sidebar-nav li a:hover {
-  background-color: #ddd;
-}
-
-.sidebar-toggle {
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1rem;
-  cursor: pointer;
-}
-
-.main-content {
-  margin-left: 250px;
-  padding: 1rem;
-  transition: margin-left 0.3s ease-in-out;
-}
-
-.main-content.collapsed {
-  margin-left: 50px;
-}
-
-// bottone che porta giù alla pagina
-#searchSection {
-  min-height: 100vh;
-}
-
-//bottone per lo scrollUp
-
-.btn-demetrio {
-  .btn--action {
-    font-size: 1.5rem;
-    display: block;
-    padding: 1rem;
-    border-radius: 100px;
-    background-color: $midblue;
-    color: white;
-    transition: all 0.5s ease 0s;
-    box-shadow: 0 10px $darkblue;
-  }
-
-  .btn--action span {
-    display: inline-block;
-    position: relative;
-    transition: all 0.5s ease;
-  }
-
-  .btn--action span::before {
-    display: inline-block;
-    position: absolute;
-    top: 50%;
-    font-size: 2rem;
-    transform: translate(-100%, -50%);
-    left: 1.5rem;
-    opacity: 0;
-    transition: all 0.1s ease 0s;
-  }
-
-  .btn--action .listR::before {
-    content: "🍝";
-  }
-
-  .btn--action:hover {
-    background-color: $darkblue;
-  }
-
-  .btn--action:hover span {
-    padding-left: 1.5rem;
-  }
-
-  .btn--action:hover span:before {
-    left: 0;
-    opacity: 1;
-  }
-
-  .btn--action:active {
-    transform: translateY(5px);
-  }
 }
 </style>

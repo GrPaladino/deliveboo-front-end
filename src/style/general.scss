@@ -1,5 +1,8 @@
 @use "./partials/variables" as *;
 @use "./partials/mixins" as *;
+// FONTAWSOME
+@import "@fortawesome/fontawesome-free/css/all.css";
+
 // FREEMAN FONT
 @import url("https://fonts.googleapis.com/css2?family=Freeman&display=swap");
 // ROBOTO FONT
@@ -13,8 +16,9 @@ body {
   font-weight: 400;
   font-style: normal;
   color: white;
-  background: #3535ec;
   overflow-x: hidden;
+  margin: 0;
+  padding: 0;
 }
 
 ul {
@@ -22,11 +26,3 @@ ul {
   margin: 0;
   padding: 0;
 }
-
-// #mainContent {
-//   box-shadow: 0 0 5px black;
-//   background: #3535ec;
-//   min-height: calc(100vh - 160px);
-//   height: 100%;
-//   padding: 30px 0;
-// }

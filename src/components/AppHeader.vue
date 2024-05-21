@@ -6,82 +6,65 @@ export default {
       store,
     };
   },
+  watch: {
+    "store.myOrder": function (val) {},
+  },
+  computed: {},
+  methods: {},
+  mounted() {},
 };
 </script>
 
 <template>
-  <nav class="headerNav navbar navbar-expand-lg">
-    <div class="container-md d-flex">
-      <ul class="navbar-ul">
-        <li class="nav-item me-4 d-flex">
+  <nav class="navbar navbar-expand-lg bg-white">
+    <div class="container-sm flex-nowrap">
+      <router-link
+        :to="{ name: 'home' }"
+        class="nav-link navbar-brand"
+        aria-current="page"
+      >
+        <img
+          src="../assets/img/boolivery.svg"
+          alt="boolivery logo"
+          class="logo"
+      /></router-link>
+
+      <ul class="navbar-nav d-flex align-items-center flex-nowrap flex-row">
+        <li class="nav-item d-none d-md-block">
           <router-link
             :to="{ name: 'home' }"
-            class="nav-link text-white"
-            aria-current="page">
-            <a class="navbar-brand"
-              ><img src="../assets/img/boolivery_manager.svg" alt="" /></a
-          ></router-link>
-          <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
-        </li>
-        <li class="nav-item me-4 nav-link d-none d-md-block">
-          <router-link
-            :to="{ name: 'home' }"
-            class="nav-link text-white"
+            class="nav-link"
             aria-current="page"
+            exact-active-class="active"
             >Home</router-link
           >
         </li>
-      </ul>
 
-      <!-- link Carrello -->
-      <ul v-if="store.orderQuantity" class="chart-icon">
-        <li class="nav-item me-4 position-relative nav-link">
+        <li class="nav-item" id="cartIcon">
           <router-link
             :to="{ name: 'restaurants.checkout' }"
-            class="nav-link text-white"
+            class="nav-link"
             aria-current="page"
-            >Carrello</router-link
-          >
-          <!-- Badge Carrello -->
-          <span
-            v-if="store.orderQuantity"
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-            {{ store.orderQuantity }}
-            <!-- <span class="visually-hidden">unread messages</span> -->
-          </span>
+            exact-active-class="active"
+            ><i class="fa-solid fa-basket-shopping"></i
+          ></router-link>
+          <span class="cartAmount" v-if="store.quantity > 0">{{
+            parseInt(store.quantity)
+          }}</span>
+          <div id="cartHover">
+            <div class="cartContent">
+              <div>
+                <h5>Il tuo carrello</h5>
+              </div>
+              <div
+                class="cartItem"
+                v-if="store.myOrder"
+                v-for="item in store.myOrder"
+              ></div>
+            </div>
+          </div>
         </li>
       </ul>
-
-      <!-- <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <router-link
-              :to="{ name: 'home' }"
-              class="nav-link text-white"
-              aria-current="page"
-              >Home</router-link
-            >
-          </li>
-          <li class="nav-item">
-            <router-link
-              :to="{ name: 'restaurants.index' }"
-              class="nav-link text-white"
-              href="#"
-              >Ristoranti</router-link
-            >
-          </li>
-        </ul>
-      </div> -->
     </div>
   </nav>
 </template>
@@ -90,36 +73,63 @@ export default {
 @use "../style/partials/mixins" as *;
 @use "../style/partials/variables" as *;
 
-.headerNav {
-  height: $headerHeight;
-  box-shadow: 0 0 5px black;
-  background: $midblue;
-
-  .navbar-ul {
-    // width: 100%;
-    @include d-flex-center;
-  }
-  .nav-link {
-    font-size: 1.4rem;
-  }
-
-  img {
-    height: 50px;
-  }
-
-  a:hover {
-    transform: scale(1.1);
-    transition: all 0.1s ease 0.1s;
-  }
-
-  .chart-icon li {
-    @include d-flex-center;
+#cartIcon {
+  position: relative;
+  cursor: pointer;
+  .cartAmount {
+    position: absolute;
+    top: 35%;
+    left: 0;
+    transform: translate(-25%, -50%);
+    width: 20px;
+    height: 20px;
+    background-color: red;
+    border-radius: 50px;
+    font-size: 10px;
     color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font: 10px;
+  }
+  #cartHover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    // display: none;
+    .cartContent {
+      display: none;
+    }
+  }
+}
 
-    .badge {
-      width: 52%;
-      font-size: 0.9rem;
-      text-align: center;
+.navbar {
+  height: $headerHeight;
+
+  .nav-link {
+    padding: 0 5px;
+  }
+}
+.logo {
+  height: 40px;
+  margin-right: 50px;
+}
+
+.active {
+  color: $primary !important;
+  box-shadow: inset 0 -7px 0 $primary;
+}
+
+ul {
+  width: 100%;
+  li {
+    font-size: 1.2rem;
+    margin-right: 30px;
+    line-height: $headerHeight;
+
+    &:last-of-type {
+      margin-left: auto;
     }
   }
 }
